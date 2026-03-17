@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
@@ -15,15 +15,30 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
   const sorted = [...images].sort((a, b) => a.display_order - b.display_order);
   const [activeIndex, setActiveIndex] = useState(0);
   const [zoomed, setZoomed] = useState(false);
+  const [zoomPosition, setZoomPosition] = useState({ x: 50, y: 50 });
+  const [isHovering, setIsHovering] = useState(false);
+  const imageRef = useRef<HTMLDivElement>(null);
 
   const activeImage = sorted[activeIndex];
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageRef.current) return;
+    const rect = imageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    setZoomPosition({ x, y });
+  };
 
   return (
     <>
       <div className="space-y-4">
         {/* Main Image */}
         <div
+          ref={imageRef}
           className="relative aspect-square overflow-hidden bg-surface rounded-lg cursor-zoom-in"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+          onMouseMove={handleMouseMove}
           onClick={() => setZoomed(true)}
         >
           <AnimatePresence mode="wait">
@@ -41,7 +56,18 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
                   alt={activeImage.alt_text || "Product image"}
                   fill
                   sizes="(max-width: 990px) 100vw, 50vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-300"
+                  style={
+                    isHovering
+                      ? {
+                          transform: "scale(2)",
+                          transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                        }
+                      : {
+                          transform: "scale(1)",
+                          transformOrigin: "center center",
+                        }
+                  }
                   priority
                 />
               ) : (
@@ -61,7 +87,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
                 key={img.id}
                 onClick={() => setActiveIndex(i)}
                 className={cn(
-                  "relative w-16 h-16 rounded-md overflow-hidden border-2 transition-colors shrink-0",
+                  "relative w-20 h-20 rounded-md overflow-hidden border-2 transition-colors shrink-0",
                   i === activeIndex
                     ? "border-accent"
                     : "border-transparent hover:border-border"
@@ -71,7 +97,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
                   src={img.url}
                   alt={img.alt_text || `Thumbnail ${i + 1}`}
                   fill
-                  sizes="64px"
+                  sizes="80px"
                   className="object-cover"
                 />
               </button>

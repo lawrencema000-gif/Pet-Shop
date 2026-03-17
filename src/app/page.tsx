@@ -1,8 +1,12 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import HeroBanner from "@/components/home/HeroBanner";
+import TrustStrip from "@/components/home/TrustStrip";
+import ShopByPet from "@/components/home/ShopByPet";
 import CategoryCards from "@/components/home/CategoryCards";
 import BestSellers from "@/components/home/BestSellers";
 import ProductShowcase from "@/components/home/ProductShowcase";
+import BrandStory from "@/components/home/BrandStory";
+import FeaturedBundles from "@/components/home/FeaturedBundles";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import Testimonials from "@/components/home/Testimonials";
 import Newsletter from "@/components/home/Newsletter";
@@ -25,6 +29,10 @@ export default async function Home() {
   return (
     <>
       <HeroBanner />
+
+      <TrustStrip />
+
+      <ShopByPet />
 
       <section className="container-main py-16">
         <CategoryCards categories={categories || []} />
@@ -75,6 +83,10 @@ export default async function Home() {
         href="/categories/litter-boxes"
         reversed={false}
       />
+
+      <BrandStory />
+
+      <FeaturedBundles />
 
       <WhyChooseUs />
 

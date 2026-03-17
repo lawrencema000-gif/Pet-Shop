@@ -87,4 +87,50 @@ button:focus-visible {
   .section-divider {
     @apply border-t border-border/60;
   }
+
+  /* Blog article prose styling */
+  .prose-article {
+    @apply text-base leading-relaxed text-foreground-muted;
+  }
+
+  .prose-article h2 {
+    @apply mt-10 mb-4 text-2xl font-bold text-foreground;
+  }
+
+  .prose-article h3 {
+    @apply mt-8 mb-3 text-xl font-semibold text-foreground;
+  }
+
+  .prose-article p {
+    @apply mb-4 leading-7;
+  }
+
+  .prose-article ul,
+  .prose-article ol {
+    @apply mb-4 ml-6 space-y-2;
+  }
+
+  .prose-article ul {
+    @apply list-disc;
+  }
+
+  .prose-article ol {
+    @apply list-decimal;
+  }
+
+  .prose-article li {
+    @apply leading-7;
+  }
+
+  .prose-article strong {
+    @apply font-semibold text-foreground;
+  }
+
+  .prose-article a {
+    @apply font-medium text-foreground underline underline-offset-2 transition-colors hover:text-muted;
+  }
+
+  .prose-article blockquote {
+    @apply my-6 border-l-4 border-accent pl-4 italic text-muted;
+  }
 }

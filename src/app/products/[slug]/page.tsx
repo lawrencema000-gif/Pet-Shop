@@ -7,6 +7,8 @@ import ProductGallery from "@/components/product/ProductGallery";
 import ProductInfo from "@/components/product/ProductInfo";
 import ProductTabs from "@/components/product/ProductTabs";
 import RelatedProducts from "@/components/product/RelatedProducts";
+import WhyChooseSection from "@/components/product/WhyChooseSection";
+import ProductDetailClient from "@/components/product/ProductDetailClient";
 import type { Review } from "@/types/product";
 
 interface ProductPageProps {
@@ -151,11 +153,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
           />
         </div>
 
+        {/* Why Choose This Product */}
+        <WhyChooseSection />
+
         {/* Related Products */}
         {relatedProducts && relatedProducts.length > 0 && (
           <RelatedProducts products={relatedProducts} />
         )}
       </div>
+
+      {/* Sticky Add to Cart Bar */}
+      <ProductDetailClient product={product} />
     </>
   );
 }

@@ -2,11 +2,28 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Lock, Truck } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
+
+const FREE_SHIPPING_THRESHOLD = 75;
+
+const RECOMMENDED_PRODUCTS = [
+  {
+    name: "Pet Water Fountain Filter",
+    price: 12.99,
+    image: "/images/recommendations/filter.jpg",
+    slug: "pet-water-fountain-filter",
+  },
+  {
+    name: "Interactive Pet Toy",
+    price: 19.99,
+    image: "/images/recommendations/toy.jpg",
+    slug: "interactive-pet-toy",
+  },
+];
 
 export function CartDrawer() {
   const items = useCartStore((s) => s.items);
@@ -16,6 +33,17 @@ export function CartDrawer() {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const subtotal = useCartStore((s) => s.subtotal());
   const totalItems = useCartStore((s) => s.totalItems());
+
+  const amountToFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const hasFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shippingProgress = Math.min(
+    100,
+    (subtotal / FREE_SHIPPING_THRESHOLD) * 100
+  );
+
+  const estimatedShipping = hasFreeShipping ? 0 : 5.99;
+  const estimatedTax = subtotal * 0.08;
+  const estimatedTotal = subtotal + estimatedShipping + estimatedTax;
 
   return (
     <Drawer
@@ -39,6 +67,32 @@ export function CartDrawer() {
         </div>
       ) : (
         <div className="flex flex-col h-full">
+          {/* Free Shipping Progress Bar */}
+          <div className="px-6 py-3 bg-surface/50 border-b border-border">
+            {hasFreeShipping ? (
+              <p className="text-sm text-emerald-600 font-medium text-center">
+                You&apos;ve earned free shipping!
+              </p>
+            ) : (
+              <p className="text-sm text-muted text-center">
+                You&apos;re{" "}
+                <span className="font-semibold text-foreground">
+                  {formatPrice(amountToFreeShipping)}
+                </span>{" "}
+                away from free shipping!
+              </p>
+            )}
+            <div className="mt-2 h-2 bg-border/50 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500 ease-out"
+                style={{
+                  width: `${shippingProgress}%`,
+                  backgroundColor: hasFreeShipping ? "#10b981" : "#f59e0b",
+                }}
+              />
+            </div>
+          </div>
+
           {/* Cart items */}
           <div className="flex-1 overflow-y-auto px-6 py-4">
             <ul className="flex flex-col gap-4">
@@ -117,22 +171,97 @@ export function CartDrawer() {
                 </li>
               ))}
             </ul>
+
+            {/* You Might Also Like */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <h4 className="text-sm font-semibold text-foreground mb-3">
+                You Might Also Like
+              </h4>
+              <div className="flex flex-col gap-3">
+                {RECOMMENDED_PRODUCTS.map((rec) => (
+                  <Link
+                    key={rec.slug}
+                    href={`/products/${rec.slug}`}
+                    onClick={closeDrawer}
+                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors"
+                  >
+                    <div className="relative w-12 h-12 bg-surface rounded-md overflow-hidden shrink-0">
+                      <div className="w-full h-full bg-border/30 flex items-center justify-center">
+                        <Truck className="w-5 h-5 text-muted" />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-foreground truncate">
+                        {rec.name}
+                      </p>
+                      <p className="text-xs font-semibold text-accent">
+                        {formatPrice(rec.price)}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* Footer */}
-          <div className="border-t border-border px-6 py-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted">Subtotal</span>
-              <span className="text-lg font-bold text-foreground">
-                {formatPrice(subtotal)}
-              </span>
+          <div className="border-t border-border px-6 py-4 space-y-3">
+            {/* Order Summary Lines */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted">Subtotal</span>
+                <span className="font-medium text-foreground">
+                  {formatPrice(subtotal)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted">Shipping</span>
+                <span
+                  className={`font-medium ${
+                    hasFreeShipping ? "text-emerald-600" : "text-foreground"
+                  }`}
+                >
+                  {hasFreeShipping ? "FREE" : formatPrice(estimatedShipping)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted">Est. Tax</span>
+                <span className="font-medium text-foreground">
+                  {formatPrice(estimatedTax)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-border">
+                <span className="text-sm font-semibold text-foreground">
+                  Estimated Total
+                </span>
+                <span className="text-lg font-bold text-foreground">
+                  {formatPrice(estimatedTotal)}
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-muted">
-              Shipping and taxes calculated at checkout.
-            </p>
+
+            {/* Secure Checkout */}
+            <div className="flex items-center justify-center gap-1.5 text-xs text-muted">
+              <Lock className="w-3.5 h-3.5" />
+              <span>Secure Checkout — SSL Encrypted</span>
+            </div>
+
             <Button fullWidth size="lg">
               Checkout
             </Button>
+
+            {/* Payment Method Icons */}
+            <div className="flex items-center justify-center gap-2">
+              {["Visa", "Mastercard", "Amex", "PayPal"].map((method) => (
+                <span
+                  key={method}
+                  className="text-[10px] font-medium text-muted bg-surface px-2 py-1 rounded border border-border"
+                >
+                  {method}
+                </span>
+              ))}
+            </div>
+
             <button
               onClick={closeDrawer}
               className="w-full text-center text-sm text-muted hover:text-foreground underline transition-colors"

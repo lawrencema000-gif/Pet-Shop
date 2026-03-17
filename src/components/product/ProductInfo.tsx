@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { Truck, RotateCcw, Shield, Share2 } from "lucide-react";
 import { StarRating } from "@/components/ui/StarRating";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import VariantSelector from "./VariantSelector";
@@ -26,6 +27,23 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const compareAt =
     selectedVariant?.compare_at_price ?? product.compare_at_price;
 
+  // Stock status
+  const stockQuantity = selectedVariant?.stock_quantity ?? 99;
+  const stockStatus =
+    stockQuantity === 0
+      ? "out"
+      : stockQuantity < 5
+      ? "low"
+      : "in";
+
+  // Delivery estimate (5-7 business days from now)
+  const deliveryStart = new Date();
+  deliveryStart.setDate(deliveryStart.getDate() + 5);
+  const deliveryEnd = new Date();
+  deliveryEnd.setDate(deliveryEnd.getDate() + 7);
+  const formatDeliveryDate = (d: Date) =>
+    d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
   // Group variants by type
   const variantGroups = useMemo(() => {
     if (!product.variants?.length) return {};
@@ -45,6 +63,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     size: "Size",
   };
 
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Title */}
@@ -57,18 +86,57 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         )}
       </div>
 
-      {/* Rating */}
-      {product.rating_count > 0 && (
+      {/* Rating + Share */}
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <StarRating rating={product.rating_avg} />
-          <a
-            href="#reviews"
-            className="text-sm text-muted hover:text-foreground transition-colors"
-          >
-            ({product.rating_count} reviews)
-          </a>
+          {product.rating_count > 0 && (
+            <>
+              <StarRating rating={product.rating_avg} />
+              <a
+                href="#reviews"
+                className="text-sm text-muted hover:text-foreground transition-colors"
+              >
+                ({product.rating_count} reviews)
+              </a>
+            </>
+          )}
         </div>
-      )}
+        <button
+          onClick={handleShare}
+          className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
+        >
+          <Share2 className="w-4 h-4" />
+          Share
+        </button>
+      </div>
+
+      {/* Stock Status */}
+      <div className="flex items-center gap-2">
+        <span
+          className={`w-2.5 h-2.5 rounded-full ${
+            stockStatus === "in"
+              ? "bg-emerald-500"
+              : stockStatus === "low"
+              ? "bg-orange-400"
+              : "bg-red-500"
+          }`}
+        />
+        <span
+          className={`text-sm font-medium ${
+            stockStatus === "in"
+              ? "text-emerald-600"
+              : stockStatus === "low"
+              ? "text-orange-500"
+              : "text-red-500"
+          }`}
+        >
+          {stockStatus === "in"
+            ? "In Stock"
+            : stockStatus === "low"
+            ? `Low Stock — Only ${stockQuantity} left!`
+            : "Out of Stock"}
+        </span>
+      </div>
 
       {/* Price */}
       <PriceDisplay
@@ -110,11 +178,47 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       )}
 
       {/* Add to Cart */}
-      <div className="pt-2">
+      <div className="pt-2" id="add-to-cart-section">
         <AddToCartButton
           product={product}
           selectedVariant={selectedVariant ?? null}
         />
+      </div>
+
+      {/* Delivery Estimate */}
+      <div className="flex items-center gap-2 text-sm text-muted">
+        <Truck className="w-4 h-4 text-accent" />
+        <span>
+          Estimated delivery:{" "}
+          <span className="font-medium text-foreground">
+            {formatDeliveryDate(deliveryStart)} - {formatDeliveryDate(deliveryEnd)}
+          </span>
+        </span>
+      </div>
+
+      {/* Trust Badges */}
+      <div className="grid grid-cols-3 gap-3 pt-4 border-t border-border">
+        <div className="flex flex-col items-center text-center gap-2 py-3">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+            <Truck className="w-5 h-5 text-accent" />
+          </div>
+          <span className="text-xs font-medium text-foreground">Free Shipping</span>
+          <span className="text-[10px] text-muted">Orders over $75</span>
+        </div>
+        <div className="flex flex-col items-center text-center gap-2 py-3">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+            <RotateCcw className="w-5 h-5 text-accent" />
+          </div>
+          <span className="text-xs font-medium text-foreground">30-Day Returns</span>
+          <span className="text-[10px] text-muted">Hassle-free</span>
+        </div>
+        <div className="flex flex-col items-center text-center gap-2 py-3">
+          <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+            <Shield className="w-5 h-5 text-accent" />
+          </div>
+          <span className="text-xs font-medium text-foreground">1-Year Warranty</span>
+          <span className="text-[10px] text-muted">Full coverage</span>
+        </div>
       </div>
     </div>
   );

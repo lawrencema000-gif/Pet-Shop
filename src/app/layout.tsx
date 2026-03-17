@@ -5,6 +5,8 @@ import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import OrganizationSchema from "@/components/seo/OrganizationSchema";
+import WebsiteSchema from "@/components/seo/WebsiteSchema";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,10 +15,57 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "PETLIBRO | Smart Pet Care Products",
+  metadataBase: new URL("https://pet-shop-lac-ten.vercel.app"),
+  title: {
+    default: "PETLIBRO | Smart Pet Care Products for Modern Pet Parents",
+    template: "%s | PETLIBRO",
+  },
   description:
-    "Discover smart pet feeders, water fountains, litter boxes, and accessories. Premium technology for modern pet parents.",
-  keywords: ["pet products", "smart feeder", "water fountain", "litter box", "pet care"],
+    "Discover smart pet feeders, water fountains, self-cleaning litter boxes, and premium accessories. Free shipping on orders over $75. 30-day returns. 1-year warranty.",
+  keywords: [
+    "smart pet feeder",
+    "automatic pet feeder",
+    "pet water fountain",
+    "self-cleaning litter box",
+    "smart pet products",
+    "pet tech",
+    "pet care",
+    "dog feeder",
+    "cat fountain",
+  ],
+  authors: [{ name: "PETLIBRO" }],
+  creator: "PETLIBRO",
+  publisher: "PETLIBRO",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://pet-shop-lac-ten.vercel.app",
+    siteName: "PETLIBRO",
+    title: "PETLIBRO | Smart Pet Care Products",
+    description:
+      "Smart pet feeders, water fountains, litter boxes & accessories. Free shipping $75+.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "PETLIBRO Smart Pet Care",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PETLIBRO | Smart Pet Care Products",
+    description:
+      "Smart pet feeders, water fountains, litter boxes & accessories.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://pet-shop-lac-ten.vercel.app",
+  },
 };
 
 export default function RootLayout({
@@ -27,6 +76,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
+        <OrganizationSchema />
+        <WebsiteSchema />
         <AnnouncementBar />
         <Header />
         <main className="min-h-screen">{children}</main>
