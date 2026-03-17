@@ -50,11 +50,19 @@ export default function SignUpPage() {
     }
 
     if (data.user) {
-      await supabase.from("profiles").upsert({
+      const { error: profileError } = await supabase.from("profiles").upsert({
         id: data.user.id,
         full_name: fullName,
         email,
       });
+
+      if (profileError) {
+        console.error("Profile upsert failed:", profileError.message);
+        // Account was created successfully, profile can be updated later
+        setError(
+          "Account created, but profile setup had an issue. You can update your profile after signing in."
+        );
+      }
     }
 
     setSuccess(true);

@@ -22,7 +22,7 @@ export function AnnouncementBar() {
   if (!visible) return null;
 
   return (
-    <div className="relative bg-gradient-to-r from-accent via-[#2a2a2a] to-accent text-white py-2.5 text-xs font-medium overflow-hidden">
+    <div className="relative bg-gradient-to-r from-accent via-foreground-muted to-accent text-white py-2.5 text-xs font-medium overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-center min-h-[20px]">
         <AnimatePresence mode="wait">
           <motion.span

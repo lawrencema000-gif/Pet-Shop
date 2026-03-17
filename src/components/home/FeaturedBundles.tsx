@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { Package } from "lucide-react";
+import { useCartStore } from "@/lib/store/cart";
 
 const bundles = [
   {
@@ -39,6 +40,7 @@ const bundles = [
 export default function FeaturedBundles() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-80px" });
+  const addItem = useCartStore((s) => s.addItem);
 
   return (
     <section ref={ref} className="bg-surface py-16 md:py-24">
@@ -106,7 +108,22 @@ export default function FeaturedBundles() {
                 </span>
               </div>
 
-              <button className="w-full bg-accent text-white py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors">
+              <button
+                onClick={() =>
+                  addItem({
+                    id: `bundle-${bundle.name.toLowerCase().replace(/\s+/g, "-")}`,
+                    product_id: `bundle-${bundle.name.toLowerCase().replace(/\s+/g, "-")}`,
+                    variant_id: null,
+                    name: bundle.name,
+                    variant_name: null,
+                    price: bundle.price,
+                    compare_at_price: bundle.originalPrice,
+                    image_url: "",
+                    slug: `bundles/${bundle.name.toLowerCase().replace(/\s+/g, "-")}`,
+                  })
+                }
+                className="w-full bg-accent text-white py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors"
+              >
                 Add Bundle to Cart
               </button>
             </motion.div>
@@ -120,7 +137,7 @@ export default function FeaturedBundles() {
           className="text-center mt-8"
         >
           <Link
-            href="/products"
+            href="/bundles"
             className="text-sm font-medium text-accent hover:opacity-70 transition-opacity"
           >
             View All Bundles &rarr;

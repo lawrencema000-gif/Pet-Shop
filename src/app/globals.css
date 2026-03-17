@@ -16,10 +16,6 @@ body {
   background: var(--background);
 }
 
-* {
-  transition-timing-function: ease-in-out;
-}
-
 /* Selection colors */
 ::selection {
   background-color: rgba(26, 26, 26, 0.12);
@@ -27,6 +23,11 @@ body {
 }
 
 /* Custom scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -45,22 +46,17 @@ body {
   background: rgba(0, 0, 0, 0.25);
 }
 
-/* Firefox scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+/* Scrollbar hide utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Focus-visible accessibility */
 *:focus-visible {
-  outline: 2px solid var(--foreground);
-  outline-offset: 2px;
-}
-
-input:focus-visible,
-textarea:focus-visible,
-select:focus-visible,
-button:focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }

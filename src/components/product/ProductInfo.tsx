@@ -115,7 +115,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <span
           className={`w-2.5 h-2.5 rounded-full ${
             stockStatus === "in"
-              ? "bg-emerald-500"
+              ? "bg-success"
               : stockStatus === "low"
               ? "bg-orange-400"
               : "bg-red-500"
@@ -124,7 +124,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <span
           className={`text-sm font-medium ${
             stockStatus === "in"
-              ? "text-emerald-600"
+              ? "text-success"
               : stockStatus === "low"
               ? "text-orange-500"
               : "text-red-500"

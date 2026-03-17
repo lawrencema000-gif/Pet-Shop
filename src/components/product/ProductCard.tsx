@@ -3,11 +3,29 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Eye, Star, Truck } from "lucide-react";
+import { Heart, Star, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatPrice, getDiscountPercentage } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import type { Product } from "@/types/product";
+
+const COLOR_MAP: Record<string, string> = {
+  "midnight blue": "#191970",
+  "sky blue": "#87ceeb",
+  "forest green": "#228b22",
+  "hot pink": "#ff69b4",
+  "light gray": "#d3d3d3",
+  "dark gray": "#a9a9a9",
+  "navy blue": "#000080",
+  "royal blue": "#4169e1",
+  "baby blue": "#89cff0",
+  "olive green": "#808000",
+  "lime green": "#32cd32",
+  "burnt orange": "#cc5500",
+  "deep red": "#8b0000",
+  "light pink": "#ffb6c1",
+  "dark brown": "#654321",
+};
 
 interface ProductCardProps {
   product: Product;
@@ -110,7 +128,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
             {price > 75 && (
-              <span className="bg-emerald-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
+              <span className="bg-success text-white text-xs font-semibold px-2.5 py-1 rounded-full flex items-center gap-1">
                 <Truck className="w-3 h-3" />
                 Free Shipping
               </span>
@@ -132,17 +150,6 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           </button>
 
-          {/* Quick View button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white/90 backdrop-blur-sm text-foreground text-xs font-medium px-4 py-2 rounded-full shadow-sm opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300 hover:bg-white z-10"
-          >
-            <Eye className="w-3.5 h-3.5" />
-            Quick View
-          </button>
         </div>
 
         {/* Content */}
@@ -183,7 +190,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <span
                   key={v.id}
                   className="w-3.5 h-3.5 rounded-full border border-border/50"
-                  style={{ backgroundColor: v.name.toLowerCase() }}
+                  style={{ backgroundColor: COLOR_MAP[v.name.toLowerCase()] || v.name.toLowerCase() }}
                   title={v.name}
                 />
               ))}

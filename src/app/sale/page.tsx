@@ -85,7 +85,11 @@ export default async function SalePage() {
                 d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            Sale ends March 31, 2026
+            Sale ends {(() => {
+              const endDate = new Date();
+              endDate.setDate(endDate.getDate() + 14);
+              return endDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+            })()}
           </div>
         </div>
       </section>

@@ -7,6 +7,8 @@ interface CategoryCardsProps {
 }
 
 export default function CategoryCards({ categories }: CategoryCardsProps) {
+  if (!categories.length) return null;
+
   return (
     <div>
       <h2 className="text-2xl md:text-3xl font-bold text-center mb-10">

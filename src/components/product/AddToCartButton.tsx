@@ -5,6 +5,7 @@ import { Minus, Plus, ShoppingCart, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
+import { MAX_ITEM_QUANTITY } from "@/lib/constants";
 import type { Product, ProductVariant } from "@/types/product";
 
 interface AddToCartButtonProps {
@@ -29,8 +30,8 @@ export default function AddToCartButton({
   const handleAdd = () => {
     setStatus("loading");
     setTimeout(() => {
-      for (let i = 0; i < quantity; i++) {
-        addItem({
+      addItem(
+        {
           id: selectedVariant?.id ?? product.id,
           product_id: product.id,
           variant_id: selectedVariant?.id ?? null,
@@ -40,8 +41,9 @@ export default function AddToCartButton({
           compare_at_price: compareAt ?? null,
           image_url: selectedVariant?.image_url ?? primaryImage?.url ?? "",
           slug: product.slug,
-        });
-      }
+        },
+        quantity
+      );
       setStatus("success");
       setTimeout(() => setStatus("idle"), 1500);
     }, 400);
@@ -62,7 +64,7 @@ export default function AddToCartButton({
           {quantity}
         </span>
         <button
-          onClick={() => setQuantity((q) => q + 1)}
+          onClick={() => setQuantity((q) => Math.min(MAX_ITEM_QUANTITY, q + 1))}
           className="px-3 py-3 hover:bg-surface transition-colors rounded-r-lg"
           aria-label="Increase quantity"
         >

@@ -72,7 +72,7 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
           {activeTab === "description" && (
             <div className="prose prose-sm max-w-none text-foreground leading-relaxed">
               {product.description ? (
-                <div dangerouslySetInnerHTML={{ __html: product.description }} />
+                <p style={{ whiteSpace: "pre-wrap" }}>{product.description}</p>
               ) : (
                 <p className="text-muted">No description available.</p>
               )}

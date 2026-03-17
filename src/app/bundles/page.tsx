@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight, Check } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "Bundle & Save | PETLIBRO",
-  description:
-    "Save up to 25% when you bundle smart pet products together. Complete care sets for cats and dogs with smart feeders, water fountains, and more.",
-  keywords: [
-    "pet product bundles",
-    "smart pet bundle",
-    "pet care set",
-    "save on pet products",
-  ],
-};
+import { useCartStore } from "@/lib/store/cart";
 
 interface Bundle {
   id: string;
@@ -96,6 +86,22 @@ const BUNDLES: Bundle[] = [
 ];
 
 export default function BundlesPage() {
+  const addItem = useCartStore((state) => state.addItem);
+
+  const handleAddBundle = (bundle: Bundle) => {
+    addItem({
+      id: `bundle-${bundle.id}`,
+      product_id: `bundle-${bundle.id}`,
+      variant_id: null,
+      name: bundle.name,
+      variant_name: "Bundle",
+      price: bundle.bundlePrice,
+      compare_at_price: bundle.originalPrice,
+      image_url: bundle.image,
+      slug: `/bundles#${bundle.id}`,
+    });
+  };
+
   return (
     <>
       {/* Breadcrumb */}
@@ -195,7 +201,10 @@ export default function BundlesPage() {
                         You save ${savings.toFixed(2)}
                       </p>
                     </div>
-                    <button className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90">
+                    <button
+                      onClick={() => handleAddBundle(bundle)}
+                      className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                    >
                       Add Bundle
                     </button>
                   </div>

@@ -80,7 +80,7 @@ export function Drawer({
             animate="visible"
             exit="exit"
             className={cn(
-              "fixed top-0 z-50 h-full w-full max-w-md bg-white shadow-xl flex flex-col",
+              "fixed top-0 z-50 h-full w-full max-w-md bg-background shadow-xl flex flex-col",
               side === "right" ? "right-0" : "left-0",
               className
             )}

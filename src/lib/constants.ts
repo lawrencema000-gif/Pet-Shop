@@ -1,8 +1,13 @@
+export const SHIPPING_COST = 5.99;
+export const FREE_SHIPPING_THRESHOLD = 75;
+export const TAX_RATE = 0.08;
+export const MAX_ITEM_QUANTITY = 10;
+
 export const SITE_CONFIG = {
   name: "PETLIBRO",
   description: "Smart pet care products for modern pet parents",
-  url: "https://pet-shop.vercel.app",
-  freeShippingThreshold: 75,
+  url: "https://pet-shop-lac-ten.vercel.app",
+  freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
 };
 
 export interface NavChild {
@@ -203,7 +208,7 @@ export const TESTIMONIALS = [
     id: 3,
     name: "Emily R.",
     initials: "ER",
-    color: "bg-emerald-500",
+    color: "bg-success",
     rating: 5,
     text: "The Luma litter box is worth every single penny. I was skeptical about self-cleaning litter boxes after trying cheaper options, but this one is on another level. Whisper-quiet operation, the app notifications are super helpful, and my apartment has never smelled better. My cat took to it immediately.",
     product: "Luma Smart Litter Box",
@@ -229,7 +234,7 @@ export const TESTIMONIALS = [
     rating: 5,
     text: "We bought the Complete Care Set bundle and it was the best decision. Everything connects through one app, the quality is premium, and our pets are healthier and happier. The savings on the bundle made it a no-brainer. Already recommended to all my pet parent friends!",
     product: "Complete Care Set Bundle",
-    productHref: "/products",
+    productHref: "/bundles",
     verified: true,
   },
   {

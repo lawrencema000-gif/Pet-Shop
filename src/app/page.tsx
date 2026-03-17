@@ -14,17 +14,25 @@ import Newsletter from "@/components/home/Newsletter";
 export default async function Home() {
   const supabase = createServerSupabaseClient();
 
-  const { data: categories } = await supabase
+  const { data: categories, error: categoriesError } = await supabase
     .from("categories")
     .select("*")
     .order("display_order");
 
-  const { data: bestSellers } = await supabase
+  if (categoriesError) {
+    console.error("Failed to fetch categories:", categoriesError.message);
+  }
+
+  const { data: bestSellers, error: bestSellersError } = await supabase
     .from("products")
     .select("*, images:product_images(*), variants:product_variants(*)")
     .eq("is_best_seller", true)
     .eq("status", "active")
     .order("created_at", { ascending: false });
+
+  if (bestSellersError) {
+    console.error("Failed to fetch best sellers:", bestSellersError.message);
+  }
 
   return (
     <>

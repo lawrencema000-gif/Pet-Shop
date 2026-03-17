@@ -11,11 +11,9 @@ import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, SHIPPING_COST, TAX_RATE } from "@/lib/constants";
+import { CouponField } from "@/components/cart/CouponField";
 import type { ShippingAddress } from "@/types/order";
-
-const SHIPPING_COST = 9.99;
-const TAX_RATE = 0.08;
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -34,18 +32,14 @@ export default function CheckoutPage() {
     zip: "",
     country: "US",
   });
-  const [card, setCard] = useState({
-    number: "",
-    expiry: "",
-    cvv: "",
-    name: "",
-  });
+  const [discount, setDiscount] = useState(0);
+  const [couponCode, setCouponCode] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
   const tax = subtotal * TAX_RATE;
-  const total = subtotal + shipping + tax;
+  const total = subtotal + shipping + tax - discount;
 
   useEffect(() => {
     if (items.length === 0 && !orderId) {
@@ -62,16 +56,6 @@ export default function CheckoutPage() {
     if (!address.city.trim()) newErrors.city = "City is required";
     if (!address.state.trim()) newErrors.state = "State is required";
     if (!address.zip.trim()) newErrors.zip = "ZIP code is required";
-    if (!card.name.trim()) newErrors.cardName = "Name on card is required";
-    if (!card.number.trim() || card.number.replace(/\s/g, "").length < 16) {
-      newErrors.cardNumber = "Valid card number is required";
-    }
-    if (!card.expiry.trim() || !/^\d{2}\/\d{2}$/.test(card.expiry)) {
-      newErrors.cardExpiry = "Valid expiry (MM/YY) is required";
-    }
-    if (!card.cvv.trim() || card.cvv.length < 3) {
-      newErrors.cardCvv = "Valid CVV is required";
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -91,12 +75,12 @@ export default function CheckoutPage() {
           email,
           status: "pending",
           subtotal,
-          discount_amount: 0,
+          discount_amount: discount,
           shipping_amount: shipping,
           tax_amount: tax,
           total,
           shipping_address: address,
-          coupon_code: null,
+          coupon_code: couponCode,
         })
         .select()
         .single();
@@ -279,55 +263,14 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-semibold text-foreground mb-4">
               Payment
             </h2>
-            <div className="border border-border rounded-xl p-4 space-y-4">
-              <div className="flex items-center gap-2 text-sm text-muted mb-2">
+            <div className="border border-border rounded-xl p-4 space-y-3">
+              <div className="flex items-center gap-2 text-sm text-muted">
                 <ShieldCheck size={16} />
-                <span>Secure payment (simulated)</span>
+                <span>Demo Mode</span>
               </div>
-              <Input
-                label="Name on Card"
-                placeholder="John Doe"
-                value={card.name}
-                onChange={(e) => setCard({ ...card, name: e.target.value })}
-                error={errors.cardName}
-              />
-              <Input
-                label="Card Number"
-                placeholder="4242 4242 4242 4242"
-                value={card.number}
-                onChange={(e) => {
-                  const v = e.target.value
-                    .replace(/\D/g, "")
-                    .slice(0, 16)
-                    .replace(/(\d{4})/g, "$1 ")
-                    .trim();
-                  setCard({ ...card, number: v });
-                }}
-                error={errors.cardNumber}
-              />
-              <div className="grid grid-cols-2 gap-4">
-                <Input
-                  label="Expiry"
-                  placeholder="MM/YY"
-                  value={card.expiry}
-                  onChange={(e) => {
-                    let v = e.target.value.replace(/\D/g, "").slice(0, 4);
-                    if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2);
-                    setCard({ ...card, expiry: v });
-                  }}
-                  error={errors.cardExpiry}
-                />
-                <Input
-                  label="CVV"
-                  placeholder="123"
-                  value={card.cvv}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, "").slice(0, 4);
-                    setCard({ ...card, cvv: v });
-                  }}
-                  error={errors.cardCvv}
-                />
-              </div>
+              <p className="text-sm text-muted leading-relaxed">
+                Payment processing coming soon &mdash; orders are placed as pending for demo purposes.
+              </p>
             </div>
           </section>
 
@@ -394,6 +337,26 @@ export default function CheckoutPage() {
                 <span className="text-muted">Tax</span>
                 <span className="font-medium">{formatPrice(tax)}</span>
               </div>
+              {discount > 0 && couponCode && (
+                <div className="flex justify-between text-success">
+                  <span>Discount ({couponCode})</span>
+                  <span>-{formatPrice(discount)}</span>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-border mt-4 pt-4">
+              <CouponField
+                subtotal={subtotal}
+                onApply={(discountAmount, code) => {
+                  setDiscount(discountAmount);
+                  setCouponCode(code);
+                }}
+                onRemove={() => {
+                  setDiscount(0);
+                  setCouponCode(null);
+                }}
+              />
             </div>
 
             <div className="border-t border-border mt-4 pt-4">

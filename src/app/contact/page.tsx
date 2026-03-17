@@ -51,6 +51,16 @@ export default function ContactPage() {
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+      timestamp: new Date().toISOString(),
+    };
+    // For demo purposes, messages are logged to console
+    console.log("Contact form submission:", data);
     setSubmitted(true);
   }
 
@@ -116,7 +126,7 @@ export default function ContactPage() {
 
                 {submitted ? (
                   <div className="text-center py-12">
-                    <div className="inline-flex items-center justify-center p-3 rounded-full bg-green-50 mb-4">
+                    <div className="inline-flex items-center justify-center p-3 rounded-full bg-success/10 mb-4">
                       <CheckCircle size={32} className="text-success" />
                     </div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">

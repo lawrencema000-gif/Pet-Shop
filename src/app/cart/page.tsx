@@ -8,11 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
 import { cn, formatPrice } from "@/lib/utils";
-import { SITE_CONFIG } from "@/lib/constants";
+import { SITE_CONFIG, SHIPPING_COST, TAX_RATE } from "@/lib/constants";
 import { CouponField } from "@/components/cart/CouponField";
-
-const SHIPPING_COST = 9.99;
-const TAX_RATE = 0.08;
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);

@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { MAX_ITEM_QUANTITY } from "@/lib/constants";
 import type { CartItem, CartState } from "@/types/cart";
 
 export const useCartStore = create<CartState>()(
@@ -10,7 +11,7 @@ export const useCartStore = create<CartState>()(
       items: [],
       isOpen: false,
 
-      addItem: (item: Omit<CartItem, "quantity">) => {
+      addItem: (item: Omit<CartItem, "quantity">, quantity = 1) => {
         const items = get().items;
         const existingIndex = items.findIndex(
           (i) => i.id === item.id
@@ -18,10 +19,19 @@ export const useCartStore = create<CartState>()(
 
         if (existingIndex > -1) {
           const newItems = [...items];
-          newItems[existingIndex].quantity += 1;
+          newItems[existingIndex].quantity = Math.min(
+            newItems[existingIndex].quantity + quantity,
+            MAX_ITEM_QUANTITY
+          );
           set({ items: newItems, isOpen: true });
         } else {
-          set({ items: [...items, { ...item, quantity: 1 }], isOpen: true });
+          set({
+            items: [
+              ...items,
+              { ...item, quantity: Math.min(quantity, MAX_ITEM_QUANTITY) },
+            ],
+            isOpen: true,
+          });
         }
       },
 
@@ -34,9 +44,10 @@ export const useCartStore = create<CartState>()(
           get().removeItem(id);
           return;
         }
+        const clamped = Math.min(quantity, MAX_ITEM_QUANTITY);
         set({
           items: get().items.map((i) =>
-            i.id === id ? { ...i, quantity } : i
+            i.id === id ? { ...i, quantity: clamped } : i
           ),
         });
       },

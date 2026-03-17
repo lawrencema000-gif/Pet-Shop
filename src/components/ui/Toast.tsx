@@ -39,17 +39,17 @@ const variantConfig: Record<
 > = {
   success: {
     icon: CheckCircle,
-    bg: "bg-white border-success/30",
+    bg: "bg-background border-success/30",
     iconColor: "text-success",
   },
   error: {
     icon: AlertCircle,
-    bg: "bg-white border-sale/30",
+    bg: "bg-background border-sale/30",
     iconColor: "text-sale",
   },
   info: {
     icon: Info,
-    bg: "bg-white border-accent/20",
+    bg: "bg-background border-accent/20",
     iconColor: "text-accent",
   },
 };

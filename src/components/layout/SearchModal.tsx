@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, X, TrendingUp } from "lucide-react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface SearchModalProps {
@@ -20,6 +21,15 @@ const popularSearches = [
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
+  const router = useRouter();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      onClose();
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -55,7 +65,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         >
           <div className="max-w-3xl mx-auto px-6 pt-8">
             {/* Header */}
-            <div className="flex items-center gap-4">
+            <form onSubmit={handleSubmit} className="flex items-center gap-4">
               <div className="flex-1 relative">
                 <Search
                   size={20}
@@ -71,13 +81,14 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
                 />
               </div>
               <button
+                type="button"
                 onClick={onClose}
                 className="p-2 rounded-lg hover:bg-surface-light transition-colors"
                 aria-label="Close search"
               >
                 <X size={24} />
               </button>
-            </div>
+            </form>
 
             {/* Popular searches */}
             <div className="mt-10">

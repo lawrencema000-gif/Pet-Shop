@@ -4,6 +4,24 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ProductVariant } from "@/types/product";
 
+const COLOR_MAP: Record<string, string> = {
+  "midnight blue": "#191970",
+  "sky blue": "#87ceeb",
+  "forest green": "#228b22",
+  "hot pink": "#ff69b4",
+  "light gray": "#d3d3d3",
+  "dark gray": "#a9a9a9",
+  "navy blue": "#000080",
+  "royal blue": "#4169e1",
+  "baby blue": "#89cff0",
+  "olive green": "#808000",
+  "lime green": "#32cd32",
+  "burnt orange": "#cc5500",
+  "deep red": "#8b0000",
+  "light pink": "#ffb6c1",
+  "dark brown": "#654321",
+};
+
 interface VariantSelectorProps {
   variants: ProductVariant[];
   selectedId: string;
@@ -44,7 +62,7 @@ export default function VariantSelector({
               <span
                 className="block w-full h-full rounded-full"
                 style={{
-                  backgroundColor: v.name.toLowerCase(),
+                  backgroundColor: COLOR_MAP[v.name.toLowerCase()] || v.name.toLowerCase(),
                 }}
               />
             )}

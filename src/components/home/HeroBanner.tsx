@@ -76,7 +76,7 @@ export default function HeroBanner() {
                 href="/products"
                 className="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-white transition-colors text-sm"
               >
-                Explore Categories
+                Shop All Products
               </Link>
             </motion.div>
 

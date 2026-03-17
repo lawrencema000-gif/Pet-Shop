@@ -2,30 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag, Lock, Truck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Minus, Plus, Trash2, ShoppingBag, Lock } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
-
-const FREE_SHIPPING_THRESHOLD = 75;
-
-const RECOMMENDED_PRODUCTS = [
-  {
-    name: "Pet Water Fountain Filter",
-    price: 12.99,
-    image: "/images/recommendations/filter.jpg",
-    slug: "pet-water-fountain-filter",
-  },
-  {
-    name: "Interactive Pet Toy",
-    price: 19.99,
-    image: "/images/recommendations/toy.jpg",
-    slug: "interactive-pet-toy",
-  },
-];
+import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from "@/lib/constants";
 
 export function CartDrawer() {
+  const router = useRouter();
   const items = useCartStore((s) => s.items);
   const isOpen = useCartStore((s) => s.isOpen);
   const closeDrawer = useCartStore((s) => s.closeDrawer);
@@ -41,8 +27,8 @@ export function CartDrawer() {
     (subtotal / FREE_SHIPPING_THRESHOLD) * 100
   );
 
-  const estimatedShipping = hasFreeShipping ? 0 : 5.99;
-  const estimatedTax = subtotal * 0.08;
+  const estimatedShipping = hasFreeShipping ? 0 : SHIPPING_COST;
+  const estimatedTax = subtotal * TAX_RATE;
   const estimatedTotal = subtotal + estimatedShipping + estimatedTax;
 
   return (
@@ -70,7 +56,7 @@ export function CartDrawer() {
           {/* Free Shipping Progress Bar */}
           <div className="px-6 py-3 bg-surface/50 border-b border-border">
             {hasFreeShipping ? (
-              <p className="text-sm text-emerald-600 font-medium text-center">
+              <p className="text-sm text-success font-medium text-center">
                 You&apos;ve earned free shipping!
               </p>
             ) : (
@@ -87,7 +73,7 @@ export function CartDrawer() {
                 className="h-full rounded-full transition-all duration-500 ease-out"
                 style={{
                   width: `${shippingProgress}%`,
-                  backgroundColor: hasFreeShipping ? "#10b981" : "#f59e0b",
+                  backgroundColor: hasFreeShipping ? "var(--color-success, #16a34a)" : "#f59e0b",
                 }}
               />
             </div>
@@ -172,35 +158,15 @@ export function CartDrawer() {
               ))}
             </ul>
 
-            {/* You Might Also Like */}
-            <div className="mt-6 pt-6 border-t border-border">
-              <h4 className="text-sm font-semibold text-foreground mb-3">
-                You Might Also Like
-              </h4>
-              <div className="flex flex-col gap-3">
-                {RECOMMENDED_PRODUCTS.map((rec) => (
-                  <Link
-                    key={rec.slug}
-                    href={`/products/${rec.slug}`}
-                    onClick={closeDrawer}
-                    className="flex items-center gap-3 p-2 rounded-lg hover:bg-surface transition-colors"
-                  >
-                    <div className="relative w-12 h-12 bg-surface rounded-md overflow-hidden shrink-0">
-                      <div className="w-full h-full bg-border/30 flex items-center justify-center">
-                        <Truck className="w-5 h-5 text-muted" />
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-foreground truncate">
-                        {rec.name}
-                      </p>
-                      <p className="text-xs font-semibold text-accent">
-                        {formatPrice(rec.price)}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            {/* Browse More */}
+            <div className="mt-6 pt-6 border-t border-border text-center">
+              <Link
+                href="/products"
+                onClick={closeDrawer}
+                className="text-sm font-medium text-accent hover:underline"
+              >
+                Browse more products
+              </Link>
             </div>
           </div>
 
@@ -218,7 +184,7 @@ export function CartDrawer() {
                 <span className="text-muted">Shipping</span>
                 <span
                   className={`font-medium ${
-                    hasFreeShipping ? "text-emerald-600" : "text-foreground"
+                    hasFreeShipping ? "text-success" : "text-foreground"
                   }`}
                 >
                   {hasFreeShipping ? "FREE" : formatPrice(estimatedShipping)}
@@ -246,7 +212,14 @@ export function CartDrawer() {
               <span>Secure Checkout — SSL Encrypted</span>
             </div>
 
-            <Button fullWidth size="lg">
+            <Button
+              fullWidth
+              size="lg"
+              onClick={() => {
+                closeDrawer();
+                router.push("/checkout");
+              }}
+            >
               Checkout
             </Button>
 

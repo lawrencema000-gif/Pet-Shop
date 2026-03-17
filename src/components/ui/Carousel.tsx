@@ -55,7 +55,7 @@ export function Carousel({ children, title, className }: CarouselProps) {
         <button
           onClick={() => scroll("left")}
           className={cn(
-            "absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-card-hover flex items-center justify-center transition-all duration-200",
+            "absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-card-hover flex items-center justify-center transition-all duration-200",
             "md:opacity-0 md:group-hover:opacity-100",
             !canScrollLeft && "hidden"
           )}
@@ -77,7 +77,7 @@ export function Carousel({ children, title, className }: CarouselProps) {
         <button
           onClick={() => scroll("right")}
           className={cn(
-            "absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-white shadow-card-hover flex items-center justify-center transition-all duration-200",
+            "absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-card-hover flex items-center justify-center transition-all duration-200",
             "md:opacity-0 md:group-hover:opacity-100",
             !canScrollRight && "hidden"
           )}

@@ -30,6 +30,7 @@ export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [totalOrderCount, setTotalOrderCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,14 +46,21 @@ export default function AccountPage() {
 
       setUser(user);
 
-      const { data: ordersData } = await supabase
-        .from("orders")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
+      const [{ data: ordersData }, { count }] = await Promise.all([
+        supabase
+          .from("orders")
+          .select("*")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(5),
+        supabase
+          .from("orders")
+          .select("id", { count: "exact", head: true })
+          .eq("user_id", user.id),
+      ]);
 
       setOrders((ordersData as Order[]) || []);
+      setTotalOrderCount(count || 0);
       setLoading(false);
     };
 
@@ -98,7 +106,7 @@ export default function AccountPage() {
             <ShoppingBag size={20} className="text-muted" />
             <span className="text-sm text-muted">Total Orders</span>
           </div>
-          <p className="text-2xl font-bold text-foreground">{orders.length}</p>
+          <p className="text-2xl font-bold text-foreground">{totalOrderCount}</p>
         </div>
         <div className="bg-surface-light rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">

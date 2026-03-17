@@ -3,25 +3,44 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Search, Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { Search, Package, CheckCircle, Clock, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
+import { formatPrice } from "@/lib/utils";
 
-interface TrackingResult {
-  orderNumber: string;
+interface OrderResult {
+  id: string;
   status: string;
-  steps: { label: string; date: string; completed: boolean }[];
+  total: number;
+  email: string;
+  created_at: string;
+  shipping_address: Record<string, string> | null;
 }
 
 export default function TrackOrderPage() {
   const [orderNumber, setOrderNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [result, setResult] = useState<TrackingResult | null>(null);
+  const [result, setResult] = useState<OrderResult | null>(null);
   const [searched, setSearched] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSearched(true);
-    // Placeholder: in production, this would call an API
+    setLoading(true);
     setResult(null);
+
+    const { data } = await supabase
+      .from("orders")
+      .select("id, status, total, email, created_at, shipping_address")
+      .eq("email", email.toLowerCase())
+      .or(`id.eq.${orderNumber}`)
+      .limit(1)
+      .maybeSingle();
+
+    if (data) {
+      setResult(data as OrderResult);
+    }
+    setLoading(false);
   }
 
   return (
@@ -91,7 +110,13 @@ export default function TrackOrderPage() {
             </form>
           </div>
 
-          {searched && !result && (
+          {loading && (
+            <div className="flex items-center justify-center py-10">
+              <Loader2 size={32} className="animate-spin text-muted" />
+            </div>
+          )}
+
+          {searched && !loading && !result && (
             <div className="text-center py-10 bg-surface rounded-xl border border-border">
               <Clock size={32} className="mx-auto text-muted mb-3" />
               <h2 className="font-semibold text-foreground mb-2">
@@ -117,42 +142,53 @@ export default function TrackOrderPage() {
                 <div>
                   <p className="text-sm text-muted">Order</p>
                   <p className="font-semibold text-foreground">
-                    {result.orderNumber}
+                    #{result.id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
-                <span className="px-3 py-1 text-xs font-bold bg-accent text-white rounded-full">
+                <span className="px-3 py-1 text-xs font-bold bg-accent text-white rounded-full uppercase">
                   {result.status}
                 </span>
               </div>
-              <div className="space-y-0">
-                {result.steps.map((step, index) => (
-                  <div key={step.label} className="flex gap-4">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                          step.completed
-                            ? "bg-success text-white"
-                            : "bg-surface border border-border text-muted"
-                        }`}
-                      >
-                        {step.completed ? (
-                          <CheckCircle size={16} />
-                        ) : (
-                          <Truck size={14} />
-                        )}
-                      </div>
-                      {index < result.steps.length - 1 && (
-                        <div className="w-px flex-1 bg-border my-1" />
-                      )}
+              <div className="space-y-4">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted">Total</span>
+                  <span className="font-semibold text-foreground">
+                    {formatPrice(result.total)}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted">Order Date</span>
+                  <span className="text-foreground">
+                    {new Date(result.created_at).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted">Email</span>
+                  <span className="text-foreground">{result.email}</span>
+                </div>
+                <div className="border-t border-border pt-4 mt-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center shrink-0">
+                      <CheckCircle size={16} />
                     </div>
-                    <div className="pb-6">
-                      <p className="font-medium text-foreground text-sm">
-                        {step.label}
+                    <div>
+                      <p className="font-medium text-foreground text-sm capitalize">
+                        {result.status}
                       </p>
-                      <p className="text-xs text-muted">{step.date}</p>
+                      <p className="text-xs text-muted">
+                        Last updated{" "}
+                        {new Date(result.created_at).toLocaleDateString(
+                          "en-US",
+                          { month: "short", day: "numeric", year: "numeric" }
+                        )}
+                      </p>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
             </div>
           )}

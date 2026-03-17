@@ -109,7 +109,7 @@ export default function WhyChooseUs() {
             href="/about"
             className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors"
           >
-            See How It Works &rarr;
+            Learn More About Us &rarr;
           </Link>
         </motion.div>
       </div>

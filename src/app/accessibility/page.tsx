@@ -22,7 +22,7 @@ export default function AccessibilityPage() {
               Accessibility Statement
             </h1>
             <p className="text-sm text-muted">
-              Last updated: January 15, 2024
+              Last updated: March 15, 2026
             </p>
           </div>
 

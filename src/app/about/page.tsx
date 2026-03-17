@@ -69,9 +69,21 @@ const milestones = [
   },
   {
     year: "2024",
-    title: "Looking Ahead",
+    title: "Going Global",
     description:
       "Expanding internationally, deepening our AI health insights, and continuing to build products that pets and their parents love.",
+  },
+  {
+    year: "2025",
+    title: "Expanded to 50+ Products",
+    description:
+      "Grew our catalog to over 50 products, launched the PETLIBRO mobile app with real-time health insights, and introduced same-day delivery in major cities.",
+  },
+  {
+    year: "2026",
+    title: "Continuing to Innovate",
+    description:
+      "Continuing to innovate for happy pets everywhere. New AI-powered health monitoring, expanded accessories line, and deeper smart home integrations.",
   },
 ];
 

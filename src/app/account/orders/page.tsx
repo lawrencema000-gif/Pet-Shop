@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
   pending: "text-yellow-600 bg-yellow-50",
   confirmed: "text-blue-600 bg-blue-50",
   shipped: "text-purple-600 bg-purple-50",
-  delivered: "text-green-600 bg-green-50",
+  delivered: "text-success bg-success/10",
   cancelled: "text-red-600 bg-red-50",
 };
 

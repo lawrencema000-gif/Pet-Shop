@@ -13,14 +13,13 @@ import {
   Lock,
   Headphones,
   ArrowUp,
-  Mail,
 } from "lucide-react";
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com", label: "Twitter" },
-  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+  { icon: Facebook, href: "https://facebook.com/petshop", label: "Facebook" },
+  { icon: Instagram, href: "https://instagram.com/petshop", label: "Instagram" },
+  { icon: Twitter, href: "https://twitter.com/petshop", label: "Twitter" },
+  { icon: Youtube, href: "https://youtube.com/@petshop", label: "YouTube" },
 ];
 
 const trustBadges = [
@@ -68,39 +67,16 @@ function scrollToTop() {
 export function Footer() {
   return (
     <footer className="bg-surface">
-      {/* Newsletter Section */}
+      {/* Brand Tagline Section */}
       <div className="bg-foreground">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12 md:py-16">
           <div className="max-w-2xl mx-auto text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 mb-4">
-              <Mail size={18} className="text-white" />
-            </div>
             <h2 className="text-xl md:text-2xl font-semibold text-white mb-2">
-              Join the Pack &mdash; Get 10% Off Your First Order
+              Smart Pet Care for Modern Pet Parents
             </h2>
-            <p className="text-sm text-white/60 mb-6">
-              Exclusive deals, new product drops, and smart pet care tips
-              delivered to your inbox.
-            </p>
-            <form
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto"
-              onSubmit={(e) => e.preventDefault()}
-            >
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 min-w-0 px-4 py-3 text-sm rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-white/40 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-colors"
-                required
-              />
-              <button
-                type="submit"
-                className="px-6 py-3 text-sm font-medium text-foreground bg-white rounded-lg hover:bg-white/90 transition-colors shrink-0"
-              >
-                Subscribe
-              </button>
-            </form>
-            <p className="text-xs text-white/40 mt-3">
-              No spam, ever. Unsubscribe anytime.
+            <p className="text-sm text-white/60">
+              Premium connected products that keep your pets healthy, happy, and
+              well-fed &mdash; designed with love, backed by technology.
             </p>
           </div>
         </div>

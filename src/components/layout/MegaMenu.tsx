@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Sparkles, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import type { NavChild, NavLink } from "@/lib/constants";
@@ -109,10 +110,14 @@ export function MegaMenu({ categoryLabel, categoryHref, items, featured, onClose
         {/* Right: Featured promo card */}
         {featured && (
           <div className="bg-surface-light/60 p-4 flex flex-col justify-center border-l border-border/50">
-            <div className="rounded-lg bg-surface overflow-hidden mb-3">
-              <div className="w-full h-28 bg-gradient-to-br from-accent/5 to-accent/15 flex items-center justify-center text-muted text-xs">
-                Featured
-              </div>
+            <div className="rounded-lg bg-surface overflow-hidden mb-3 relative w-full h-28">
+              <Image
+                src={featured.image}
+                alt={featured.title}
+                fill
+                sizes="220px"
+                className="object-cover"
+              />
             </div>
             <h4 className="text-sm font-semibold text-foreground mb-1">
               {featured.title}

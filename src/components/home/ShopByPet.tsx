@@ -9,7 +9,7 @@ const pets = [
   {
     name: "Shop for Dogs",
     image:
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=600&h=400&fit=crop",
+      "https://images.unsplash.com/photo-1534361960057-19889db9621e?w=800",
     href: "/categories/dogs",
     cta: "Explore Dog Products",
   },

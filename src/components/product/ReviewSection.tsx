@@ -61,7 +61,7 @@ export default function ReviewSection({
       {/* Write a Review */}
       <div className="border-t border-border pt-6">
         <a
-          href={`/account/login?redirect=/products/${productId}#reviews`}
+          href={`/auth/login?redirect=/products/${productId}#reviews`}
           className="inline-flex items-center px-6 py-2.5 border border-accent text-accent text-sm font-semibold rounded-lg hover:bg-accent hover:text-white transition-colors"
         >
           Write a Review
