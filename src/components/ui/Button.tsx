@@ -1,10 +1,10 @@
 "use client";
 
-import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Loader2 } from "lucide-react";
 
-type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
+type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive";
 type ButtonSize = "sm" | "md" | "lg";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,6 +12,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   loading?: boolean;
   fullWidth?: boolean;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -23,6 +25,8 @@ const variantStyles: Record<ButtonVariant, string> = {
     "border border-border text-foreground hover:border-foreground active:bg-surface-light",
   ghost:
     "text-foreground hover:bg-surface-light active:bg-surface",
+  destructive:
+    "bg-sale text-white hover:bg-sale/90 active:bg-sale/80",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -39,6 +43,8 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       size = "md",
       loading = false,
       fullWidth = false,
+      leftIcon,
+      rightIcon,
       disabled,
       children,
       ...props
@@ -59,7 +65,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+        {!loading && leftIcon && <span className="shrink-0">{leftIcon}</span>}
         {children}
+        {!loading && rightIcon && <span className="shrink-0">{rightIcon}</span>}
       </button>
     );
   }
