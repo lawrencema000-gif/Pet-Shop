@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, ArrowLeft, CheckCircle2 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
@@ -118,13 +117,9 @@ export default function CheckoutPage() {
   if (orderId) {
     return (
       <div className="max-w-lg mx-auto px-4 py-16 text-center">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: "spring", duration: 0.5 }}
-        >
+        <div>
           <CheckCircle2 size={64} className="text-success mx-auto mb-6" />
-        </motion.div>
+        </div>
         <h1 className="text-2xl font-bold text-foreground mb-2">
           Order Confirmed!
         </h1>
@@ -295,7 +290,7 @@ export default function CheckoutPage() {
             <div className="space-y-4 max-h-64 overflow-y-auto mb-4">
               {items.map((item) => (
                 <div key={item.id} className="flex gap-3">
-                  <div className="relative w-14 h-14 flex-shrink-0 bg-background rounded-premium overflow-hidden border border-border">
+                  <div className="relative w-14 h-14 flex-shrink-0 bg-background rounded overflow-hidden border border-border">
                     <Image
                       src={item.image_url}
                       alt={item.name}

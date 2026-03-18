@@ -112,7 +112,7 @@ export default function AboutPage() {
 
         {/* Mission */}
         <div className="max-w-4xl mx-auto mb-20">
-          <div className="bg-surface rounded-premium-xl p-8 md:p-12 text-center">
+          <div className="bg-surface rounded-lg p-8 md:p-12 text-center">
             <p className="text-xs font-semibold tracking-widest text-muted uppercase mb-3">
               Our Mission
             </p>
@@ -151,7 +151,7 @@ export default function AboutPage() {
 
         {/* Team Photo Placeholder */}
         <div className="max-w-4xl mx-auto mb-20">
-          <div className="aspect-[21/9] rounded-premium-xl bg-surface border border-border flex items-center justify-center">
+          <div className="aspect-[21/9] rounded-lg bg-surface border border-border flex items-center justify-center">
             <div className="text-center">
               <p className="text-sm font-semibold text-muted mb-1">
                 Our Team
@@ -195,7 +195,7 @@ export default function AboutPage() {
 
         {/* CTA */}
         <div className="max-w-3xl mx-auto">
-          <div className="bg-accent rounded-premium-xl p-10 text-center text-white">
+          <div className="bg-accent rounded-lg p-10 text-center text-white">
             <h2 className="text-2xl font-bold mb-3">
               Ready to upgrade your pet&apos;s life?
             </h2>

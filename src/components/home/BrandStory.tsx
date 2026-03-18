@@ -1,30 +1,18 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
 const stats = [
   { value: "50K+", label: "Happy Pets" },
-  { value: "4.8\u2605", label: "Average Rating" },
+  { value: "4.8★", label: "Average Rating" },
   { value: "30+", label: "Smart Products" },
 ];
 
 export default function BrandStory() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section ref={ref} className="container-main py-16 md:py-24">
+    <section className="container-main py-16 md:py-24">
       <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Image */}
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative aspect-[4/3] rounded-premium-xl overflow-hidden"
-        >
+        <div className="relative aspect-[4/3] rounded-lg overflow-hidden fade-in">
           <Image
             src="https://images.unsplash.com/photo-1450778869180-e77d3083dbb0?w=800&h=600&fit=crop"
             alt="Pet parent with their dog"
@@ -32,15 +20,10 @@ export default function BrandStory() {
             sizes="(max-width: 750px) 100vw, 50vw"
             className="object-cover"
           />
-        </motion.div>
+        </div>
 
         {/* Text */}
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
-          className="space-y-5"
-        >
+        <div className="space-y-5 slide-up">
           <p className="text-sm uppercase tracking-wider text-muted">
             Our Story
           </p>
@@ -77,7 +60,7 @@ export default function BrandStory() {
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

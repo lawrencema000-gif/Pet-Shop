@@ -47,7 +47,7 @@ export default async function DogsPage() {
       </nav>
 
       {/* Hero */}
-      <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-premium-lg overflow-hidden mb-10">
+      <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-md overflow-hidden mb-10">
         <Image
           src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1600&h=500&fit=crop&q=80"
           alt="Happy dog"

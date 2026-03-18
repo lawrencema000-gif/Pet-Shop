@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md text-center">
-          <div className="bg-background rounded-premium-lg shadow-card p-8">
+          <div className="bg-background rounded-md shadow-card p-8">
             <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">
               Check Your Email
@@ -63,7 +63,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-background rounded-premium-lg shadow-card p-8">
+        <div className="bg-background rounded-md shadow-card p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground">
               Reset Password

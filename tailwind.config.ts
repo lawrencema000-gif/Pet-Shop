@@ -26,7 +26,6 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "Georgia", "serif"],
       },
       fontSize: {
         "display-xl": ["4rem", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "700" }],
@@ -48,17 +47,17 @@ const config: Config = {
         xl: "1280px",
       },
       borderRadius: {
-        "premium": "12px",
-        "premium-lg": "16px",
-        "premium-xl": "20px",
+        "premium": "4px",
+        "premium-lg": "6px",
+        "premium-xl": "8px",
       },
       boxShadow: {
-        "card": "0 1px 3px rgba(45,42,38,0.06), 0 1px 2px rgba(45,42,38,0.04)",
-        "card-hover": "0 8px 25px rgba(45,42,38,0.08), 0 2px 8px rgba(45,42,38,0.04)",
-        "elevated": "0 4px 15px rgba(45,42,38,0.07), 0 1px 4px rgba(45,42,38,0.04)",
-        "modal": "0 20px 60px rgba(45,42,38,0.15), 0 4px 20px rgba(45,42,38,0.08)",
-        "soft": "0 2px 8px rgba(45,42,38,0.05)",
-        "inner-soft": "inset 0 1px 3px rgba(45,42,38,0.06)",
+        "card": "0 1px 3px rgba(0,0,0,0.06)",
+        "card-hover": "0 4px 12px rgba(0,0,0,0.1)",
+        "elevated": "0 2px 8px rgba(0,0,0,0.08)",
+        "modal": "0 16px 48px rgba(0,0,0,0.12)",
+        "soft": "0 1px 4px rgba(0,0,0,0.04)",
+        "inner-soft": "inset 0 1px 2px rgba(0,0,0,0.05)",
       },
       spacing: {
         "section": "5rem",
@@ -72,7 +71,6 @@ const config: Config = {
       },
       transitionTimingFunction: {
         DEFAULT: "cubic-bezier(0.4, 0, 0.2, 1)",
-        "premium": "cubic-bezier(0.22, 1, 0.36, 1)",
       },
       keyframes: {
         "slide-in-right": {

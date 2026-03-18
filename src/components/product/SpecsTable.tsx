@@ -14,7 +14,7 @@ export default function SpecsTable({ specifications }: SpecsTableProps) {
   }
 
   return (
-    <div className="border border-border rounded-premium overflow-hidden">
+    <div className="border border-border rounded overflow-hidden">
       <table className="w-full text-sm">
         <tbody>
           {entries.map(([key, value], i) => (

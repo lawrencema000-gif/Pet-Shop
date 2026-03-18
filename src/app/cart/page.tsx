@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Bookmark } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
 import { SaveForLater } from "@/components/cart/SaveForLater";
@@ -75,15 +74,9 @@ export default function CartPage() {
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Cart Items */}
         <div className="flex-1">
-          <AnimatePresence mode="popLayout">
             {items.map((item) => (
-              <motion.div
+              <div
                 key={item.id}
-                layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -100 }}
-                transition={{ duration: 0.2 }}
                 className="flex gap-4 md:gap-6 py-6 border-b border-border"
               >
                 {/* Image */}
@@ -167,9 +160,8 @@ export default function CartPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ))}
-          </AnimatePresence>
 
           <Link
             href="/products"

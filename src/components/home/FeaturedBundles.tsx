@@ -1,7 +1,5 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import Link from "next/link";
 import { Package } from "lucide-react";
 import { useCartStore } from "@/lib/store/cart";
@@ -38,36 +36,26 @@ const bundles = [
 ];
 
 export default function FeaturedBundles() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
   const addItem = useCartStore((s) => s.addItem);
 
   return (
-    <section ref={ref} className="bg-surface py-16 md:py-24">
+    <section className="bg-surface py-16 md:py-24">
       <div className="container-main">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12 fade-in">
           <h2 className="text-2xl md:text-3xl font-bold">
             Save More with Bundles
           </h2>
           <p className="text-muted mt-3">
             Get everything your pet needs at a better price.
           </p>
-        </motion.div>
+        </div>
 
         {/* Desktop grid, mobile horizontal scroll */}
         <div className="flex md:grid md:grid-cols-3 gap-6 overflow-x-auto snap-x snap-mandatory pb-4 md:pb-0 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-hide">
-          {bundles.map((bundle, i) => (
-            <motion.div
+          {bundles.map((bundle) => (
+            <div
               key={bundle.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative min-w-[280px] flex-shrink-0 snap-start ${bundle.color} border ${bundle.borderColor} rounded-premium-lg p-6 md:p-8 flex flex-col`}
+              className={`relative min-w-[280px] flex-shrink-0 snap-start ${bundle.color} border ${bundle.borderColor} rounded-md p-6 md:p-8 flex flex-col slide-up`}
             >
               {bundle.popular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-bold px-4 py-1 rounded-full">
@@ -76,7 +64,7 @@ export default function FeaturedBundles() {
               )}
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-premium bg-background flex items-center justify-center shadow-soft">
+                <div className="w-10 h-10 rounded bg-background flex items-center justify-center shadow-soft">
                   <Package className="w-5 h-5 text-accent" />
                 </div>
                 <h3 className="text-lg font-bold">{bundle.name}</h3>
@@ -122,27 +110,22 @@ export default function FeaturedBundles() {
                     slug: `bundles/${bundle.name.toLowerCase().replace(/\s+/g, "-")}`,
                   })
                 }
-                className="w-full bg-accent text-white py-3 rounded-premium text-sm font-semibold hover:bg-accent-dark transition-colors"
+                className="w-full bg-accent text-white py-3 rounded text-sm font-semibold hover:bg-accent-dark transition-colors"
               >
                 Add Bundle to Cart
               </button>
-            </motion.div>
+            </div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="text-center mt-8"
-        >
+        <div className="text-center mt-8 fade-in">
           <Link
             href="/bundles"
             className="text-sm font-medium text-accent hover:opacity-70 transition-opacity"
           >
             View All Bundles &rarr;
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

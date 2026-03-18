@@ -79,7 +79,7 @@ export default function FAQPage() {
                     {section.title}
                   </h2>
                 </div>
-                <div className="bg-background rounded-premium-lg border border-border px-6">
+                <div className="bg-background rounded-md border border-border px-6">
                   {section.items.map((item) => (
                     <AccordionItem key={item.question} item={item} />
                   ))}
@@ -88,7 +88,7 @@ export default function FAQPage() {
             ))}
           </div>
 
-          <div className="mt-16 text-center bg-surface rounded-premium-xl p-10">
+          <div className="mt-16 text-center bg-surface rounded-lg p-10">
             <div className="inline-flex items-center justify-center p-3 rounded-full bg-background border border-border mb-4">
               <MessageCircle size={24} className="text-foreground" />
             </div>

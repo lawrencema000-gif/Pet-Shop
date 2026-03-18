@@ -114,7 +114,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
 
       {/* Notification Preferences */}
-      <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
+      <div className="bg-background rounded-md border border-border p-6 mb-6">
         <h2 className="text-lg font-semibold text-foreground mb-4">Notification Preferences</h2>
         <div className="space-y-4">
           {PREF_ITEMS.map((item) => {
@@ -167,7 +167,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Danger Zone */}
-      <div className="bg-background rounded-premium-lg border border-sale/30 p-6">
+      <div className="bg-background rounded-md border border-sale/30 p-6">
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle size={18} className="text-sale" />
           <h2 className="text-lg font-semibold text-sale">Danger Zone</h2>

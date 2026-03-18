@@ -119,7 +119,7 @@ export default function ContactPage() {
 
           <div className="grid lg:grid-cols-5 gap-10">
             <div className="lg:col-span-3">
-              <div className="bg-background rounded-premium-lg border border-border p-6 md:p-8">
+              <div className="bg-background rounded-md border border-border p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-foreground mb-6">
                   Send Us a Message
                 </h2>
@@ -153,7 +153,7 @@ export default function ContactPage() {
                           type="text"
                           required
                           placeholder="Your name"
-                          className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors"
+                          className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors"
                         />
                       </div>
                       <div>
@@ -169,7 +169,7 @@ export default function ContactPage() {
                           type="email"
                           required
                           placeholder="you@example.com"
-                          className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors"
+                          className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors"
                         />
                         <p className="text-xs text-muted mt-1">We&apos;ll only use this to respond to your message</p>
                       </div>
@@ -187,7 +187,7 @@ export default function ContactPage() {
                         name="subject"
                         required
                         defaultValue=""
-                        className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors appearance-none"
+                        className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors appearance-none"
                       >
                         <option value="" disabled>
                           Select a topic
@@ -212,7 +212,7 @@ export default function ContactPage() {
                         name="message"
                         rows={5}
                         placeholder="Tell us how we can help..."
-                        className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors resize-none"
+                        className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors resize-none"
                       />
                     </div>
 

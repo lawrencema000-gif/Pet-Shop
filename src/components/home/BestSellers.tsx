@@ -59,7 +59,7 @@ export default function BestSellers({ products }: BestSellersProps) {
         {canScrollLeft && (
           <button
             onClick={() => scroll("left")}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-elevated border border-border flex items-center justify-center hover:bg-surface-light transition-colors -ml-4"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-sm border border-border flex items-center justify-center hover:bg-surface-light transition-colors -ml-4"
             aria-label="Scroll left"
           >
             <ChevronLeft size={20} />
@@ -80,7 +80,7 @@ export default function BestSellers({ products }: BestSellersProps) {
         {canScrollRight && (
           <button
             onClick={() => scroll("right")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-elevated border border-border flex items-center justify-center hover:bg-surface-light transition-colors -mr-4"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-sm border border-border flex items-center justify-center hover:bg-surface-light transition-colors -mr-4"
             aria-label="Scroll right"
           >
             <ChevronRight size={20} />

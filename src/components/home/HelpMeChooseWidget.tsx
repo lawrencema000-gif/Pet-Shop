@@ -1,21 +1,12 @@
-"use client";
-
 import Link from "next/link";
 import { HelpCircle, Dog, Cat } from "lucide-react";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 
 export default function HelpMeChooseWidget() {
   return (
     <section className="py-16">
       <div className="max-w-5xl mx-auto px-4 md:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="bg-surface-light rounded-premium-xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
-        >
+        <div className="bg-surface-light rounded-lg p-8 md:p-12 flex flex-col md:flex-row items-center gap-8 fade-in">
           {/* Text */}
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
@@ -56,7 +47,7 @@ export default function HelpMeChooseWidget() {
           <div className="flex-shrink-0 hidden md:flex items-center justify-center w-32 h-32 rounded-full bg-accent/10">
             <HelpCircle size={56} className="text-accent" />
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

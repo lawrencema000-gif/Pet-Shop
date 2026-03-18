@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, User, ShoppingBag, Menu, Heart, HelpCircle, Package } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import { Search, User, ShoppingBag, Menu } from "lucide-react";
 import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
 import { useCartStore } from "@/lib/store/cart";
 import { MegaMenu } from "./MegaMenu";
@@ -33,62 +32,32 @@ export function Header() {
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300",
-          scrolled && "shadow-elevated"
+          "sticky top-0 z-50 bg-background border-b border-border transition-shadow duration-200",
+          scrolled && "shadow-sm"
         )}
       >
-        {/* Utility bar */}
-        <div className="hidden lg:block border-b border-border/50 bg-surface-light/50">
-          <div className="max-w-7xl mx-auto px-4 lg:px-8">
-            <div className="flex items-center justify-end gap-5 h-8 text-[11px] text-muted">
-              <Link
-                href="/track-order"
-                className="flex items-center gap-1.5 hover:text-foreground transition-colors"
-              >
-                <Package size={12} />
-                Track Order
-              </Link>
-              <Link
-                href="/support"
-                className="flex items-center gap-1.5 hover:text-foreground transition-colors"
-              >
-                <HelpCircle size={12} />
-                Help
-              </Link>
-            </div>
-          </div>
-        </div>
-
         {/* Main header */}
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div
-            className={cn(
-              "flex items-center justify-between transition-all duration-300",
-              scrolled ? "h-14" : "h-16"
-            )}
-          >
+          <div className="flex items-center justify-between h-16">
             {/* Left: Hamburger (mobile) + Logo */}
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setMobileNavOpen(true)}
-                className="lg:hidden p-1.5 rounded-lg hover:bg-surface-light transition-colors"
+                className="lg:hidden p-1.5 hover:bg-surface-light transition-colors rounded"
                 aria-label="Open menu"
               >
                 <Menu size={22} />
               </button>
               <Link
                 href="/"
-                className={cn(
-                  "font-bold tracking-tight text-foreground transition-all duration-300",
-                  scrolled ? "text-lg" : "text-xl lg:text-2xl"
-                )}
+                className="font-bold tracking-tight text-foreground text-xl lg:text-2xl"
               >
                 {SITE_CONFIG.name}
               </Link>
             </div>
 
             {/* Center: Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-0.5">
+            <nav className="hidden lg:flex items-center gap-1">
               {NAV_LINKS.map((link) => (
                 <div
                   key={link.label}
@@ -101,77 +70,53 @@ export function Header() {
                   <Link
                     href={link.href}
                     className={cn(
-                      "px-3 py-2 text-[13px] font-medium rounded-lg transition-colors hover:bg-surface-light",
+                      "px-3 py-2 text-[13px] font-medium transition-colors hover:text-foreground",
                       link.highlight && link.highlightColor === "red"
-                        ? "text-sale font-semibold hover:bg-red-50"
-                        : link.highlight && link.highlightColor === "accent"
-                        ? "text-accent font-semibold"
-                        : "text-foreground-muted",
-                      hoveredNav === link.label && link.children && "bg-surface-light"
+                        ? "text-sale font-semibold"
+                        : "text-muted",
+                      hoveredNav === link.label && link.children && "text-foreground"
                     )}
                   >
                     {link.label}
-                    {link.isNew && (
-                      <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold text-white bg-success rounded-full leading-none">
-                        NEW
-                      </span>
-                    )}
                   </Link>
 
-                  <AnimatePresence>
-                    {hoveredNav === link.label && link.children && (
-                      <MegaMenu
-                        categoryLabel={link.label}
-                        categoryHref={link.href}
-                        items={link.children}
-                        featured={link.featured}
-                        onClose={() => setHoveredNav(null)}
-                      />
-                    )}
-                  </AnimatePresence>
+                  {hoveredNav === link.label && link.children && (
+                    <MegaMenu
+                      categoryLabel={link.label}
+                      categoryHref={link.href}
+                      items={link.children}
+                      featured={link.featured}
+                      onClose={() => setHoveredNav(null)}
+                    />
+                  )}
                 </div>
               ))}
             </nav>
 
             {/* Right: Icons */}
-            <div className="flex items-center gap-0.5">
-              <Link
-                href="/quiz"
-                className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-accent text-white text-[13px] font-medium hover:bg-accent-dark transition-colors mr-1"
-              >
-                <HelpCircle size={14} />
-                Help Me Choose
-              </Link>
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => setSearchOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-light hover:bg-surface text-muted hover:text-foreground transition-colors text-sm"
+                className="p-2 hover:bg-surface-light transition-colors rounded"
                 aria-label="Search"
               >
-                <Search size={16} />
-                <span className="hidden sm:inline text-[13px]">Search</span>
+                <Search size={20} />
               </button>
               <Link
-                href="/wishlist"
-                className="p-2 rounded-lg hover:bg-surface-light transition-colors hidden sm:flex"
-                aria-label="Wishlist"
-              >
-                <Heart size={20} />
-              </Link>
-              <Link
                 href="/auth/login"
-                className="p-2 rounded-lg hover:bg-surface-light transition-colors hidden sm:flex"
+                className="p-2 hover:bg-surface-light transition-colors hidden sm:flex rounded"
                 aria-label="Account"
               >
                 <User size={20} />
               </Link>
               <button
                 onClick={openCart}
-                className="relative p-2 rounded-lg hover:bg-surface-light transition-colors"
+                className="relative p-2 hover:bg-surface-light transition-colors rounded"
                 aria-label="Cart"
               >
                 <ShoppingBag size={20} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[20px] h-5 px-1 text-[10px] font-bold text-white bg-accent rounded-full ring-2 ring-background">
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-accent rounded-full">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}

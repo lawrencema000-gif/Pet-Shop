@@ -13,7 +13,6 @@ import {
   Plus,
   Truck,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@supabase/supabase-js";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
@@ -178,13 +177,9 @@ export default function CompareClient() {
                 className="w-full rounded-lg border border-border bg-background py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
               />
             </div>
-            <AnimatePresence>
               {showSearch && searchResults.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 z-20 mt-1 rounded-premium border border-border bg-background shadow-elevated overflow-hidden"
+                <div
+                  className="absolute top-full left-0 right-0 z-20 mt-1 rounded border border-border bg-background shadow-sm overflow-hidden"
                 >
                   {searchResults.map((product) => {
                     const img =
@@ -217,9 +212,8 @@ export default function CompareClient() {
                       </button>
                     );
                   })}
-                </motion.div>
+                </div>
               )}
-            </AnimatePresence>
           </div>
         )}
 
@@ -430,14 +424,12 @@ export default function CompareClient() {
                   key={`cart-${p.id}`}
                   className="px-4 py-4 text-center bg-surface-light"
                 >
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.97 }}
+                  <button
                     onClick={() => handleAddToCart(p)}
-                    className="w-full rounded-premium bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-dark"
+                    className="w-full rounded bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-dark"
                   >
                     Add to Cart
-                  </motion.button>
+                  </button>
                 </div>
               ))}
             </div>

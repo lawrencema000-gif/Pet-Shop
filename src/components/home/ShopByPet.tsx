@@ -1,7 +1,3 @@
-"use client";
-
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,30 +19,17 @@ const pets = [
 ];
 
 export default function ShopByPet() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
   return (
-    <section ref={ref} className="container-main py-16">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.5 }}
-        className="text-2xl md:text-3xl font-bold text-center mb-10"
-      >
+    <section className="container-main py-16">
+      <h2 className="text-2xl md:text-3xl font-bold text-center mb-10 fade-in">
         Shop by Pet Type
-      </motion.h2>
+      </h2>
       <div className="grid md:grid-cols-2 gap-6">
-        {pets.map((pet, i) => (
-          <motion.div
-            key={pet.name}
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5, delay: i * 0.15 }}
-          >
+        {pets.map((pet) => (
+          <div key={pet.name} className="slide-up">
             <Link
               href={pet.href}
-              className="group relative block overflow-hidden rounded-premium-xl aspect-[3/2]"
+              className="group relative block overflow-hidden rounded-lg aspect-[3/2]"
             >
               <Image
                 src={pet.image}
@@ -63,7 +46,7 @@ export default function ShopByPet() {
                 </span>
               </div>
             </Link>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

@@ -11,7 +11,6 @@ import {
   Check,
   Bell,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 const AMOUNTS = [25, 50, 75, 100];
 
@@ -67,12 +66,10 @@ export default function GiftCardsClient() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {AMOUNTS.map((amount) => (
-              <motion.button
+              <button
                 key={amount}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
                 onClick={() => setSelected(amount)}
-                className={`relative rounded-premium border-2 p-6 text-center transition-all ${
+                className={`relative rounded border-2 p-6 text-center transition-all ${
                   selected === amount
                     ? "border-accent bg-accent/5 shadow-md"
                     : "border-border bg-background hover:border-accent/50"
@@ -92,12 +89,12 @@ export default function GiftCardsClient() {
                   ${amount}
                 </span>
                 <p className="mt-1 text-xs text-muted">Gift Card</p>
-              </motion.button>
+              </button>
             ))}
           </div>
 
           {/* Selected Preview */}
-          <div className="mt-10 rounded-premium-lg bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white text-center shadow-elevated">
+          <div className="mt-10 rounded-md bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white text-center shadow-sm">
             <Gift className="h-10 w-10 mx-auto mb-3 opacity-80" />
             <p className="text-sm uppercase tracking-wide opacity-80">
               PETLIBRO Gift Card
@@ -159,7 +156,7 @@ export default function GiftCardsClient() {
       {/* Coming Soon + Newsletter */}
       <section className="border-t border-border py-14 md:py-16">
         <div className="container-main max-w-lg mx-auto text-center">
-          <div className="rounded-premium border border-amber-200 bg-amber-50 p-6 mb-8">
+          <div className="rounded border border-amber-200 bg-amber-50 p-6 mb-8">
             <Bell className="h-6 w-6 text-amber-600 mx-auto mb-2" />
             <p className="text-sm font-semibold text-amber-800">
               Gift card purchasing is coming soon!
@@ -178,9 +175,7 @@ export default function GiftCardsClient() {
           </p>
 
           {submitted ? (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+            <div
               className="mt-6 rounded-lg bg-success/10 p-4"
             >
               <Check className="h-6 w-6 text-success mx-auto mb-2" />
@@ -188,7 +183,7 @@ export default function GiftCardsClient() {
                 You&apos;re on the list! We&apos;ll notify you at{" "}
                 <strong>{email}</strong>.
               </p>
-            </motion.div>
+            </div>
           ) : (
             <form
               onSubmit={handleNotify}
@@ -202,14 +197,12 @@ export default function GiftCardsClient() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
               />
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.97 }}
+              <button
                 type="submit"
                 className="rounded-lg bg-accent px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
               >
                 Notify Me
-              </motion.button>
+              </button>
             </form>
           )}
         </div>

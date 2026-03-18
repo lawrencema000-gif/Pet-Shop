@@ -14,7 +14,7 @@ export default function CareersPage() {
           We&apos;re always looking for passionate pet lovers to join our team. At PETLIBRO, we believe great products start with great people who care deeply
           about pets and their owners.
         </p>
-        <div className="bg-surface rounded-premium-xl p-8">
+        <div className="bg-surface rounded-lg p-8">
           <h2 className="text-lg font-semibold mb-2">No open positions right now</h2>
           <p className="text-sm text-muted mb-4">
             We don&apos;t have any open roles at the moment, but we&apos;d love to hear

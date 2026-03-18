@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Zap, Smartphone, Heart } from "lucide-react";
 
 const steps = [
@@ -29,18 +28,14 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-surface-light rounded-premium-xl p-8 mt-16">
+    <section className="bg-surface-light rounded-lg p-8 mt-16">
       <h2 className="text-2xl font-bold text-foreground text-center mb-8">
         How It Works
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {steps.map((step, i) => (
-          <motion.div
+        {steps.map((step) => (
+          <div
             key={step.number}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: i * 0.15 }}
             className="flex flex-col items-center text-center"
           >
             {/* Number badge */}
@@ -58,7 +53,7 @@ export default function HowItWorks() {
             <p className="text-sm text-muted leading-relaxed max-w-xs">
               {step.description}
             </p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

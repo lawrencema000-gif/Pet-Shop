@@ -57,7 +57,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
           <select
             value={currentSort}
             onChange={(e) => updateParams("sort", e.target.value)}
-            className="w-full appearance-none border border-border rounded-premium px-3 py-2.5 text-sm bg-background pr-8 focus:outline-none focus:ring-1 focus:ring-accent"
+            className="w-full appearance-none border border-border rounded px-3 py-2.5 text-sm bg-background pr-8 focus:outline-none focus:ring-1 focus:ring-accent"
           >
             {sortOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -106,7 +106,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             placeholder="Min"
             value={currentMinPrice}
             onChange={(e) => updateParams("minPrice", e.target.value)}
-            className="w-full border border-border rounded-premium px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+            className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
             min={0}
           />
           <span className="text-muted text-sm">-</span>
@@ -115,7 +115,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
             placeholder="Max"
             value={currentMaxPrice}
             onChange={(e) => updateParams("maxPrice", e.target.value)}
-            className="w-full border border-border rounded-premium px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
+            className="w-full border border-border rounded px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-accent"
             min={0}
           />
         </div>
@@ -138,7 +138,7 @@ export default function FilterSidebar({ categories }: FilterSidebarProps) {
       {/* Mobile trigger */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-border rounded-premium text-sm font-medium hover:bg-surface transition-colors"
+        className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-border rounded text-sm font-medium hover:bg-surface transition-colors"
       >
         <SlidersHorizontal className="w-4 h-4" />
         Filters

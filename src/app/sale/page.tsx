@@ -141,7 +141,7 @@ export default async function SalePage() {
                 <Link
                   key={product.id}
                   href={`/products/${product.slug}`}
-                  className="group overflow-hidden rounded-premium border border-border bg-background shadow-card transition-shadow hover:shadow-card-hover"
+                  className="group overflow-hidden rounded border border-border bg-background shadow-card transition-shadow hover:shadow-card-hover"
                 >
                   <div className="relative aspect-square overflow-hidden bg-surface">
                     {mainImage?.url && (

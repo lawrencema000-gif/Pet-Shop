@@ -217,7 +217,7 @@ export default function AddressesPage() {
 
       {/* Inline Form */}
       {showForm && (
-        <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
+        <div className="bg-background rounded-md border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-4">
             {editingId ? "Edit Address" : "New Address"}
           </h2>
@@ -291,7 +291,7 @@ export default function AddressesPage() {
 
       {/* Address Cards */}
       {addresses.length === 0 && !showForm ? (
-        <div className="bg-background rounded-premium-lg border border-border p-12 text-center">
+        <div className="bg-background rounded-md border border-border p-12 text-center">
           <MapPin size={48} className="text-border mx-auto mb-4" />
           <p className="text-muted mb-4">No saved addresses yet</p>
           <Button
@@ -306,7 +306,7 @@ export default function AddressesPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {addresses.map((addr) => (
-            <div key={addr.id} className="bg-background rounded-premium-lg border border-border p-6 relative">
+            <div key={addr.id} className="bg-background rounded-md border border-border p-6 relative">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="font-semibold text-foreground">{addr.label}</span>

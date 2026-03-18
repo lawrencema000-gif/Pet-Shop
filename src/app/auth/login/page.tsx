@@ -48,7 +48,7 @@ function LoginForm() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-background rounded-premium-lg shadow-elevated p-8">
+        <div className="bg-background rounded-md shadow-sm p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground">Welcome Back</h1>
             <p className="text-sm text-muted mt-1">

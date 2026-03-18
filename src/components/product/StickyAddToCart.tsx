@@ -46,7 +46,7 @@ export default function StickyAddToCart({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-lg border-t border-border shadow-elevated"
+          className="fixed bottom-0 left-0 right-0 z-40 bg-background/80 backdrop-blur-lg border-t border-border shadow-sm"
         >
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-4">
             {/* Product Info */}
@@ -60,7 +60,7 @@ export default function StickyAddToCart({
             <motion.button
               onClick={handleScrollToAdd}
               whileTap={{ scale: 0.97 }}
-              className="flex items-center gap-2 bg-accent text-white px-6 py-2.5 text-sm font-semibold rounded-premium hover:bg-accent-dark transition-colors shrink-0"
+              className="flex items-center gap-2 bg-accent text-white px-6 py-2.5 text-sm font-semibold rounded hover:bg-accent-dark transition-colors shrink-0"
             >
               <ShoppingCart className="w-4 h-4" />
               Add to Cart

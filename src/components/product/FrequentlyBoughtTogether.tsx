@@ -73,7 +73,7 @@ export default function FrequentlyBoughtTogether({
       <h2 className="text-2xl font-bold text-foreground mb-8">
         Frequently Bought Together
       </h2>
-      <div className="flex flex-col lg:flex-row items-center gap-6 p-6 border border-border rounded-premium-xl bg-background">
+      <div className="flex flex-col lg:flex-row items-center gap-6 p-6 border border-border rounded-lg bg-background">
         {/* Product thumbnails */}
         <div className="flex flex-wrap items-center justify-center gap-4 flex-1">
           {suggestions.map((product, i) => {
@@ -90,7 +90,7 @@ export default function FrequentlyBoughtTogether({
                   href={`/products/${product.slug}`}
                   className="flex flex-col items-center gap-2 group"
                 >
-                  <div className="relative w-24 h-24 rounded-premium-lg overflow-hidden bg-surface border border-border group-hover:border-accent transition-colors">
+                  <div className="relative w-24 h-24 rounded-md overflow-hidden bg-surface border border-border group-hover:border-accent transition-colors">
                     <Image
                       src={imageUrl}
                       alt={product.name}

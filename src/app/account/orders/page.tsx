@@ -10,7 +10,6 @@ import {
   ArrowLeft,
   Loader2,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice, cn } from "@/lib/utils";
@@ -155,13 +154,8 @@ export default function OrdersPage() {
                 </div>
               </button>
 
-              <AnimatePresence>
                 {expandedId === order.id && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                  <div
                     className="overflow-hidden"
                   >
                     <div className="border-t border-border px-4 md:px-5 py-4">
@@ -230,9 +224,8 @@ export default function OrdersPage() {
                         </div>
                       )}
                     </div>
-                  </motion.div>
+                  </div>
                 )}
-              </AnimatePresence>
             </div>
           ))}
         </div>

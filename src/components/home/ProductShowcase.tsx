@@ -1,7 +1,3 @@
-"use client";
-
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Check } from "lucide-react";
@@ -24,11 +20,8 @@ export default function ProductShowcase({
   href,
   reversed = false,
 }: ProductShowcaseProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section ref={ref} className="container-main py-16 md:py-24">
+    <section className="container-main py-16 md:py-24">
       <div
         className={cn(
           "grid md:grid-cols-2 gap-10 md:gap-16 items-center",
@@ -36,12 +29,7 @@ export default function ProductShowcase({
         )}
       >
         {/* Image */}
-        <motion.div
-          initial={{ opacity: 0, x: reversed ? 40 : -40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative aspect-[4/3] rounded-premium-xl overflow-hidden"
-        >
+        <div className="relative aspect-[4/3] rounded-lg overflow-hidden fade-in">
           <Image
             src={imageUrl}
             alt={title}
@@ -49,15 +37,10 @@ export default function ProductShowcase({
             sizes="(max-width: 750px) 100vw, 50vw"
             className="object-cover"
           />
-        </motion.div>
+        </div>
 
         {/* Text */}
-        <motion.div
-          initial={{ opacity: 0, x: reversed ? -40 : 40 }}
-          animate={isInView ? { opacity: 1, x: 0 } : {}}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
-          className="space-y-4"
-        >
+        <div className="space-y-4 slide-up">
           <p className="text-sm uppercase tracking-wider text-muted">
             Collection
           </p>
@@ -79,7 +62,7 @@ export default function ProductShowcase({
               Explore Collection &rarr;
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

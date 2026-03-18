@@ -104,7 +104,7 @@ export default function WarrantyPage() {
               {coverageTiers.map((tier) => (
                 <div
                   key={tier.category}
-                  className="bg-surface rounded-premium-lg p-6"
+                  className="bg-surface rounded-md p-6"
                 >
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold text-foreground">
@@ -193,7 +193,7 @@ export default function WarrantyPage() {
             </div>
           </section>
 
-          <div className="bg-surface rounded-premium-lg p-8 text-center">
+          <div className="bg-surface rounded-md p-8 text-center">
             <h2 className="text-lg font-semibold text-foreground mb-2">
               Need to file a warranty claim?
             </h2>

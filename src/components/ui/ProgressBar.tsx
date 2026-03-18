@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
 
@@ -33,14 +32,12 @@ export function ProgressBar({ current, target, label, className }: ProgressBarPr
         </div>
       )}
       <div className="h-2 w-full rounded-full bg-surface overflow-hidden">
-        <motion.div
+        <div
           className={cn(
-            "h-full rounded-full",
+            "h-full rounded-full transition-all duration-500 ease-out",
             reached ? "bg-success" : "bg-accent"
           )}
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
+          style={{ width: `${percentage}%` }}
         />
       </div>
     </div>
