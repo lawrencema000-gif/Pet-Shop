@@ -68,13 +68,13 @@ export function Footer() {
   return (
     <footer className="bg-surface">
       {/* Brand Tagline Section */}
-      <div className="bg-foreground">
+      <div className="bg-accent">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-12 md:py-16">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="text-xl md:text-2xl font-semibold text-white mb-2">
               Smart Pet Care for Modern Pet Parents
             </h2>
-            <p className="text-sm text-white/60">
+            <p className="text-sm text-white/70">
               Premium connected products that keep your pets healthy, happy, and
               well-fed &mdash; designed with love, backed by technology.
             </p>
@@ -104,7 +104,7 @@ export function Footer() {
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-2.5 rounded-lg bg-white text-muted hover:text-foreground hover:shadow-card transition-all duration-200"
+                  className="p-2.5 rounded-premium bg-background text-muted hover:text-accent hover:shadow-card transition-all duration-200"
                   aria-label={label}
                 >
                   <Icon size={16} />
@@ -171,7 +171,7 @@ export function Footer() {
             {paymentMethods.map((method) => (
               <span
                 key={method}
-                className="px-2.5 py-1 text-[10px] font-medium text-muted bg-white rounded border border-border"
+                className="px-2.5 py-1 text-[10px] font-medium text-muted bg-background rounded-lg border border-border"
               >
                 {method}
               </span>

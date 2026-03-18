@@ -34,7 +34,7 @@ export function MegaMenu({ categoryLabel, categoryHref, items, featured, onClose
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 6 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-white rounded-xl shadow-lg border border-border/80 z-50 overflow-hidden"
+      className="absolute top-full left-1/2 -translate-x-1/2 mt-1 bg-background rounded-premium-lg shadow-modal border border-border/80 z-50 overflow-hidden"
       style={{ minWidth: featured ? "520px" : "280px" }}
       onMouseLeave={onClose}
       role="menu"

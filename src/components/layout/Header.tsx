@@ -33,8 +33,8 @@ export function Header() {
     <>
       <header
         className={cn(
-          "sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-border transition-all duration-300",
-          scrolled && "shadow-md"
+          "sticky top-0 z-50 bg-background/95 backdrop-blur-md border-b border-border transition-all duration-300",
+          scrolled && "shadow-elevated"
         )}
       >
         {/* Utility bar */}
@@ -164,7 +164,7 @@ export function Header() {
               >
                 <ShoppingBag size={20} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[20px] h-5 px-1 text-[10px] font-bold text-white bg-sale rounded-full ring-2 ring-white">
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[20px] h-5 px-1 text-[10px] font-bold text-white bg-accent rounded-full ring-2 ring-background">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}
