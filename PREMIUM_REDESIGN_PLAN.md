@@ -192,6 +192,6 @@ highlight: #F0E6D3 (warm highlight)
 | 4. Collections/Cards | ✅ Done | 100% |
 | 5. Product Detail | ✅ Done | 100% |
 | 6. Cart/Search/Account | ✅ Done | 100% |
-| 7. Support/Content | ⬜ Not Started | 0% |
-| 8. SEO/Perf/A11y | ⬜ Not Started | 0% |
-| 9. Polish/QA/Launch | ⬜ Not Started | 0% |
+| 7. Support/Content | ✅ Done | 100% |
+| 8. SEO/Perf/A11y | ✅ Done | 100% |
+| 9. Polish/QA/Launch | ✅ Done | 100% |

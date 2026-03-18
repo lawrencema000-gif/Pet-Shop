@@ -7,6 +7,7 @@ import ProductGrid from "@/components/product/ProductGrid";
 import FilterSidebar from "@/components/product/FilterSidebar";
 import CategoryHero from "@/components/category/CategoryHero";
 import SEOBlock from "@/components/category/SEOBlock";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 
 interface CategoryPageProps {
   params: { slug: string };
@@ -131,6 +132,13 @@ export default async function CategoryPage({
   const hasActiveFilters = Object.keys(activeFilters).length > 0;
 
   return (
+    <>
+    <BreadcrumbSchema
+      items={[
+        { name: "Home", url: "https://pet-shop-lac-ten.vercel.app" },
+        { name: category.name, url: `https://pet-shop-lac-ten.vercel.app/categories/${category.slug}` },
+      ]}
+    />
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1.5 text-sm text-muted mb-8">
@@ -272,5 +280,6 @@ export default async function CategoryPage({
         productCount={count ?? 0}
       />
     </div>
+    </>
   );
 }

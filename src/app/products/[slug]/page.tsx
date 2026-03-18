@@ -13,6 +13,7 @@ import TrackView from "@/components/product/TrackView";
 import HowItWorks from "@/components/product/HowItWorks";
 import BenefitsSection from "@/components/product/BenefitsSection";
 import ProductFAQ from "@/components/product/ProductFAQ";
+import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import type { Review } from "@/types/product";
 
 const ProductDetailClient = dynamic(
@@ -166,6 +167,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://pet-shop-lac-ten.vercel.app" },
+          ...(product.category
+            ? [
+                {
+                  name: product.category.name,
+                  url: `https://pet-shop-lac-ten.vercel.app/categories/${product.category.slug}`,
+                },
+              ]
+            : []),
+          {
+            name: product.name,
+            url: `https://pet-shop-lac-ten.vercel.app/products/${product.slug}`,
+          },
+        ]}
       />
 
       <div className="max-w-7xl mx-auto px-4 py-8">
