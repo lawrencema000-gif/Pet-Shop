@@ -28,7 +28,7 @@ export function StarRating({ rating, count, size = 16, className }: StarRatingPr
           )}
           {type === "half" && (
             <span className="relative inline-block">
-              <Star size={size} className="text-gray-200" />
+              <Star size={size} className="text-border" />
               <span
                 className="absolute inset-0 overflow-hidden"
                 style={{ width: "50%" }}
@@ -41,7 +41,7 @@ export function StarRating({ rating, count, size = 16, className }: StarRatingPr
             </span>
           )}
           {type === "empty" && (
-            <Star size={size} className="text-gray-200" />
+            <Star size={size} className="text-border" />
           )}
         </span>
       ))}
