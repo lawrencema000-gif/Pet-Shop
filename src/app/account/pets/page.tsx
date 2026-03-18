@@ -176,7 +176,7 @@ export default function PetsPage() {
     return (
       <div>
         <h1 className="text-2xl font-bold text-foreground mb-6">Pets</h1>
-        <div className="bg-white rounded-xl border border-border p-12 text-center">
+        <div className="bg-background rounded-premium-lg border border-border p-12 text-center">
           <PawPrint size={48} className="text-border mx-auto mb-4" />
           <h2 className="text-lg font-semibold text-foreground mb-2">Pet profiles coming soon!</h2>
           <p className="text-sm text-muted">
@@ -218,7 +218,7 @@ export default function PetsPage() {
 
       {/* Form */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-border p-6 mb-6">
+        <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-4">
             {editingId ? "Edit Pet" : "Add a Pet"}
           </h2>
@@ -303,7 +303,7 @@ export default function PetsPage() {
 
       {/* Pet Cards */}
       {pets.length === 0 && !showForm ? (
-        <div className="bg-white rounded-xl border border-border p-12 text-center">
+        <div className="bg-background rounded-premium-lg border border-border p-12 text-center">
           <PawPrint size={48} className="text-border mx-auto mb-4" />
           <p className="text-muted mb-4">No pets added yet</p>
           <Button
@@ -318,7 +318,7 @@ export default function PetsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {pets.map((pet) => (
-            <div key={pet.id} className="bg-white rounded-xl border border-border p-6">
+            <div key={pet.id} className="bg-background rounded-premium-lg border border-border p-6">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center text-2xl">

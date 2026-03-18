@@ -103,7 +103,7 @@ export default function OrderDetailPage() {
       </Link>
 
       {/* Order Header */}
-      <div className="bg-white rounded-xl border border-border p-6 mb-6">
+      <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-2">
           <h1 className="text-2xl font-bold text-foreground">
             Order #{order.id.slice(0, 8).toUpperCase()}
@@ -125,7 +125,7 @@ export default function OrderDetailPage() {
 
       {/* Status Timeline */}
       {!isCancelled && (
-        <div className="bg-white rounded-xl border border-border p-6 mb-6">
+        <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-6">Order Status</h2>
           <div className="flex items-center justify-between relative">
             {/* Progress line */}
@@ -173,7 +173,7 @@ export default function OrderDetailPage() {
       )}
 
       {/* Order Items */}
-      <div className="bg-white rounded-xl border border-border p-6 mb-6">
+      <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
         <h2 className="text-lg font-semibold text-foreground mb-4">Items</h2>
         <div className="divide-y divide-border">
           {items.map((item) => (
@@ -199,7 +199,7 @@ export default function OrderDetailPage() {
       </div>
 
       {/* Totals */}
-      <div className="bg-white rounded-xl border border-border p-6 mb-6">
+      <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
         <h2 className="text-lg font-semibold text-foreground mb-4">Order Summary</h2>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
@@ -233,7 +233,7 @@ export default function OrderDetailPage() {
 
       {/* Shipping Address */}
       {order.shipping_address && (
-        <div className="bg-white rounded-xl border border-border p-6 mb-6">
+        <div className="bg-background rounded-premium-lg border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-3">Shipping Address</h2>
           <p className="text-sm text-muted leading-relaxed">
             {order.shipping_address.line1}

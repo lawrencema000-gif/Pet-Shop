@@ -115,7 +115,7 @@ export default function OrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="bg-white border border-border rounded-xl overflow-hidden"
+              className="bg-background border border-border rounded-xl overflow-hidden"
             >
               <button
                 onClick={() => toggleOrder(order.id)}

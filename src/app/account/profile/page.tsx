@@ -84,7 +84,7 @@ export default function ProfilePage() {
     <div>
       <h1 className="text-2xl font-bold text-foreground mb-6">Profile</h1>
 
-      <div className="bg-white rounded-xl border border-border p-6">
+      <div className="bg-background rounded-premium-lg border border-border p-6">
         <div className="space-y-4">
           <Input
             label="Email"
