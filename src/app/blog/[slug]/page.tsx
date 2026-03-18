@@ -11,6 +11,9 @@ import {
 import BlogCard from "@/components/blog/BlogCard";
 import { SITE_CONFIG } from "@/lib/constants";
 import ShareButtons from "./ShareButtons";
+import TableOfContents from "@/components/blog/TableOfContents";
+import ProductRecommendation from "@/components/blog/ProductRecommendation";
+import BlogSidebar from "@/components/blog/BlogSidebar";
 
 interface BlogPostPageProps {
   params: { slug: string };
@@ -102,98 +105,122 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
         </nav>
       </div>
 
-      {/* Article */}
-      <article className="container-narrow py-10 md:py-14">
-        {/* Header */}
-        <header>
-          <Link
-            href={`/blog?category=${encodeURIComponent(post.category)}`}
-            className="inline-block rounded-full bg-accent px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-80"
-          >
-            {post.category}
-          </Link>
-          <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
-            {post.title}
-          </h1>
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
-            <span className="font-medium text-foreground-muted">
-              {post.author}
-            </span>
-            <span aria-hidden="true">&middot;</span>
-            <time dateTime={post.published_at}>
-              {new Date(post.published_at).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </time>
-            <span aria-hidden="true">&middot;</span>
-            <span>{post.read_time} min read</span>
+      {/* Two-column layout */}
+      <div className="container-main py-10 md:py-14">
+        <div className="flex flex-col lg:flex-row lg:gap-10">
+          {/* Main content column */}
+          <article className="min-w-0 flex-1">
+            {/* Header */}
+            <header>
+              <Link
+                href={`/blog?category=${encodeURIComponent(post.category)}`}
+                className="inline-block rounded-full bg-accent px-3 py-1 text-xs font-medium text-white transition-opacity hover:opacity-80"
+              >
+                {post.category}
+              </Link>
+              <h1 className="mt-4 text-3xl font-bold leading-tight text-foreground md:text-4xl lg:text-5xl">
+                {post.title}
+              </h1>
+              <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-muted">
+                <span className="font-medium text-foreground-muted">
+                  {post.author}
+                </span>
+                <span aria-hidden="true">&middot;</span>
+                <time dateTime={post.published_at}>
+                  {new Date(post.published_at).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </time>
+                <span aria-hidden="true">&middot;</span>
+                <span>{post.read_time} min read</span>
+              </div>
+            </header>
+
+            {/* Featured Image */}
+            <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-xl">
+              <Image
+                src={post.image_url}
+                alt={post.title}
+                fill
+                className="object-cover"
+                sizes="(max-width: 750px) 100vw, 768px"
+                priority
+              />
+            </div>
+
+            {/* Mobile TOC */}
+            <div className="mt-8">
+              <TableOfContents content={post.content} />
+            </div>
+
+            {/* Article Body */}
+            <div
+              className="prose-article mt-10"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+
+            {/* Product Recommendations */}
+            {post.recommendedProducts && post.recommendedProducts.length > 0 && (
+              <ProductRecommendation slugs={post.recommendedProducts} />
+            )}
+
+            {/* Tags */}
+            <div className="mt-10 flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-border bg-surface-light px-3 py-1 text-xs text-muted"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* Share */}
+            <ShareButtons title={post.title} slug={post.slug} />
+
+            {/* Author Box */}
+            <div className="mt-8 flex items-center gap-4 rounded-xl border border-border bg-surface-light p-5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-lg font-bold text-white">
+                {post.author
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">{post.author}</p>
+                <p className="text-sm text-muted">{post.author_role}</p>
+                <p className="mt-1 text-sm text-muted">
+                  Contributing writer at PETLIBRO, sharing expert insights on pet
+                  health, nutrition, and modern pet care technology.
+                </p>
+              </div>
+            </div>
+
+            {/* Back to Blog */}
+            <div className="mt-8">
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
+              >
+                <ChevronRight className="h-4 w-4 rotate-180" />
+                Back to Blog
+              </Link>
+            </div>
+          </article>
+
+          {/* Sidebar column — desktop: right side, mobile: below article */}
+          <div className="mt-10 w-full shrink-0 lg:mt-0 lg:w-[280px]">
+            {/* Desktop TOC in sidebar */}
+            <div className="mb-8 hidden lg:block">
+              <TableOfContents content={post.content} />
+            </div>
+            <BlogSidebar />
           </div>
-        </header>
-
-        {/* Featured Image */}
-        <div className="relative mt-8 aspect-[16/9] overflow-hidden rounded-xl">
-          <Image
-            src={post.image_url}
-            alt={post.title}
-            fill
-            className="object-cover"
-            sizes="(max-width: 750px) 100vw, 768px"
-            priority
-          />
         </div>
-
-        {/* Article Body */}
-        <div
-          className="prose-article mt-10"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
-
-        {/* Tags */}
-        <div className="mt-10 flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-border bg-surface-light px-3 py-1 text-xs text-muted"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-
-        {/* Share */}
-        <ShareButtons title={post.title} slug={post.slug} />
-
-        {/* Author Box */}
-        <div className="mt-8 flex items-center gap-4 rounded-xl border border-border bg-surface-light p-5">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-accent text-lg font-bold text-white">
-            {post.author
-              .split(" ")
-              .map((n) => n[0])
-              .join("")}
-          </div>
-          <div>
-            <p className="font-semibold text-foreground">{post.author}</p>
-            <p className="text-sm text-muted">{post.author_role}</p>
-            <p className="mt-1 text-sm text-muted">
-              Contributing writer at PETLIBRO, sharing expert insights on pet
-              health, nutrition, and modern pet care technology.
-            </p>
-          </div>
-        </div>
-
-        {/* Back to Blog */}
-        <div className="mt-8">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-foreground"
-          >
-            <ChevronRight className="h-4 w-4 rotate-180" />
-            Back to Blog
-          </Link>
-        </div>
-      </article>
+      </div>
 
       {/* Related Posts */}
       {related.length > 0 && (

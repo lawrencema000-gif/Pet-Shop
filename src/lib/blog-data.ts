@@ -12,6 +12,7 @@ export interface BlogPost {
   image_url: string;
   tags: string[];
   featured: boolean;
+  recommendedProducts?: string[];
 }
 
 export const BLOG_CATEGORIES = [
@@ -38,6 +39,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1601758228041-f3b2795255f1?w=1200&h=630&fit=crop",
     tags: ["automatic feeders", "smart feeding", "pet nutrition", "pet tech"],
     featured: true,
+    recommendedProducts: ["granary-smart-camera-feeder", "air-smart-feeder"],
     content: `
       <h2>Why Automatic Pet Feeders Are a Game-Changer</h2>
       <p>Gone are the days of rushing home to feed your pet on time. <strong>Automatic pet feeders</strong> have transformed pet care by ensuring your cat or dog receives perfectly portioned meals on a consistent schedule, whether you're at home, at work, or on vacation. Modern smart feeders go far beyond simple timers — they offer app control, portion precision, and even built-in cameras so you can watch your pet eat in real time.</p>
@@ -83,6 +85,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=1200&h=630&fit=crop",
     tags: ["cat health", "water fountain", "hydration", "kidney health"],
     featured: true,
+    recommendedProducts: ["dockstream-2-smart-fountain"],
     content: `
       <h2>The Hidden Danger of Dehydration in Cats</h2>
       <p>As a feline health specialist, one of the most common issues I see is chronic dehydration. Cats evolved as desert animals and have a naturally low thirst drive, which means they often don't drink enough water from a still bowl. <strong>Chronic dehydration</strong> is a leading contributor to kidney disease, urinary crystals, and bladder infections — conditions that affect nearly 1 in 3 cats over the age of 10.</p>
@@ -129,6 +132,7 @@ export const blogPosts: BlogPost[] = [
       "product comparison",
     ],
     featured: false,
+    recommendedProducts: ["luma-smart-litter-box"],
     content: `
       <h2>The Great Litter Box Debate</h2>
       <p>If you're a cat parent, you know that the litter box is the least glamorous part of the job. <strong>Smart self-cleaning litter boxes</strong> have emerged as a premium solution, promising to handle the dirty work automatically. But with prices ranging from $400 to $700, many cat owners wonder if they're worth the upgrade from a $20 traditional box. Let's break it down honestly.</p>
@@ -171,6 +175,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop",
     tags: ["dehydration", "pet health", "water intake", "warning signs"],
     featured: false,
+    recommendedProducts: ["dockstream-2-smart-fountain"],
     content: `
       <h2>Why Hydration Matters More Than You Think</h2>
       <p>Water makes up about <strong>60-70% of your pet's body weight</strong>, and even mild dehydration can affect organ function, digestion, and energy levels. Unlike humans, pets can't tell you they're thirsty — so it's up to you to recognize the signs. Here are the 10 most important warning signals.</p>
@@ -226,6 +231,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1450778869180-e77d3083f9c0?w=1200&h=630&fit=crop",
     tags: ["automatic feeder", "pet training", "feeding schedule", "transition"],
     featured: false,
+    recommendedProducts: ["granary-smart-camera-feeder"],
     content: `
       <h2>Why the Transition Period Matters</h2>
       <p>Pets are creatures of habit, and any change to their feeding routine can cause anxiety or reluctance. Rushing the transition to an automatic feeder is the number one reason pet parents give up on them. <strong>A gradual, patient approach</strong> ensures your pet associates the new feeder with positive experiences, not stress. Most pets fully adapt within 7-10 days when you follow the right steps.</p>
@@ -271,6 +277,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=630&fit=crop",
     tags: ["smart home", "pet tech", "iot", "connected devices", "pet gadgets"],
     featured: true,
+    recommendedProducts: ["granary-smart-camera-feeder", "dockstream-2-smart-fountain", "luma-smart-litter-box"],
     content: `
       <h2>The Smart Pet Home Revolution</h2>
       <p>The pet tech industry has exploded in recent years, growing from a niche market to a <strong>$10 billion global industry</strong>. Today's smart pet devices don't just make your life easier — they actively improve your pet's health and wellbeing through data-driven insights, automated care, and real-time monitoring. Whether you're a first-time pet parent or a seasoned pro, there's never been a better time to upgrade your pet care setup.</p>
@@ -294,6 +301,198 @@ export const blogPosts: BlogPost[] = [
 
       <h2>What to Budget</h2>
       <p>A complete smart pet setup — feeder, fountain, and litter box — typically runs between $500-900. While the upfront cost is higher than traditional alternatives, the time savings, health monitoring, and peace of mind pay dividends over your pet's lifetime. Many brands offer <strong>bundle discounts of 15-25%</strong> when you purchase multiple devices together, making the upgrade more accessible.</p>
+    `,
+  },
+  {
+    id: "7",
+    slug: "petlibro-vs-traditional-feeders",
+    title: "PETLIBRO Smart Feeders vs Traditional Feeders: Which Is Better?",
+    excerpt:
+      "Smart feeders promise convenience and precision, but traditional feeders have stood the test of time. We compare both options across price, features, reliability, and pet health outcomes to help you decide.",
+    category: "Product Guides",
+    author: "Dr. Sarah Mitchell",
+    author_role: "Veterinary Nutritionist",
+    published_at: "2026-03-17",
+    read_time: 7,
+    image_url:
+      "https://images.unsplash.com/photo-1583337130417-13104dec14a3?w=1200&h=630&fit=crop",
+    tags: [
+      "smart feeders",
+      "traditional feeders",
+      "product comparison",
+      "pet nutrition",
+      "pet tech",
+    ],
+    featured: false,
+    recommendedProducts: ["granary-smart-camera-feeder", "air-smart-feeder"],
+    content: `
+      <h2>The Feeding Dilemma: Smart vs Traditional</h2>
+      <p>Choosing the right feeder for your pet is one of the most impactful decisions you'll make as a pet parent. <strong>Traditional feeders</strong> — simple bowls, gravity dispensers, and basic timed models — have served pet owners well for decades. But the rise of <strong>smart Wi-Fi-connected feeders</strong> like the PETLIBRO Granary series has introduced a new standard of convenience, precision, and health monitoring. So which is actually better for your pet? Let's compare them head-to-head.</p>
+
+      <h2>Head-to-Head Comparison</h2>
+      <table style="width:100%; border-collapse:collapse; margin:1.5rem 0;">
+        <thead>
+          <tr style="border-bottom:2px solid #e5e7eb;">
+            <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">Feature</th>
+            <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">Traditional Feeder</th>
+            <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">PETLIBRO Smart Feeder</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Price Range</td>
+            <td style="padding:0.75rem 1rem;">$10 – $40</td>
+            <td style="padding:0.75rem 1rem;">$60 – $180</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Portion Accuracy</td>
+            <td style="padding:0.75rem 1rem;">Manual / Approximate</td>
+            <td style="padding:0.75rem 1rem;">Down to 1 gram</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Scheduling</td>
+            <td style="padding:0.75rem 1rem;">None or basic timer</td>
+            <td style="padding:0.75rem 1rem;">Up to 10 meals/day via app</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Remote Control</td>
+            <td style="padding:0.75rem 1rem;">No</td>
+            <td style="padding:0.75rem 1rem;">Full app + voice assistant</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Camera / Audio</td>
+            <td style="padding:0.75rem 1rem;">No</td>
+            <td style="padding:0.75rem 1rem;">HD camera + two-way audio</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Power Backup</td>
+            <td style="padding:0.75rem 1rem;">N/A (no power needed)</td>
+            <td style="padding:0.75rem 1rem;">Battery backup included</td>
+          </tr>
+          <tr style="border-bottom:1px solid #f3f4f6;">
+            <td style="padding:0.75rem 1rem;">Food Freshness</td>
+            <td style="padding:0.75rem 1rem;">Exposed to air</td>
+            <td style="padding:0.75rem 1rem;">Airtight hopper + desiccant</td>
+          </tr>
+          <tr>
+            <td style="padding:0.75rem 1rem;">Health Monitoring</td>
+            <td style="padding:0.75rem 1rem;">None</td>
+            <td style="padding:0.75rem 1rem;">Eating logs, alerts, analytics</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>Pros of Traditional Feeders</h2>
+      <ul>
+        <li><strong>Low cost:</strong> A quality stainless steel bowl costs under $15. Even gravity feeders top out around $30-40.</li>
+        <li><strong>Zero setup:</strong> No app to install, no Wi-Fi to configure, no firmware updates. Fill it and go.</li>
+        <li><strong>No power dependency:</strong> Traditional feeders don't need electricity, so there's zero risk of a power-related feeding failure.</li>
+        <li><strong>Simplicity for single-pet homes:</strong> If you're always home at mealtimes and have one pet, a bowl does the job perfectly fine.</li>
+      </ul>
+
+      <h2>Cons of Traditional Feeders</h2>
+      <ul>
+        <li><strong>No portion control:</strong> Eyeballing portions leads to overfeeding, the number one cause of pet obesity. Over 60% of dogs and 56% of cats in the U.S. are overweight or obese.</li>
+        <li><strong>Schedule inconsistency:</strong> Your pet's mealtime depends entirely on your availability. Late meetings, travel, or simply forgetting can disrupt their routine.</li>
+        <li><strong>Food spoilage:</strong> Kibble left in an open bowl goes stale quickly, and wet food becomes unsafe after just 2-4 hours at room temperature.</li>
+        <li><strong>No monitoring:</strong> You have no way to track how much your pet actually ate, or spot changes in eating patterns that might indicate illness.</li>
+      </ul>
+
+      <h2>Pros of PETLIBRO Smart Feeders</h2>
+      <ul>
+        <li><strong>Precision nutrition:</strong> The Granary Smart Camera Feeder dispenses portions accurate to 1 gram, making it easy to follow your vet's dietary recommendations exactly.</li>
+        <li><strong>Total schedule control:</strong> Set up to 10 meals per day with specific times and amounts. Your pet eats on schedule regardless of where you are.</li>
+        <li><strong>Remote access:</strong> The PETLIBRO app lets you adjust meals, dispense food manually, and check the camera from anywhere in the world.</li>
+        <li><strong>Health insights:</strong> Track daily intake over time, set feeding goals, and receive alerts if your pet skips a meal — catching potential health issues early.</li>
+        <li><strong>Peace of mind:</strong> The built-in camera with night vision and two-way audio means you can check on your pet anytime. Battery backup ensures feeding continues during outages.</li>
+      </ul>
+
+      <h2>Cons of PETLIBRO Smart Feeders</h2>
+      <ul>
+        <li><strong>Higher upfront cost:</strong> Smart feeders range from $60-180, significantly more than traditional options.</li>
+        <li><strong>Requires Wi-Fi:</strong> Core features depend on an internet connection, though scheduled feedings work offline once programmed.</li>
+        <li><strong>Dry food only:</strong> Most smart feeders are designed for kibble. Wet food requires a separate feeding solution.</li>
+        <li><strong>Learning curve:</strong> Initial app setup and Wi-Fi pairing take 10-15 minutes, which may frustrate less tech-savvy owners.</li>
+      </ul>
+
+      <h2>The Verdict: Which Should You Choose?</h2>
+      <p>For pet parents who travel frequently, work long hours, or have pets that need strict portion control (overweight pets, diabetic pets, or multi-pet households), a <strong>PETLIBRO smart feeder is the clear winner</strong>. The precision, monitoring, and remote access justify the investment — and many owners say it pays for itself in reduced vet bills from better weight management.</p>
+      <p>If you're always home at mealtimes, have a single pet that self-regulates well, and prefer the simplest possible setup, a traditional feeder is perfectly adequate. But even in this scenario, upgrading to a smart feeder adds a layer of data and convenience that most pet parents quickly come to rely on.</p>
+      <p>Our recommendation? <strong>Start with the Granary Smart Camera Feeder</strong> — it covers every use case and consistently ranks as our best-selling product for good reason.</p>
+    `,
+  },
+  {
+    id: "8",
+    slug: "best-gifts-for-pet-lovers-2026",
+    title: "Best Gifts for Pet Lovers in 2026",
+    excerpt:
+      "Looking for the perfect gift for the pet parent in your life? From budget-friendly accessories to premium smart devices, here's our curated guide across every price range.",
+    category: "Pet Care Tips",
+    author: "Mark Thompson",
+    author_role: "Pet Tech Reviewer",
+    published_at: "2026-03-16",
+    read_time: 6,
+    image_url:
+      "https://images.unsplash.com/photo-1560807707-8cc77767d783?w=1200&h=630&fit=crop",
+    tags: [
+      "gift guide",
+      "pet lovers",
+      "pet gifts",
+      "holiday gifts",
+      "pet tech",
+    ],
+    featured: false,
+    recommendedProducts: ["granary-smart-camera-feeder", "dockstream-2-smart-fountain", "luma-smart-litter-box"],
+    content: `
+      <h2>The Ultimate Gift Guide for Pet Parents</h2>
+      <p>Finding the right gift for a pet lover can be tricky — they usually already have the basics covered. That's why the best gifts are the ones that <strong>upgrade their pet care experience</strong>, save them time, or bring joy to both them and their furry companions. Whether you're shopping for a birthday, holiday, or just because, this guide covers every budget with gifts that pet parents actually want.</p>
+
+      <h2>Budget-Friendly Gifts: $25 – $50</h2>
+      <p>Great gifts don't have to break the bank. These affordable picks are thoughtful, practical, and sure to be appreciated.</p>
+
+      <h3>Interactive Treat Puzzle ($25-35)</h3>
+      <p>Puzzle feeders challenge pets mentally while slowing down fast eaters. They come in various difficulty levels and are perfect for dogs and cats alike. Look for BPA-free, dishwasher-safe options that hold up to regular use. Pet parents love these because they keep their animals entertained during work-from-home hours.</p>
+
+      <h3>Premium Pet Blanket ($30-45)</h3>
+      <p>A cozy, machine-washable pet blanket in a stylish print is always welcome. Opt for one that's reversible — plush on one side, waterproof on the other — to protect furniture while keeping pets comfortable. Brands that offer personalization with the pet's name add an extra special touch.</p>
+
+      <h3>Replacement Filter Packs ($20-30)</h3>
+      <p>If you know the pet parent already has a water fountain or smart feeder, a pack of replacement filters is an incredibly practical gift. It's the kind of thing people always need but rarely treat themselves to. For PETLIBRO fountain owners, our 6-pack filter sets are always a hit.</p>
+
+      <h2>Mid-Range Gifts: $50 – $100</h2>
+      <p>This price range opens up some genuinely impressive options that combine quality with functionality.</p>
+
+      <h3>Smart Water Fountain ($60-90)</h3>
+      <p>The <strong>Dockstream 2 Smart Fountain</strong> is one of our most-gifted products. With its ultra-quiet pump, 5-stage filtration, and app connectivity, it's a gift that improves a pet's health every single day. Pet parents who receive one consistently say it's the best pet gift they've ever gotten — many cats increase their water intake by 50% or more after switching from a static bowl.</p>
+
+      <h3>Elevated Feeding Station ($50-75)</h3>
+      <p>Raised feeding stations with adjustable heights are excellent for older pets or breeds prone to bloat. The best ones combine solid wood or bamboo construction with stainless steel bowls. They look great in any kitchen and promote better posture during meals.</p>
+
+      <h3>Pet First Aid Kit ($45-65)</h3>
+      <p>A comprehensive pet-specific first aid kit is something every pet parent should have but few think to buy. Look for kits that include tick removers, styptic powder, emergency contact cards, and a pet CPR guide. It's a gift that shows you genuinely care about their pet's safety.</p>
+
+      <h2>Premium Gifts: $100+</h2>
+      <p>When you want to give something truly memorable, these premium picks deliver the wow factor.</p>
+
+      <h3>Smart Camera Feeder ($120-180)</h3>
+      <p>The <strong>Granary Smart Camera Feeder</strong> is the ultimate gift for any pet parent. HD camera with night vision, two-way audio, precision portioning down to 1 gram, 5L capacity, and a battery backup — it's the Swiss Army knife of pet care. Recipients universally love the ability to watch their pet eat from their phone. This is our top recommended gift for pet lovers who haven't yet entered the smart pet device world.</p>
+
+      <h3>Self-Cleaning Litter Box ($400-600)</h3>
+      <p>For cat parents, the <strong>Luma Smart Litter Box</strong> is a life-changing gift. It eliminates daily scooping entirely, monitors cat health through usage analytics, and controls odor through sealed waste compartments. Yes, the price tag is premium, but every cat parent who receives one says the same thing: "I can't believe I waited this long." It's the kind of gift that gets talked about for years.</p>
+
+      <h3>Complete Smart Pet Bundle ($250-500)</h3>
+      <p>For the ultimate gesture, gift a complete smart care bundle: feeder + fountain + litter box. PETLIBRO offers <strong>bundle discounts of 15-25%</strong> compared to buying each device separately. Everything connects through one app, creating a unified ecosystem that tracks feeding, hydration, and litter box usage. It's the complete pet care upgrade — and the savings on the bundle make it even sweeter.</p>
+
+      <h2>Gift-Giving Tips</h2>
+      <ul>
+        <li><strong>Consider the pet, not just the owner:</strong> A gift that makes the pet healthier or happier is always the most appreciated.</li>
+        <li><strong>Check compatibility:</strong> If gifting accessories or replacement parts, confirm the brand and model the pet parent already uses.</li>
+        <li><strong>Don't forget multi-pet homes:</strong> If they have multiple pets, consider RFID-enabled feeders or getting enough for each animal.</li>
+        <li><strong>Include a personal touch:</strong> A handwritten card explaining why you chose the gift — especially if it benefits the pet's health — makes any present more meaningful.</li>
+      </ul>
+
+      <h2>Final Thoughts</h2>
+      <p>The best gifts for pet lovers in 2026 blend technology with genuine care for animal wellbeing. Whether you spend $25 on a puzzle feeder or $500 on a complete smart home setup, the common thread is choosing something that makes daily pet care easier, healthier, or more enjoyable. Your recipient — and their pets — will thank you.</p>
     `,
   },
 ];
