@@ -9,10 +9,11 @@ export function AnnouncementBar() {
   if (!visible) return null;
 
   return (
-    <div className="relative bg-[#2d3a2e] text-white py-2.5 text-xs font-medium">
+    <div className="relative bg-accent text-white py-2.5 text-xs font-medium">
       <div className="max-w-7xl mx-auto px-4 lg:px-8 flex items-center justify-center min-h-[20px]">
         <span className="tracking-wide text-center">
-          Free shipping on orders $75+ &nbsp;|&nbsp; 30-day hassle-free returns
+          <span className="gold-shimmer font-semibold">Free Express Shipping</span>
+          {" "}on Orders $75+ &nbsp;·&nbsp; Shop Now →
         </span>
       </div>
       <button

@@ -32,13 +32,13 @@ export default function Newsletter() {
     <section className="py-20 md:py-28 border-t border-border">
       <div className="container-main">
         <div className="max-w-3xl mx-auto text-center">
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-accent mb-4 block">
+          <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
             Stay Connected
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+          <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
             Get 10% Off Your First Order
           </h2>
-          <p className="text-muted mt-4 max-w-md mx-auto leading-relaxed">
+          <p className="text-muted mt-4 max-w-md mx-auto leading-relaxed text-sm">
             Join 15,000+ pet parents for exclusive deals, new product alerts,
             and smart pet care tips.
           </p>
@@ -64,7 +64,7 @@ export default function Newsletter() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="group inline-flex items-center justify-center gap-2 bg-foreground text-white px-8 py-4 text-sm font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-60 whitespace-nowrap"
+                className="group inline-flex items-center justify-center gap-2 bg-accent text-white px-8 py-4 text-sm font-semibold hover:bg-accent-dark transition-colors duration-300 disabled:opacity-60 whitespace-nowrap"
               >
                 {status === "loading" ? (
                   "Subscribing..."
@@ -85,7 +85,10 @@ export default function Newsletter() {
           )}
 
           {status !== "success" && (
-            <p className="text-muted text-xs mt-4">
+            <p className="text-muted text-xs mt-4 inline-flex items-center gap-1.5">
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
               No spam, ever. Unsubscribe in one click.
             </p>
           )}

@@ -23,9 +23,12 @@ const config: Config = {
         success: "var(--success)",
         warning: "var(--warning)",
         highlight: "var(--highlight)",
+        gold: "var(--gold)",
+        "gold-light": "var(--gold-light)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       fontSize: {
         "display-xl": ["4rem", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "700" }],
@@ -58,6 +61,8 @@ const config: Config = {
         "modal": "0 16px 48px rgba(0,0,0,0.12)",
         "soft": "0 1px 4px rgba(0,0,0,0.04)",
         "inner-soft": "inset 0 1px 2px rgba(0,0,0,0.05)",
+        "luxe": "0 20px 60px rgba(0,0,0,0.08)",
+        "luxe-hover": "0 30px 80px rgba(0,0,0,0.12)",
       },
       spacing: {
         "section": "5rem",

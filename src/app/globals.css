@@ -4,19 +4,21 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #121212;
-  --surface: #f3f3f3;
-  --surface-light: #f8f8f8;
-  --muted: #666666;
+  --foreground: #0a0a0a;
+  --surface: #f7f7f5;
+  --surface-light: #fafaf8;
+  --muted: #71717a;
   --foreground-muted: #242833;
   --border: #e5e5e5;
-  --accent: #334fb4;
-  --accent-light: #eef1fa;
-  --accent-dark: #2a3f8f;
+  --accent: #1a1a2e;
+  --accent-light: #f0f0f8;
+  --accent-dark: #12121f;
   --sale: #e53e3e;
   --success: #16a34a;
   --warning: #f59e0b;
   --highlight: #f0f4ff;
+  --gold: #b8860b;
+  --gold-light: #f5f0e0;
 }
 
 html {
@@ -30,7 +32,7 @@ body {
 
 /* Selection colors */
 ::selection {
-  background-color: rgba(51, 79, 180, 0.18);
+  background-color: rgba(26, 26, 46, 0.15);
   color: var(--foreground);
 }
 
@@ -95,6 +97,15 @@ body {
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes staggerReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes goldShimmer {
+  0%, 100% { background-position: -200% center; }
+  50% { background-position: 200% center; }
 }
 
 @layer components {
@@ -182,6 +193,47 @@ body {
   .card-lift:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Staggered reveal for luxury entrances */
+  .stagger-in > * {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: staggerReveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  .stagger-in > *:nth-child(1) { animation-delay: 0.3s; }
+  .stagger-in > *:nth-child(2) { animation-delay: 0.5s; }
+  .stagger-in > *:nth-child(3) { animation-delay: 0.7s; }
+  .stagger-in > *:nth-child(4) { animation-delay: 0.9s; }
+  .stagger-in > *:nth-child(5) { animation-delay: 1.1s; }
+  .stagger-in > *:nth-child(6) { animation-delay: 1.3s; }
+
+  /* Gold shimmer text effect */
+  .gold-shimmer {
+    background: linear-gradient(90deg, var(--gold) 0%, #d4a843 50%, var(--gold) 100%);
+    background-size: 200% 100%;
+    animation: goldShimmer 3s ease-in-out infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Luxury hover underline for links */
+  .luxury-underline {
+    position: relative;
+  }
+  .luxury-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .luxury-underline:hover::after {
+    width: 100%;
   }
 
   /* Premium shimmer skeleton */

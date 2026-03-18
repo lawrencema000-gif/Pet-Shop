@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Header } from "@/components/layout/Header";
@@ -11,11 +11,19 @@ import WebsiteSchema from "@/components/seo/WebsiteSchema";
 import { AuthProvider } from "@/lib/supabase/auth-provider";
 import { ToastProvider } from "@/components/ui/Toast";
 import SkipLink from "@/components/ui/SkipLink";
+import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
 
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -80,7 +88,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <AuthProvider>
           <ToastProvider>
             <SkipLink />
@@ -92,6 +100,7 @@ export default function RootLayout({
             <Footer />
             <StickyTab />
             <CartDrawer />
+            <ExitIntentPopup />
             <div id="aria-live" aria-live="polite" role="status" className="sr-only" />
           </ToastProvider>
         </AuthProvider>

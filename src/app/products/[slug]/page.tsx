@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import ProductGallery from "@/components/product/ProductGallery";
@@ -188,22 +187,22 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-1.5 text-sm text-muted mb-8">
+        <nav className="flex items-center gap-1.5 text-xs text-muted mb-8">
           <Link href="/" className="hover:text-foreground transition-colors">
             Home
           </Link>
-          <ChevronRight className="w-3.5 h-3.5" />
           {product.category && (
             <>
+              <span className="text-border">/</span>
               <Link
                 href={`/categories/${product.category.slug}`}
                 className="hover:text-foreground transition-colors"
               >
                 {product.category.name}
               </Link>
-              <ChevronRight className="w-3.5 h-3.5" />
             </>
           )}
+          <span className="text-border">/</span>
           <span className="text-foreground font-medium line-clamp-1">
             {product.name}
           </span>

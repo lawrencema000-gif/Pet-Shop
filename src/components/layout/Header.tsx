@@ -50,7 +50,7 @@ export function Header() {
               </button>
               <Link
                 href="/"
-                className="font-bold tracking-tight text-foreground text-xl lg:text-2xl"
+                className="font-display font-bold tracking-tight text-foreground text-xl lg:text-2xl"
               >
                 {SITE_CONFIG.name}
               </Link>
@@ -116,7 +116,7 @@ export function Header() {
               >
                 <ShoppingBag size={20} />
                 {totalItems > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-accent rounded-full">
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-gold rounded-full">
                     {totalItems > 99 ? "99+" : totalItems}
                   </span>
                 )}

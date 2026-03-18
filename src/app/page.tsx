@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import HeroBanner from "@/components/home/HeroBanner";
+import SocialProofBar from "@/components/home/SocialProofBar";
 import CategoryCards from "@/components/home/CategoryCards";
 import BestSellers from "@/components/home/BestSellers";
 import ProductSpotlight from "@/components/home/ProductSpotlight";
@@ -34,11 +35,13 @@ export default async function Home() {
     <>
       <HeroBanner />
 
-      <section className="container-main py-20 md:py-28">
+      <SocialProofBar />
+
+      <section className="container-main py-24 md:py-32">
         <CategoryCards categories={categories || []} />
       </section>
 
-      <section className="container-main py-20 md:py-28">
+      <section className="container-main py-24 md:py-32">
         <BestSellers products={bestSellers || []} />
       </section>
 
@@ -46,7 +49,7 @@ export default async function Home() {
 
       <WhyChooseUs />
 
-      <section className="container-main py-20 md:py-28">
+      <section className="container-main py-24 md:py-32">
         <Testimonials />
       </section>
 

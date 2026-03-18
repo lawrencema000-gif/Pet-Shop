@@ -45,13 +45,23 @@ export default function BestSellers({ products }: BestSellersProps) {
 
   return (
     <div className="relative">
-      <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl md:text-3xl font-bold">Best Sellers</h2>
+      <div className="text-center mb-12">
+        <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
+          Most Loved
+        </span>
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
+          Best Sellers
+        </h2>
+        <p className="text-muted mt-3 max-w-md mx-auto text-sm">
+          Chosen by 50,000+ pet parents — these are the products they come back for.
+        </p>
+      </div>
+      <div className="flex justify-end mb-6">
         <Link
           href="/products?sort=best-sellers"
-          className="text-sm font-medium text-muted hover:text-foreground transition-colors"
+          className="text-sm font-medium text-muted hover:text-foreground transition-colors luxury-underline"
         >
-          View All &rarr;
+          View All
         </Link>
       </div>
 
