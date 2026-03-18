@@ -12,6 +12,9 @@ interface DrawerProps {
   children: React.ReactNode;
   side?: "left" | "right";
   className?: string;
+  role?: string;
+  "aria-modal"?: boolean;
+  "aria-label"?: string;
 }
 
 export function Drawer({
@@ -21,6 +24,9 @@ export function Drawer({
   children,
   side = "right",
   className,
+  role,
+  "aria-modal": ariaModal,
+  "aria-label": ariaLabel,
 }: DrawerProps) {
   // Body scroll lock
   useEffect(() => {
@@ -79,6 +85,9 @@ export function Drawer({
             initial="hidden"
             animate="visible"
             exit="exit"
+            role={role}
+            aria-modal={ariaModal as boolean | "true" | "false" | undefined}
+            aria-label={ariaLabel}
             className={cn(
               "fixed top-0 z-50 h-full w-full max-w-md bg-background shadow-xl flex flex-col",
               side === "right" ? "right-0" : "left-0",

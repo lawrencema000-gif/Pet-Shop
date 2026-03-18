@@ -2,20 +2,20 @@ export default function OrganizationSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Pet Shop",
+    name: "PETLIBRO",
     url: "https://pet-shop-lac-ten.vercel.app",
     logo: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=400&h=400&fit=crop",
     description: "Smart pet care products for modern pet parents",
     sameAs: [
-      "https://facebook.com/petshop",
-      "https://instagram.com/petshop",
-      "https://twitter.com/petshop",
-      "https://youtube.com/@petshop",
+      "https://facebook.com/petlibro",
+      "https://instagram.com/petlibro",
+      "https://twitter.com/petlibro",
+      "https://youtube.com/@petlibro",
     ],
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "customer service",
-      email: "support@petshop.com",
+      email: "support@petlibro.com",
     },
   };
 

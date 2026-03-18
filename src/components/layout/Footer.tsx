@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/petshop", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/petshop", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com/petshop", label: "Twitter" },
-  { icon: Youtube, href: "https://youtube.com/@petshop", label: "YouTube" },
+  { icon: Facebook, href: "https://facebook.com/petlibro", label: "Facebook" },
+  { icon: Instagram, href: "https://instagram.com/petlibro", label: "Instagram" },
+  { icon: Twitter, href: "https://twitter.com/petlibro", label: "Twitter" },
+  { icon: Youtube, href: "https://youtube.com/@petlibro", label: "YouTube" },
 ];
 
 const trustBadges = [

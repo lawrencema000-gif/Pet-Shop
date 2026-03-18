@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import ProductGrid from "@/components/product/ProductGrid";
 import FilterSidebar from "@/components/product/FilterSidebar";
+import CategoryHero from "@/components/category/CategoryHero";
+import SEOBlock from "@/components/category/SEOBlock";
 
 interface CategoryPageProps {
   params: { slug: string };
@@ -53,11 +55,15 @@ export default async function CategoryPage({
 
   if (!category) notFound();
 
-  // Fetch all categories for sidebar
+  // Fetch all categories for sidebar + related
   const { data: categories } = await supabase
     .from("categories")
     .select("*")
     .order("display_order");
+
+  // Related categories (exclude current)
+  const relatedCategories =
+    categories?.filter((c) => c.id !== category.id).slice(0, 6) || [];
 
   // Build product query
   let query = supabase
@@ -108,6 +114,22 @@ export default async function CategoryPage({
   const { data: products, count } = await query;
   const totalPages = count ? Math.ceil(count / PRODUCTS_PER_PAGE) : 1;
 
+  // Build active filter display
+  const activeFilters: Record<string, string> = {};
+  if (searchParams.minPrice) activeFilters.minPrice = `$${searchParams.minPrice}+`;
+  if (searchParams.maxPrice) activeFilters.maxPrice = `Up to $${searchParams.maxPrice}`;
+  if (searchParams.sort) {
+    const sortLabels: Record<string, string> = {
+      "price-asc": "Price: Low to High",
+      "price-desc": "Price: High to Low",
+      newest: "Newest",
+      "best-selling": "Best Selling",
+    };
+    activeFilters.sort = sortLabels[searchParams.sort] || searchParams.sort;
+  }
+
+  const hasActiveFilters = Object.keys(activeFilters).length > 0;
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Breadcrumb */}
@@ -119,16 +141,56 @@ export default async function CategoryPage({
         <span className="text-foreground font-medium">{category.name}</span>
       </nav>
 
-      {/* Heading */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">{category.name}</h1>
-        {category.description && (
-          <p className="text-muted mt-2 max-w-2xl">{category.description}</p>
-        )}
-        <p className="text-sm text-muted mt-1">
-          Showing {products?.length ?? 0} of {count ?? 0} products
-        </p>
-      </div>
+      {/* Category Hero */}
+      <CategoryHero
+        name={category.name}
+        description={category.description}
+        imageUrl={category.image_url}
+      />
+
+      {/* Active Filter Chips */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2 mb-6">
+          {Object.entries(activeFilters).map(([key, value]) => (
+            <Link
+              key={key}
+              href={{
+                pathname: `/categories/${params.slug}`,
+                query: {
+                  ...searchParams,
+                  [key]: undefined,
+                  page: undefined,
+                },
+              }}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface border border-border rounded-full text-xs font-medium text-foreground hover:bg-surface/80 transition-colors"
+            >
+              <span className="text-muted">
+                {key === "minPrice"
+                  ? "Min Price"
+                  : key === "maxPrice"
+                  ? "Max Price"
+                  : "Sort"}
+                :
+              </span>
+              <span>{value}</span>
+              <span className="text-muted ml-0.5">&times;</span>
+            </Link>
+          ))}
+          {Object.keys(activeFilters).length > 1 && (
+            <Link
+              href={`/categories/${params.slug}`}
+              className="text-xs text-accent hover:text-accent/80 font-medium transition-colors"
+            >
+              Clear All
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* Showing count */}
+      <p className="text-sm text-muted mb-6">
+        Showing {products?.length ?? 0} of {count ?? 0} products
+      </p>
 
       {/* Mobile filter */}
       <div className="lg:hidden mb-6">
@@ -183,6 +245,32 @@ export default async function CategoryPage({
           )}
         </div>
       </div>
+
+      {/* Related Categories */}
+      {relatedCategories.length > 0 && (
+        <div className="mt-16">
+          <h2 className="text-xl font-bold text-foreground mb-4">
+            Related Categories
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {relatedCategories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/categories/${cat.slug}`}
+                className="px-4 py-2 bg-surface border border-border rounded-full text-sm font-medium text-foreground hover:border-accent hover:text-accent transition-colors"
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* SEO Block */}
+      <SEOBlock
+        categoryName={category.name}
+        productCount={count ?? 0}
+      />
     </div>
   );
 }

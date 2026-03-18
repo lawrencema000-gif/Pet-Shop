@@ -9,6 +9,12 @@ import ProductTabs from "@/components/product/ProductTabs";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import WhyChooseSection from "@/components/product/WhyChooseSection";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
+import TrackView from "@/components/product/TrackView";
+import RecentlyViewed from "@/components/product/RecentlyViewed";
+import HowItWorks from "@/components/product/HowItWorks";
+import BenefitsSection from "@/components/product/BenefitsSection";
+import FrequentlyBoughtTogether from "@/components/product/FrequentlyBoughtTogether";
+import ProductFAQ from "@/components/product/ProductFAQ";
 import type { Review } from "@/types/product";
 
 interface ProductPageProps {
@@ -153,6 +159,21 @@ export default async function ProductPage({ params }: ProductPageProps) {
           />
         </div>
 
+        {/* How It Works */}
+        <HowItWorks />
+
+        {/* Benefits Section */}
+        <BenefitsSection />
+
+        {/* Frequently Bought Together */}
+        <FrequentlyBoughtTogether
+          productId={product.id}
+          categoryId={product.category_id}
+        />
+
+        {/* Product FAQ */}
+        <ProductFAQ productName={product.name} />
+
         {/* Why Choose This Product */}
         <WhyChooseSection />
 
@@ -160,7 +181,13 @@ export default async function ProductPage({ params }: ProductPageProps) {
         {relatedProducts && relatedProducts.length > 0 && (
           <RelatedProducts products={relatedProducts} />
         )}
+
+        {/* Recently Viewed */}
+        <RecentlyViewed />
       </div>
+
+      {/* Track page view for recently viewed */}
+      <TrackView slug={product.slug} />
 
       {/* Sticky Add to Cart Bar */}
       <ProductDetailClient product={product} />

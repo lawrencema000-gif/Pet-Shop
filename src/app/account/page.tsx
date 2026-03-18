@@ -5,17 +5,21 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Package,
-  LogOut,
   ChevronRight,
   ShoppingBag,
   CalendarDays,
+  PawPrint,
+  User,
+  MapPin,
+  Settings,
+  HelpCircle,
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
-import type { User } from "@supabase/supabase-js";
+import type { User as AuthUser } from "@supabase/supabase-js";
 import type { Order } from "@/types/order";
 
 const STATUS_VARIANT: Record<string, "default" | "sale" | "new" | "popular"> = {
@@ -26,11 +30,20 @@ const STATUS_VARIANT: Record<string, "default" | "sale" | "new" | "popular"> = {
   cancelled: "sale",
 };
 
+const QUICK_LINKS = [
+  { href: "/account/profile", label: "Edit Profile", icon: User },
+  { href: "/account/addresses", label: "Address Book", icon: MapPin },
+  { href: "/account/orders", label: "Order History", icon: Package },
+  { href: "/account/pets", label: "Pet Profiles", icon: PawPrint },
+  { href: "/account/settings", label: "Settings", icon: Settings },
+];
+
 export default function AccountPage() {
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [totalOrderCount, setTotalOrderCount] = useState(0);
+  const [petCount, setPetCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -46,31 +59,32 @@ export default function AccountPage() {
 
       setUser(user);
 
-      const [{ data: ordersData }, { count }] = await Promise.all([
-        supabase
-          .from("orders")
-          .select("*")
-          .eq("user_id", user.id)
-          .order("created_at", { ascending: false })
-          .limit(5),
-        supabase
-          .from("orders")
-          .select("id", { count: "exact", head: true })
-          .eq("user_id", user.id),
-      ]);
+      const [{ data: ordersData }, { count }, { count: petsCount }] =
+        await Promise.all([
+          supabase
+            .from("orders")
+            .select("*")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(5),
+          supabase
+            .from("orders")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", user.id),
+          supabase
+            .from("pets")
+            .select("id", { count: "exact", head: true })
+            .eq("user_id", user.id),
+        ]);
 
       setOrders((ordersData as Order[]) || []);
       setTotalOrderCount(count || 0);
+      setPetCount(petsCount || 0);
       setLoading(false);
     };
 
     init();
   }, [router]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-  };
 
   if (loading) {
     return (
@@ -90,7 +104,7 @@ export default function AccountPage() {
   });
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <div>
       {/* Welcome */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
@@ -100,7 +114,7 @@ export default function AccountPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
         <div className="bg-surface-light rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <ShoppingBag size={20} className="text-muted" />
@@ -114,6 +128,13 @@ export default function AccountPage() {
             <span className="text-sm text-muted">Member Since</span>
           </div>
           <p className="text-lg font-bold text-foreground">{memberSince}</p>
+        </div>
+        <div className="bg-surface-light rounded-xl p-5 col-span-2 md:col-span-1">
+          <div className="flex items-center gap-3 mb-2">
+            <PawPrint size={20} className="text-muted" />
+            <span className="text-sm text-muted">Pets</span>
+          </div>
+          <p className="text-2xl font-bold text-foreground">{petCount}</p>
         </div>
       </div>
 
@@ -146,7 +167,7 @@ export default function AccountPage() {
             {orders.map((order) => (
               <Link
                 key={order.id}
-                href="/account/orders"
+                href={`/account/orders/${order.id}`}
                 className="flex items-center justify-between bg-surface-light rounded-xl p-4 hover:bg-surface transition-colors"
               >
                 <div>
@@ -177,27 +198,44 @@ export default function AccountPage() {
       </div>
 
       {/* Quick Links */}
-      <div className="space-y-2">
-        <Link
-          href="/account/orders"
-          className="flex items-center justify-between bg-surface-light rounded-xl p-4 hover:bg-surface transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <Package size={20} className="text-muted" />
-            <span className="font-medium text-foreground">Order History</span>
-          </div>
-          <ChevronRight size={18} className="text-muted" />
+      <div className="mb-8">
+        <h2 className="text-lg font-semibold text-foreground mb-4">
+          Quick Links
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {QUICK_LINKS.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="flex items-center justify-between bg-surface-light rounded-xl p-4 hover:bg-surface transition-colors"
+              >
+                <div className="flex items-center gap-3">
+                  <Icon size={20} className="text-muted" />
+                  <span className="font-medium text-foreground">
+                    {link.label}
+                  </span>
+                </div>
+                <ChevronRight size={18} className="text-muted" />
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Need Help */}
+      <div className="bg-surface-light rounded-xl p-6 text-center">
+        <HelpCircle size={28} className="text-muted mx-auto mb-2" />
+        <h3 className="font-semibold text-foreground mb-1">Need Help?</h3>
+        <p className="text-sm text-muted mb-4">
+          Our support team is here for you and your pets.
+        </p>
+        <Link href="/support">
+          <Button variant="outline" size="sm">
+            Contact Support
+          </Button>
         </Link>
-        <button
-          onClick={handleSignOut}
-          className="w-full flex items-center justify-between bg-surface-light rounded-xl p-4 hover:bg-surface transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <LogOut size={20} className="text-muted" />
-            <span className="font-medium text-foreground">Sign Out</span>
-          </div>
-          <ChevronRight size={18} className="text-muted" />
-        </button>
       </div>
     </div>
   );

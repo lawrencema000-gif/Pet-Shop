@@ -3,9 +3,42 @@
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Loader2 } from "lucide-react";
+import Link from "next/link";
 import ProductGrid from "@/components/product/ProductGrid";
 import { supabase } from "@/lib/supabase/client";
-import type { Product } from "@/types/product";
+import type { Product, Category } from "@/types/product";
+
+function SuggestedCategories() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data } = await supabase
+        .from("categories")
+        .select("*")
+        .order("display_order")
+        .limit(6);
+      if (data) setCategories(data as Category[]);
+    };
+    fetchCategories();
+  }, []);
+
+  if (categories.length === 0) return null;
+
+  return (
+    <div className="flex flex-wrap justify-center gap-3">
+      {categories.map((cat) => (
+        <Link
+          key={cat.id}
+          href={`/categories/${cat.slug}`}
+          className="px-5 py-2.5 text-sm font-medium text-foreground bg-surface-light rounded-full hover:bg-surface transition-colors"
+        >
+          {cat.name}
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 function SearchContent() {
   const router = useRouter();
@@ -96,10 +129,11 @@ function SearchContent() {
           <h2 className="text-xl font-semibold text-foreground mb-2">
             No results found
           </h2>
-          <p className="text-muted max-w-md mx-auto">
+          <p className="text-muted max-w-md mx-auto mb-8">
             We couldn&apos;t find any products matching &ldquo;{query}&rdquo;.
-            Try a different search term.
+            Try different keywords or browse our categories below.
           </p>
+          <SuggestedCategories />
         </div>
       )}
 

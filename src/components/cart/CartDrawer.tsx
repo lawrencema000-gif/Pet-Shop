@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Minus, Plus, Trash2, ShoppingBag, Lock } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { Button } from "@/components/ui/Button";
+import FocusTrap from "@/components/ui/FocusTrap";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from "@/lib/constants";
@@ -37,7 +38,11 @@ export function CartDrawer() {
       onClose={closeDrawer}
       title={`Cart (${totalItems})`}
       side="right"
+      role="dialog"
+      aria-modal={true}
+      aria-label="Shopping cart"
     >
+      <FocusTrap active={isOpen} onEscape={closeDrawer}>
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full px-6 py-16 text-center">
           <ShoppingBag size={48} className="text-border mb-4" />
@@ -244,6 +249,7 @@ export function CartDrawer() {
           </div>
         </div>
       )}
+      </FocusTrap>
     </Drawer>
   );
 }

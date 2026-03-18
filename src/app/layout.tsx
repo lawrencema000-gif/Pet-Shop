@@ -9,6 +9,7 @@ import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import WebsiteSchema from "@/components/seo/WebsiteSchema";
 import { AuthProvider } from "@/lib/supabase/auth-provider";
 import { ToastProvider } from "@/components/ui/Toast";
+import SkipLink from "@/components/ui/SkipLink";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -81,13 +82,15 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           <ToastProvider>
+            <SkipLink />
             <OrganizationSchema />
             <WebsiteSchema />
             <AnnouncementBar />
             <Header />
-            <main className="min-h-screen">{children}</main>
+            <main id="main-content" className="min-h-screen">{children}</main>
             <Footer />
             <CartDrawer />
+            <div id="aria-live" aria-live="polite" role="status" className="sr-only" />
           </ToastProvider>
         </AuthProvider>
       </body>

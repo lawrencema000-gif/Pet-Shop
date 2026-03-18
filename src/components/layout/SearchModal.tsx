@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, X, TrendingUp } from "lucide-react";
+import { X, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Autocomplete from "@/components/search/Autocomplete";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -19,25 +20,20 @@ const popularSearches = [
 ];
 
 export function SearchModal({ isOpen, onClose }: SearchModalProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const router = useRouter();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (query.trim()) {
-      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
-      onClose();
-    }
-  };
+  const [showPopular, setShowPopular] = useState(true);
 
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    } else {
+    if (!isOpen) {
       setQuery("");
+      setShowPopular(true);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setShowPopular(!query.trim());
+  }, [query]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -53,6 +49,16 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     };
   }, [isOpen, onClose]);
 
+  const handleSelect = (url: string) => {
+    onClose();
+    router.push(url);
+  };
+
+  const handleSubmit = (q: string) => {
+    onClose();
+    router.push(`/search?q=${encodeURIComponent(q)}`);
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -65,19 +71,15 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
         >
           <div className="max-w-3xl mx-auto px-6 pt-8">
             {/* Header */}
-            <form onSubmit={handleSubmit} className="flex items-center gap-4">
-              <div className="flex-1 relative">
-                <Search
-                  size={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted"
-                />
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
+            <div className="flex items-center gap-4">
+              <div className="flex-1">
+                <Autocomplete
+                  autoFocus
                   placeholder="Search products..."
-                  className="w-full pl-12 pr-4 py-4 text-lg border border-border rounded-xl bg-surface-light focus:outline-none focus:border-accent focus:bg-white transition-colors"
+                  value={query}
+                  onChange={setQuery}
+                  onSelect={handleSelect}
+                  onSubmit={handleSubmit}
                 />
               </div>
               <button
@@ -88,27 +90,29 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
               >
                 <X size={24} />
               </button>
-            </form>
-
-            {/* Popular searches */}
-            <div className="mt-10">
-              <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground-muted mb-4">
-                <TrendingUp size={16} />
-                Popular Searches
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {popularSearches.map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    onClick={onClose}
-                    className="px-4 py-2 text-sm text-foreground bg-surface-light rounded-full hover:bg-surface transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
             </div>
+
+            {/* Popular searches — shown when input is empty */}
+            {showPopular && (
+              <div className="mt-10">
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-foreground-muted mb-4">
+                  <TrendingUp size={16} />
+                  Popular Searches
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {popularSearches.map((item) => (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      onClick={onClose}
+                      className="px-4 py-2 text-sm text-foreground bg-surface-light rounded-full hover:bg-surface transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </motion.div>
       )}
