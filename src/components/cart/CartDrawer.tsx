@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Minus, Plus, Trash2, ShoppingBag, Lock } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, Lock, Bookmark } from "lucide-react";
 import { Drawer } from "@/components/ui/Drawer";
 import { Button } from "@/components/ui/Button";
 import FocusTrap from "@/components/ui/FocusTrap";
 import { useCartStore } from "@/lib/store/cart";
+import { SaveForLater } from "@/components/cart/SaveForLater";
 import { formatPrice } from "@/lib/utils";
 import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from "@/lib/constants";
 
@@ -18,6 +19,7 @@ export function CartDrawer() {
   const closeDrawer = useCartStore((s) => s.closeDrawer);
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const saveForLater = useCartStore((s) => s.saveForLater);
   const subtotal = useCartStore((s) => s.subtotal());
   const totalItems = useCartStore((s) => s.totalItems());
 
@@ -151,6 +153,14 @@ export function CartDrawer() {
                         </button>
                       </div>
                       <button
+                        onClick={() => saveForLater(item.id)}
+                        className="p-1.5 text-muted hover:text-accent transition-colors"
+                        aria-label="Save for later"
+                        title="Save for Later"
+                      >
+                        <Bookmark size={14} />
+                      </button>
+                      <button
                         onClick={() => removeItem(item.id)}
                         className="p-1.5 text-muted hover:text-sale transition-colors"
                         aria-label="Remove item"
@@ -162,6 +172,11 @@ export function CartDrawer() {
                 </li>
               ))}
             </ul>
+
+            {/* Saved for Later */}
+            <div className="mt-6 pt-6 border-t border-border">
+              <SaveForLater />
+            </div>
 
             {/* Browse More */}
             <div className="mt-6 pt-6 border-t border-border text-center">

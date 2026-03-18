@@ -1,25 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft } from "lucide-react";
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Bookmark } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
+import { SaveForLater } from "@/components/cart/SaveForLater";
+import ProductCard from "@/components/product/ProductCard";
 import { cn, formatPrice } from "@/lib/utils";
 import { SITE_CONFIG, SHIPPING_COST, TAX_RATE } from "@/lib/constants";
 import { CouponField } from "@/components/cart/CouponField";
+import { supabase } from "@/lib/supabase/client";
+import type { Product } from "@/types/product";
 
 export default function CartPage() {
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const saveForLater = useCartStore((s) => s.saveForLater);
   const subtotal = useCartStore((s) => s.subtotal());
   const totalItems = useCartStore((s) => s.totalItems());
 
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [recommended, setRecommended] = useState<Product[]>([]);
+
+  useEffect(() => {
+    async function fetchRecommended() {
+      const { data } = await supabase
+        .from("products")
+        .select("*, images:product_images(*), variants:product_variants(*)")
+        .eq("status", "active")
+        .limit(20);
+      if (data && data.length > 0) {
+        // Pick 4 random products
+        const shuffled = [...data].sort(() => 0.5 - Math.random());
+        setRecommended(shuffled.slice(0, 4));
+      }
+    }
+    fetchRecommended();
+  }, []);
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
@@ -123,10 +145,18 @@ export default function CartPage() {
                       </button>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3">
                       <span className="font-semibold text-foreground">
                         {formatPrice(item.price * item.quantity)}
                       </span>
+                      <button
+                        onClick={() => saveForLater(item.id)}
+                        className="p-2 text-muted hover:text-accent transition-colors"
+                        aria-label="Save for later"
+                        title="Save for Later"
+                      >
+                        <Bookmark size={18} />
+                      </button>
                       <button
                         onClick={() => removeItem(item.id)}
                         className="p-2 text-muted hover:text-sale transition-colors"
@@ -148,6 +178,11 @@ export default function CartPage() {
             <ArrowLeft size={16} />
             Continue Shopping
           </Link>
+
+          {/* Saved for Later */}
+          <div className="mt-8 pt-8 border-t border-border">
+            <SaveForLater />
+          </div>
         </div>
 
         {/* Order Summary */}
@@ -228,6 +263,20 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+
+      {/* You Might Also Like */}
+      {recommended.length > 0 && (
+        <div className="mt-12 pt-12 border-t border-border">
+          <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">
+            You might also like
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {recommended.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

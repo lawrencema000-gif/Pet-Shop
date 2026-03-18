@@ -23,4 +23,5 @@ export interface CartState {
   closeDrawer: () => void;
   totalItems: () => number;
   subtotal: () => number;
+  saveForLater: (id: string) => void;
 }

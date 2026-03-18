@@ -8,7 +8,10 @@ import ProductShowcase from "@/components/home/ProductShowcase";
 import BrandStory from "@/components/home/BrandStory";
 import FeaturedBundles from "@/components/home/FeaturedBundles";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
+import HelpMeChooseWidget from "@/components/home/HelpMeChooseWidget";
 import Testimonials from "@/components/home/Testimonials";
+import FAQPreview from "@/components/home/FAQPreview";
+import MediaMentions from "@/components/home/MediaMentions";
 import Newsletter from "@/components/home/Newsletter";
 
 export default async function Home() {
@@ -98,9 +101,15 @@ export default async function Home() {
 
       <WhyChooseUs />
 
+      <HelpMeChooseWidget />
+
       <section className="container-main py-16">
         <Testimonials />
       </section>
+
+      <FAQPreview />
+
+      <MediaMentions />
 
       <Newsletter />
     </>
