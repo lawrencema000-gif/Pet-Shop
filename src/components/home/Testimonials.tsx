@@ -20,7 +20,7 @@ export default function Testimonials() {
         {TESTIMONIALS.slice(0, 6).map((t) => (
           <div
             key={t.id}
-            className="bg-white p-6 md:p-8 rounded-2xl shadow-card flex flex-col"
+            className="bg-background p-6 md:p-8 rounded-premium-lg shadow-card flex flex-col"
           >
             {/* Stars */}
             <div className="text-amber-400 text-xl mb-3">

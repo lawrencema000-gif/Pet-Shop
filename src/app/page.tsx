@@ -45,11 +45,11 @@ export default async function Home() {
 
       <ShopByPet />
 
-      <section className="container-main py-16">
+      <section className="container-main py-section">
         <CategoryCards categories={categories || []} />
       </section>
 
-      <section className="container-main py-16">
+      <section className="container-main py-section">
         <BestSellers products={bestSellers || []} />
       </section>
 
@@ -103,7 +103,7 @@ export default async function Home() {
 
       <HelpMeChooseWidget />
 
-      <section className="container-main py-16">
+      <section className="container-main py-section">
         <Testimonials />
       </section>
 

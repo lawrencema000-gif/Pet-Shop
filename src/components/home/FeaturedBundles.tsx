@@ -13,8 +13,8 @@ const bundles = [
     price: 149.99,
     originalPrice: 164.98,
     savings: 9,
-    color: "from-amber-50 to-orange-50",
-    borderColor: "border-amber-200",
+    color: "bg-highlight",
+    borderColor: "border-border",
   },
   {
     name: "Hydration Bundle",
@@ -22,8 +22,8 @@ const bundles = [
     price: 99.99,
     originalPrice: 114.98,
     savings: 13,
-    color: "from-blue-50 to-cyan-50",
-    borderColor: "border-blue-200",
+    color: "bg-surface-light",
+    borderColor: "border-border",
   },
   {
     name: "Complete Care Set",
@@ -31,8 +31,8 @@ const bundles = [
     price: 549.99,
     originalPrice: 619.97,
     savings: 11,
-    color: "from-emerald-50 to-teal-50",
-    borderColor: "border-emerald-200",
+    color: "bg-accent-light",
+    borderColor: "border-accent/20",
     popular: true,
   },
 ];
@@ -67,7 +67,7 @@ export default function FeaturedBundles() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative min-w-[280px] flex-shrink-0 snap-start bg-gradient-to-br ${bundle.color} border ${bundle.borderColor} rounded-2xl p-6 md:p-8 flex flex-col`}
+              className={`relative min-w-[280px] flex-shrink-0 snap-start ${bundle.color} border ${bundle.borderColor} rounded-premium-lg p-6 md:p-8 flex flex-col`}
             >
               {bundle.popular && (
                 <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-accent text-white text-xs font-bold px-4 py-1 rounded-full">
@@ -76,7 +76,7 @@ export default function FeaturedBundles() {
               )}
 
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-lg bg-white/80 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-premium bg-background flex items-center justify-center shadow-soft">
                   <Package className="w-5 h-5 text-accent" />
                 </div>
                 <h3 className="text-lg font-bold">{bundle.name}</h3>
@@ -122,7 +122,7 @@ export default function FeaturedBundles() {
                     slug: `bundles/${bundle.name.toLowerCase().replace(/\s+/g, "-")}`,
                   })
                 }
-                className="w-full bg-accent text-white py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors"
+                className="w-full bg-accent text-white py-3 rounded-premium text-sm font-semibold hover:bg-accent-dark transition-colors"
               >
                 Add Bundle to Cart
               </button>

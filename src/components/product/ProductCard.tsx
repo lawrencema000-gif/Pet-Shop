@@ -77,10 +77,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-white rounded-xl transition-shadow hover:shadow-card-hover">
+    <div className="group relative bg-background rounded-premium-lg transition-shadow hover:shadow-card-hover border border-border/50">
       <Link href={`/products/${product.slug}`} className="block">
         {/* Image */}
-        <div className="relative aspect-square overflow-hidden rounded-t-xl bg-surface">
+        <div className="relative aspect-square overflow-hidden rounded-t-premium-lg bg-surface">
           {primaryImage?.url ? (
             <>
               <Image
@@ -118,7 +118,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               </span>
             )}
             {product.is_new && (
-              <span className="bg-foreground text-white text-xs font-semibold px-2.5 py-1 rounded-full">
+              <span className="bg-accent-light text-accent text-xs font-semibold px-2.5 py-1 rounded-full">
                 New
               </span>
             )}
@@ -138,7 +138,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {/* Wishlist heart */}
           <button
             onClick={handleWishlist}
-            className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 z-10"
+            className="absolute top-3 right-3 p-2 bg-background/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:scale-110 z-10"
             aria-label="Add to wishlist"
           >
             <Heart
@@ -168,7 +168,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     className={`w-3 h-3 ${
                       i < Math.round(product.rating_avg)
                         ? "fill-amber-400 text-amber-400"
-                        : "text-gray-200"
+                        : "text-border"
                     }`}
                   />
                 ))}
@@ -226,7 +226,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           onClick={handleAddToCart}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.97 }}
-          className="w-full mt-1 bg-accent text-white py-2.5 text-sm font-medium rounded-lg transition-all duration-300 hover:bg-foreground-muted hover:shadow-md"
+          className="w-full mt-1 bg-accent text-white py-2.5 text-sm font-medium rounded-premium transition-all duration-300 hover:bg-accent-dark hover:shadow-md"
         >
           Add to Cart
         </motion.button>

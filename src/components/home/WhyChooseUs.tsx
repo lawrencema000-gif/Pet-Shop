@@ -84,9 +84,9 @@ export default function WhyChooseUs() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="text-center p-6 bg-white rounded-2xl shadow-card"
+              className="text-center p-6 bg-background rounded-premium-lg shadow-card"
             >
-              <div className="rounded-full bg-surface p-5 w-20 h-20 mx-auto flex items-center justify-center">
+              <div className="rounded-full bg-accent-light p-5 w-20 h-20 mx-auto flex items-center justify-center">
                 <feature.icon className="w-9 h-9 text-accent" />
               </div>
               <h3 className="font-semibold text-lg mt-4">{feature.title}</h3>
@@ -107,7 +107,7 @@ export default function WhyChooseUs() {
         >
           <Link
             href="/about"
-            className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors"
+            className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-premium text-sm font-semibold hover:bg-accent-dark transition-colors"
           >
             Learn More About Us &rarr;
           </Link>

@@ -33,7 +33,7 @@ export default function TrustStrip() {
               key={item.title}
               className="flex items-center justify-center gap-3 text-center lg:text-left"
             >
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-card">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-background flex items-center justify-center shadow-card">
                 <item.icon className="w-5 h-5 text-accent" />
               </div>
               <div>

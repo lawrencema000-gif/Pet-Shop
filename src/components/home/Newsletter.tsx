@@ -29,7 +29,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-br from-accent to-foreground-muted">
+    <section className="py-16 md:py-24 bg-accent">
       <div className="container-main max-w-2xl mx-auto text-center">
         <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-6">
           <Gift className="w-8 h-8 text-white" />
@@ -60,7 +60,7 @@ export default function Newsletter() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
               required
-              className="flex-1 px-5 py-4 text-sm focus:outline-none bg-white text-foreground"
+              className="flex-1 px-5 py-4 text-sm focus:outline-none bg-background text-foreground"
             />
             <button
               type="submit"
