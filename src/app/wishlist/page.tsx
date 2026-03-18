@@ -18,7 +18,7 @@ export default function WishlistPage() {
         </p>
         <Link
           href="/auth/login"
-          className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-foreground-muted transition-colors"
+          className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
         >
           Sign In to Get Started
         </Link>

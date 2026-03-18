@@ -323,7 +323,7 @@ export default function CompareClient() {
                             className={`h-3.5 w-3.5 ${
                               i < Math.round(p.rating_avg)
                                 ? "fill-amber-400 text-amber-400"
-                                : "text-gray-200"
+                                : "text-border"
                             }`}
                           />
                         ))}
@@ -434,7 +434,7 @@ export default function CompareClient() {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleAddToCart(p)}
-                    className="w-full rounded-lg bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-foreground-muted"
+                    className="w-full rounded-premium bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-dark"
                   >
                     Add to Cart
                   </motion.button>

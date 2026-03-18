@@ -72,7 +72,7 @@ export default function GiftCardsClient() {
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => setSelected(amount)}
-                className={`relative rounded-xl border-2 p-6 text-center transition-all ${
+                className={`relative rounded-premium border-2 p-6 text-center transition-all ${
                   selected === amount
                     ? "border-accent bg-accent/5 shadow-md"
                     : "border-border bg-background hover:border-accent/50"
@@ -97,7 +97,7 @@ export default function GiftCardsClient() {
           </div>
 
           {/* Selected Preview */}
-          <div className="mt-10 rounded-2xl bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white text-center shadow-lg">
+          <div className="mt-10 rounded-premium-lg bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white text-center shadow-elevated">
             <Gift className="h-10 w-10 mx-auto mb-3 opacity-80" />
             <p className="text-sm uppercase tracking-wide opacity-80">
               PETLIBRO Gift Card
@@ -159,7 +159,7 @@ export default function GiftCardsClient() {
       {/* Coming Soon + Newsletter */}
       <section className="border-t border-border py-14 md:py-16">
         <div className="container-main max-w-lg mx-auto text-center">
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 mb-8">
+          <div className="rounded-premium border border-amber-200 bg-amber-50 p-6 mb-8">
             <Bell className="h-6 w-6 text-amber-600 mx-auto mb-2" />
             <p className="text-sm font-semibold text-amber-800">
               Gift card purchasing is coming soon!

@@ -188,7 +188,7 @@ export default function Autocomplete({
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
           autoFocus={autoFocus}
-          className="w-full pl-12 pr-10 py-4 text-lg border border-border rounded-xl bg-surface-light focus:outline-none focus:border-accent focus:bg-white transition-colors"
+          className="w-full pl-12 pr-10 py-4 text-lg border border-border rounded-xl bg-surface-light focus:outline-none focus:border-accent focus:bg-background transition-colors"
         />
         {loading && (
           <Loader2
@@ -205,7 +205,7 @@ export default function Autocomplete({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute top-full left-0 right-0 mt-2 bg-white border border-border rounded-xl shadow-xl z-50 overflow-hidden max-h-[400px] overflow-y-auto"
+            className="absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-premium-lg shadow-elevated z-50 overflow-hidden max-h-[400px] overflow-y-auto"
           >
             {/* Products section */}
             {products.length > 0 && (

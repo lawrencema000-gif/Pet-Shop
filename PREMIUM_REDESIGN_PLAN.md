@@ -186,12 +186,12 @@ highlight: #F0E6D3 (warm highlight)
 
 | Phase | Status | Completion |
 |-------|--------|------------|
-| 1. Design System | ⬜ Not Started | 0% |
-| 2. Header/Nav/Footer | ⬜ Not Started | 0% |
-| 3. Homepage | ⬜ Not Started | 0% |
-| 4. Collections/Cards | ⬜ Not Started | 0% |
-| 5. Product Detail | ⬜ Not Started | 0% |
-| 6. Cart/Search/Account | ⬜ Not Started | 0% |
+| 1. Design System | ✅ Done | 100% |
+| 2. Header/Nav/Footer | ✅ Done | 100% |
+| 3. Homepage | ✅ Done | 100% |
+| 4. Collections/Cards | 🔄 In Progress | 80% |
+| 5. Product Detail | ✅ Done | 100% |
+| 6. Cart/Search/Account | 🔄 In Progress | 80% |
 | 7. Support/Content | ⬜ Not Started | 0% |
 | 8. SEO/Perf/A11y | ⬜ Not Started | 0% |
 | 9. Polish/QA/Launch | ⬜ Not Started | 0% |

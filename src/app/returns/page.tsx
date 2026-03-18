@@ -71,8 +71,8 @@ export default function ReturnsPage() {
             </p>
           </div>
 
-          <div className="bg-surface rounded-2xl p-6 md:p-8 flex items-start gap-4 mb-10">
-            <div className="p-2.5 rounded-lg bg-white border border-border shrink-0">
+          <div className="bg-surface rounded-premium-lg p-6 md:p-8 flex items-start gap-4 mb-10">
+            <div className="p-2.5 rounded-lg bg-background border border-border shrink-0">
               <RotateCcw size={22} className="text-foreground" />
             </div>
             <div>
@@ -199,7 +199,7 @@ export default function ReturnsPage() {
             </ul>
           </section>
 
-          <div className="bg-surface rounded-2xl p-8 text-center">
+          <div className="bg-surface rounded-premium-lg p-8 text-center">
             <h2 className="text-lg font-semibold text-foreground mb-2">
               Need to start a return?
             </h2>

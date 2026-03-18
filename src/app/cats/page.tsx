@@ -47,7 +47,7 @@ export default async function CatsPage() {
       </nav>
 
       {/* Hero */}
-      <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-2xl overflow-hidden mb-10">
+      <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-premium-lg overflow-hidden mb-10">
         <Image
           src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=1600&h=500&fit=crop&q=80"
           alt="Happy cat"

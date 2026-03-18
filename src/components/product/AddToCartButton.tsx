@@ -78,10 +78,10 @@ export default function AddToCartButton({
         disabled={status === "loading"}
         whileTap={{ scale: 0.98 }}
         className={cn(
-          "w-full flex items-center justify-center gap-2 py-4 text-lg font-semibold rounded-lg transition-colors",
+          "w-full flex items-center justify-center gap-2 py-4 text-lg font-semibold rounded-premium transition-colors",
           status === "success"
             ? "bg-success text-white"
-            : "bg-accent text-white hover:bg-foreground-muted"
+            : "bg-accent text-white hover:bg-accent-dark"
         )}
       >
         <AnimatePresence mode="wait">

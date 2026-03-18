@@ -125,7 +125,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
             }}
             placeholder="Coupon code"
             className={cn(
-              "w-full border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted bg-white transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent",
+              "w-full border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted bg-background transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent",
               error && "border-sale"
             )}
             onKeyDown={(e) => e.key === "Enter" && handleApply()}

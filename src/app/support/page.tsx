@@ -28,7 +28,7 @@ export default function SupportPage() {
             <Link
               key={href}
               href={href}
-              className="flex items-start gap-4 p-6 rounded-2xl border border-border bg-white hover:shadow-card transition-shadow"
+              className="flex items-start gap-4 p-6 rounded-premium-lg border border-border bg-background hover:shadow-elevated transition-shadow"
             >
               <Icon className="w-6 h-6 text-accent shrink-0 mt-0.5" />
               <div>

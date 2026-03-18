@@ -49,8 +49,8 @@ export default function ShippingPage() {
             </p>
           </div>
 
-          <div className="bg-surface rounded-2xl p-6 md:p-8 flex items-start gap-4 mb-10">
-            <div className="p-2.5 rounded-lg bg-white border border-border shrink-0">
+          <div className="bg-surface rounded-premium-lg p-6 md:p-8 flex items-start gap-4 mb-10">
+            <div className="p-2.5 rounded-lg bg-background border border-border shrink-0">
               <Truck size={22} className="text-foreground" />
             </div>
             <div>
@@ -71,7 +71,7 @@ export default function ShippingPage() {
               Shipping Methods & Rates
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm border border-border rounded-xl overflow-hidden">
+              <table className="w-full text-sm border border-border rounded-premium overflow-hidden">
                 <thead>
                   <tr className="bg-surface">
                     <th className="text-left py-3.5 px-5 font-semibold text-foreground">
@@ -175,7 +175,7 @@ export default function ShippingPage() {
             </div>
           </section>
 
-          <div className="bg-surface rounded-2xl p-8 text-center">
+          <div className="bg-surface rounded-premium-lg p-8 text-center">
             <h2 className="text-lg font-semibold text-foreground mb-2">
               Questions about your shipment?
             </h2>

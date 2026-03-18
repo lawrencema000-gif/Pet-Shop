@@ -85,7 +85,7 @@ export default function AccountLayout({
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors",
+                    "flex items-center gap-3 px-4 py-3 rounded-premium text-sm font-medium transition-colors",
                     isActive(item.href)
                       ? "bg-accent text-white"
                       : "text-muted hover:text-foreground hover:bg-surface-light"
@@ -99,7 +99,7 @@ export default function AccountLayout({
             <div className="border-t border-border my-3" />
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-muted hover:text-sale hover:bg-sale/5 transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-premium text-sm font-medium text-muted hover:text-sale hover:bg-sale/5 transition-colors"
             >
               <LogOut size={18} />
               Sign Out

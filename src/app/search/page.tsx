@@ -104,7 +104,7 @@ function SearchContent() {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Search for products..."
             autoFocus
-            className="w-full border border-border rounded-xl pl-12 pr-4 py-4 text-lg text-foreground placeholder:text-muted bg-white transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
+            className="w-full border border-border rounded-xl pl-12 pr-4 py-4 text-lg text-foreground placeholder:text-muted bg-background transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
           {loading && (
             <Loader2

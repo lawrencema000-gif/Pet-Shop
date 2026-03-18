@@ -28,7 +28,7 @@ const benefits = [
 
 export default function BenefitsSection() {
   return (
-    <section className="bg-surface-light rounded-2xl p-8 mt-16">
+    <section className="bg-surface-light rounded-premium-xl p-8 mt-16">
       <h2 className="text-2xl font-bold text-foreground text-center mb-8">
         Why Your Pet Will Love This
       </h2>

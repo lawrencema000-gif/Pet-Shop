@@ -143,7 +143,7 @@ export default function BundlesPage() {
             return (
               <article
                 key={bundle.id}
-                className="group overflow-hidden rounded-xl border border-border bg-background shadow-card transition-shadow hover:shadow-card-hover"
+                className="group overflow-hidden rounded-premium-lg border border-border bg-background shadow-card transition-shadow hover:shadow-card-hover"
               >
                 {/* Image */}
                 <div className="relative aspect-[16/10] overflow-hidden bg-surface">

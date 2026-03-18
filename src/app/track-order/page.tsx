@@ -64,7 +64,7 @@ export default function TrackOrderPage() {
             </p>
           </div>
 
-          <div className="bg-white rounded-xl border border-border p-6 md:p-8 mb-8">
+          <div className="bg-background rounded-premium border border-border p-6 md:p-8 mb-8">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <label
@@ -80,7 +80,7 @@ export default function TrackOrderPage() {
                   value={orderNumber}
                   onChange={(e) => setOrderNumber(e.target.value)}
                   placeholder="e.g. PL-2024-78342"
-                  className="w-full px-4 py-2.5 text-sm border border-border rounded-lg bg-white focus:outline-none focus:border-accent transition-colors"
+                  className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
               <div>
@@ -97,7 +97,7 @@ export default function TrackOrderPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="The email used at checkout"
-                  className="w-full px-4 py-2.5 text-sm border border-border rounded-lg bg-white focus:outline-none focus:border-accent transition-colors"
+                  className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors"
                 />
               </div>
               <button
@@ -137,7 +137,7 @@ export default function TrackOrderPage() {
           )}
 
           {result && (
-            <div className="bg-white rounded-xl border border-border p-6">
+            <div className="bg-background rounded-premium border border-border p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>
                   <p className="text-sm text-muted">Order</p>

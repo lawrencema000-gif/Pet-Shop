@@ -167,7 +167,7 @@ export default function QuizClient() {
               <Link
                 key={product.id}
                 href={`/products/${product.slug}`}
-                className="group border border-border rounded-2xl overflow-hidden bg-white hover:shadow-lg transition-shadow"
+                className="group border border-border rounded-premium-lg overflow-hidden bg-background hover:shadow-elevated transition-shadow"
               >
                 <div className="relative aspect-square bg-surface-light">
                   <Image
@@ -194,14 +194,14 @@ export default function QuizClient() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <button
             onClick={startOver}
-            className="flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground hover:bg-surface-light transition-colors"
+            className="flex items-center gap-2 px-6 py-3 rounded-premium border border-border text-foreground hover:bg-surface-light transition-colors"
           >
             <RotateCcw size={18} />
             Start Over
           </button>
           <Link
             href="/products"
-            className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors"
+            className="flex items-center gap-2 px-6 py-3 rounded-premium bg-accent text-white hover:bg-accent/90 transition-colors"
           >
             <ShoppingBag size={18} />
             Browse All Products
@@ -260,8 +260,8 @@ export default function QuizClient() {
                 <button
                   key={opt.value}
                   onClick={() => selectPetType(opt.value)}
-                  className={`flex flex-col items-center gap-3 p-8 rounded-2xl border-2 transition-all hover:border-accent hover:shadow-md ${
-                    answers.petType === opt.value ? "border-accent bg-accent/5" : "border-border bg-white"
+                  className={`flex flex-col items-center gap-3 p-8 rounded-premium-lg border-2 transition-all hover:border-accent hover:shadow-md ${
+                    answers.petType === opt.value ? "border-accent bg-accent/5" : "border-border bg-background"
                   }`}
                 >
                   <PawPrint size={36} className="text-accent" />
@@ -294,8 +294,8 @@ export default function QuizClient() {
                 <button
                   key={opt.value}
                   onClick={() => selectProductType(opt.value)}
-                  className={`flex items-center gap-4 p-6 rounded-2xl border-2 transition-all hover:border-accent hover:shadow-md ${
-                    answers.productType === opt.value ? "border-accent bg-accent/5" : "border-border bg-white"
+                  className={`flex items-center gap-4 p-6 rounded-premium-lg border-2 transition-all hover:border-accent hover:shadow-md ${
+                    answers.productType === opt.value ? "border-accent bg-accent/5" : "border-border bg-background"
                   }`}
                 >
                   <opt.Icon size={28} className="text-accent shrink-0" />
@@ -323,8 +323,8 @@ export default function QuizClient() {
                 <button
                   key={val}
                   onClick={() => selectPetCount(val)}
-                  className={`px-10 py-5 rounded-2xl border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
-                    answers.petCount === val ? "border-accent bg-accent/5" : "border-border bg-white"
+                  className={`px-10 py-5 rounded-premium-lg border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
+                    answers.petCount === val ? "border-accent bg-accent/5" : "border-border bg-background"
                   }`}
                 >
                   {val}
@@ -356,8 +356,8 @@ export default function QuizClient() {
                 <button
                   key={opt.value}
                   onClick={() => selectBudget(opt.value)}
-                  className={`px-6 py-5 rounded-2xl border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
-                    answers.budget === opt.value ? "border-accent bg-accent/5" : "border-border bg-white"
+                  className={`px-6 py-5 rounded-premium-lg border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
+                    answers.budget === opt.value ? "border-accent bg-accent/5" : "border-border bg-background"
                   }`}
                 >
                   {opt.label}
@@ -390,8 +390,8 @@ export default function QuizClient() {
                 <button
                   key={opt.value}
                   onClick={() => togglePriority(opt.value)}
-                  className={`px-6 py-5 rounded-2xl border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
-                    answers.priorities.includes(opt.value) ? "border-accent bg-accent/5" : "border-border bg-white"
+                  className={`px-6 py-5 rounded-premium-lg border-2 text-lg font-medium transition-all hover:border-accent hover:shadow-md ${
+                    answers.priorities.includes(opt.value) ? "border-accent bg-accent/5" : "border-border bg-background"
                   }`}
                 >
                   {opt.label}
@@ -402,7 +402,7 @@ export default function QuizClient() {
               <button
                 onClick={handleFinish}
                 disabled={loading}
-                className="px-8 py-4 rounded-xl bg-accent text-white text-lg font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50"
+                className="px-8 py-4 rounded-premium bg-accent text-white text-lg font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50"
               >
                 {loading ? "Finding products..." : "See My Results"}
               </button>

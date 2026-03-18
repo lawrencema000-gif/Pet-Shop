@@ -73,7 +73,7 @@ export default function FrequentlyBoughtTogether({
       <h2 className="text-2xl font-bold text-foreground mb-8">
         Frequently Bought Together
       </h2>
-      <div className="flex flex-col lg:flex-row items-center gap-6 p-6 border border-border rounded-2xl bg-background">
+      <div className="flex flex-col lg:flex-row items-center gap-6 p-6 border border-border rounded-premium-xl bg-background">
         {/* Product thumbnails */}
         <div className="flex flex-wrap items-center justify-center gap-4 flex-1">
           {suggestions.map((product, i) => {
@@ -90,7 +90,7 @@ export default function FrequentlyBoughtTogether({
                   href={`/products/${product.slug}`}
                   className="flex flex-col items-center gap-2 group"
                 >
-                  <div className="relative w-24 h-24 rounded-xl overflow-hidden bg-surface border border-border group-hover:border-accent transition-colors">
+                  <div className="relative w-24 h-24 rounded-premium-lg overflow-hidden bg-surface border border-border group-hover:border-accent transition-colors">
                     <Image
                       src={imageUrl}
                       alt={product.name}
@@ -123,7 +123,7 @@ export default function FrequentlyBoughtTogether({
           </div>
           <button
             onClick={handleAddAll}
-            className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent/90 text-white rounded-full text-sm font-semibold transition-colors"
+            className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-full text-sm font-semibold transition-colors"
           >
             <ShoppingCart className="w-4 h-4" />
             Add All to Cart

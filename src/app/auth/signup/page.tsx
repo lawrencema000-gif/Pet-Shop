@@ -82,7 +82,7 @@ export default function SignUpPage() {
     return (
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md text-center">
-          <div className="bg-white rounded-2xl shadow-card p-8">
+          <div className="bg-background rounded-premium-lg shadow-elevated p-8">
             <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">
               Check Your Email
@@ -106,7 +106,7 @@ export default function SignUpPage() {
   return (
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-card p-8">
+        <div className="bg-background rounded-premium-lg shadow-elevated p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground">
               Create Account
@@ -175,7 +175,7 @@ export default function SignUpPage() {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white px-3 text-muted">or</span>
+              <span className="bg-background px-3 text-muted">or</span>
             </div>
           </div>
 

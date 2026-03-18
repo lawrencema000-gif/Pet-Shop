@@ -18,7 +18,7 @@ export default function CategoryHero({
   imageUrl,
 }: CategoryHeroProps) {
   return (
-    <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-2xl overflow-hidden mb-8">
+    <div className="relative w-full h-48 sm:h-56 md:h-72 rounded-premium-lg overflow-hidden mb-8">
       <Image
         src={imageUrl || DEFAULT_IMAGE}
         alt={name}

@@ -72,7 +72,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[60] bg-white"
+          className="fixed inset-0 z-[60] bg-background"
         >
           <div className="max-w-3xl mx-auto px-6 pt-8">
             {/* Header */}
