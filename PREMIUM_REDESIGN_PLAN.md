@@ -189,9 +189,9 @@ highlight: #F0E6D3 (warm highlight)
 | 1. Design System | ✅ Done | 100% |
 | 2. Header/Nav/Footer | ✅ Done | 100% |
 | 3. Homepage | ✅ Done | 100% |
-| 4. Collections/Cards | 🔄 In Progress | 80% |
+| 4. Collections/Cards | ✅ Done | 100% |
 | 5. Product Detail | ✅ Done | 100% |
-| 6. Cart/Search/Account | 🔄 In Progress | 80% |
+| 6. Cart/Search/Account | ✅ Done | 100% |
 | 7. Support/Content | ⬜ Not Started | 0% |
 | 8. SEO/Perf/A11y | ⬜ Not Started | 0% |
 | 9. Polish/QA/Launch | ⬜ Not Started | 0% |
