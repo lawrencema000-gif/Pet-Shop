@@ -19,7 +19,7 @@ export default function CategoryCards({ categories }: CategoryCardsProps) {
           <Link
             key={category.id}
             href={`/categories/${category.slug}`}
-            className="group relative overflow-hidden rounded-2xl aspect-[4/3]"
+            className="group relative overflow-hidden rounded-premium-xl aspect-[4/3]"
           >
             {category.image_url ? (
               <Image

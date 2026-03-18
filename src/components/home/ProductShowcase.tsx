@@ -40,7 +40,7 @@ export default function ProductShowcase({
           initial={{ opacity: 0, x: reversed ? 40 : -40 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative aspect-[4/3] rounded-2xl overflow-hidden"
+          className="relative aspect-[4/3] rounded-premium-xl overflow-hidden"
         >
           <Image
             src={imageUrl}

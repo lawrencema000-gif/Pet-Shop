@@ -46,7 +46,7 @@ export default function ShopByPet() {
           >
             <Link
               href={pet.href}
-              className="group relative block overflow-hidden rounded-2xl aspect-[3/2]"
+              className="group relative block overflow-hidden rounded-premium-xl aspect-[3/2]"
             >
               <Image
                 src={pet.image}

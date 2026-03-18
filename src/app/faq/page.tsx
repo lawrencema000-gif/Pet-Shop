@@ -88,7 +88,7 @@ export default function FAQPage() {
             ))}
           </div>
 
-          <div className="mt-16 text-center bg-surface rounded-2xl p-10">
+          <div className="mt-16 text-center bg-surface rounded-premium-xl p-10">
             <div className="inline-flex items-center justify-center p-3 rounded-full bg-background border border-border mb-4">
               <MessageCircle size={24} className="text-foreground" />
             </div>

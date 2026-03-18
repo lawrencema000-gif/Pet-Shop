@@ -184,7 +184,7 @@ export default function CompareClient() {
                   initial={{ opacity: 0, y: -4 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
-                  className="absolute top-full left-0 right-0 z-20 mt-1 rounded-lg border border-border bg-background shadow-lg overflow-hidden"
+                  className="absolute top-full left-0 right-0 z-20 mt-1 rounded-premium border border-border bg-background shadow-elevated overflow-hidden"
                 >
                   {searchResults.map((product) => {
                     const img =

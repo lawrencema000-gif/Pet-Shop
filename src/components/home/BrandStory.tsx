@@ -23,7 +23,7 @@ export default function BrandStory() {
           initial={{ opacity: 0, x: -40 }}
           animate={isInView ? { opacity: 1, x: 0 } : {}}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative aspect-[4/3] rounded-2xl overflow-hidden"
+          className="relative aspect-[4/3] rounded-premium-xl overflow-hidden"
         >
           <Image
             src="https://images.unsplash.com/photo-1450778869180-e77d3083dbb0?w=800&h=600&fit=crop"

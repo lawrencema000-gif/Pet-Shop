@@ -15,7 +15,7 @@ export default function PressPage() {
           pets healthy, happy, and well-fed. We combine thoughtful design with
           modern technology to help pet parents care for their furry companions.
         </p>
-        <div className="bg-surface rounded-2xl p-8 text-left space-y-4">
+        <div className="bg-surface rounded-premium-xl p-8 text-left space-y-4">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted mb-1">
               Media Inquiries

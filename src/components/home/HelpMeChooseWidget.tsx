@@ -14,7 +14,7 @@ export default function HelpMeChooseWidget() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.5, ease: "easeOut" }}
-          className="bg-surface-light rounded-2xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
+          className="bg-surface-light rounded-premium-xl p-8 md:p-12 flex flex-col md:flex-row items-center gap-8"
         >
           {/* Text */}
           <div className="flex-1 text-center md:text-left">
