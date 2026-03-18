@@ -5,18 +5,18 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --surface: #f7f7f5;
-  --surface-light: #fafaf8;
+  --surface: #f8f7f4;
+  --surface-light: #fbfaf7;
   --muted: #71717a;
   --foreground-muted: #242833;
-  --border: #e5e5e5;
-  --accent: #1a1a2e;
-  --accent-light: #f0f0f8;
-  --accent-dark: #12121f;
-  --sale: #e53e3e;
+  --border: #e8e6e1;
+  --accent: #2c5545;
+  --accent-light: #eef4f0;
+  --accent-dark: #1e3d31;
+  --sale: #c53030;
   --success: #16a34a;
-  --warning: #f59e0b;
-  --highlight: #f0f4ff;
+  --warning: #d69e2e;
+  --highlight: #f0f5f2;
   --gold: #b8860b;
   --gold-light: #f5f0e0;
 }
@@ -32,7 +32,7 @@ body {
 
 /* Selection colors */
 ::selection {
-  background-color: rgba(26, 26, 46, 0.15);
+  background-color: rgba(44, 85, 69, 0.15);
   color: var(--foreground);
 }
 
@@ -86,6 +86,14 @@ body {
 
   .slide-up {
     animation: slideUp 0.4s ease-out;
+  }
+
+  .text-shadow-hero {
+    text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4), 0 1px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
   }
 }
 

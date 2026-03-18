@@ -26,25 +26,35 @@ export default function ExitIntentPopup() {
     }
 
     let fired = false;
+    let hasScrolled = false;
 
-    // Desktop: exit intent (mouse leaves viewport top)
+    // Require user to scroll past 50% of viewport before popup can fire
+    const handleScroll = () => {
+      if (window.scrollY > window.innerHeight * 0.5) {
+        hasScrolled = true;
+      }
+    };
+
+    // Desktop: exit intent (mouse leaves top) — only after engagement
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !fired) {
+      if (e.clientY <= 0 && !fired && hasScrolled) {
         fired = true;
         setShow(true);
       }
     };
 
-    // Mobile fallback: 60s timer
+    // Mobile fallback: 90s timer — only fires if user has scrolled
     const timer = setTimeout(() => {
-      if (!fired) {
+      if (!fired && hasScrolled) {
         fired = true;
         setShow(true);
       }
-    }, 60000);
+    }, 90000);
 
+    window.addEventListener("scroll", handleScroll, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
     return () => {
+      window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mouseleave", handleMouseLeave);
       clearTimeout(timer);
     };

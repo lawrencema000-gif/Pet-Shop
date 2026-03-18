@@ -48,17 +48,17 @@ export default function HeroBanner() {
       <div className="relative z-10 h-full flex items-center">
         <div className="container-main">
           <div className="max-w-2xl stagger-in">
-            <span className="inline-block text-white/60 text-overline tracking-[0.25em] uppercase">
+            <span className="inline-block text-white/80 text-overline tracking-[0.25em] uppercase text-shadow-sm">
               Next-Generation Pet Care
             </span>
 
-            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-bold text-white leading-[0.9] tracking-tight">
+            <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-bold text-white leading-[0.9] tracking-tight text-shadow-hero">
               Smarter
               <br />
               Care.
             </h1>
 
-            <p className="text-white/60 text-lg md:text-xl max-w-lg leading-relaxed">
+            <p className="text-white/80 text-lg md:text-xl max-w-lg leading-relaxed text-shadow-sm">
               App-controlled feeders, self-cleaning litter boxes, and smart
               fountains — designed for pets, engineered for you.
             </p>
@@ -94,7 +94,7 @@ export default function HeroBanner() {
                 <span className="text-xs font-medium">4.9</span>
               </div>
               <span className="w-px h-3 bg-white/20" />
-              <span className="text-white/40 text-xs tracking-wide">Trusted by 50,000+ Pet Parents</span>
+              <span className="text-white/60 text-xs tracking-wide">Trusted by 50,000+ Pet Parents</span>
             </div>
           </div>
         </div>

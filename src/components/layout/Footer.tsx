@@ -73,7 +73,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-block mb-4">
-              <span className="text-lg font-bold tracking-tight text-foreground">
+              <span className="text-lg font-display font-bold tracking-tight text-foreground">
                 {SITE_CONFIG.name}
               </span>
             </Link>
