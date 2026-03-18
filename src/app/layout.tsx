@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import ExitIntentPopup from "@/components/layout/ExitIntentPopup";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import WebsiteSchema from "@/components/seo/WebsiteSchema";
 import { AuthProvider } from "@/lib/supabase/auth-provider";
@@ -15,6 +16,13 @@ const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const dmSerifDisplay = DM_Serif_Display({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -79,7 +87,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${dmSerifDisplay.variable} font-sans antialiased grain-overlay`}>
         <AuthProvider>
           <ToastProvider>
             <SkipLink />
@@ -89,6 +97,7 @@ export default function RootLayout({
             <Header />
             <main id="main-content" className="min-h-screen">{children}</main>
             <Footer />
+            <ExitIntentPopup />
             <CartDrawer />
             <div id="aria-live" aria-live="polite" role="status" className="sr-only" />
           </ToastProvider>
