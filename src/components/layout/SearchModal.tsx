@@ -1,11 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, TrendingUp } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Autocomplete from "@/components/search/Autocomplete";
+
+const Autocomplete = dynamic(
+  () => import("@/components/search/Autocomplete"),
+  { ssr: false }
+);
 
 interface SearchModalProps {
   isOpen: boolean;

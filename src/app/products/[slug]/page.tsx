@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { ChevronRight } from "lucide-react";
 import { notFound } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
@@ -8,14 +9,37 @@ import ProductInfo from "@/components/product/ProductInfo";
 import ProductTabs from "@/components/product/ProductTabs";
 import RelatedProducts from "@/components/product/RelatedProducts";
 import WhyChooseSection from "@/components/product/WhyChooseSection";
-import ProductDetailClient from "@/components/product/ProductDetailClient";
 import TrackView from "@/components/product/TrackView";
-import RecentlyViewed from "@/components/product/RecentlyViewed";
 import HowItWorks from "@/components/product/HowItWorks";
 import BenefitsSection from "@/components/product/BenefitsSection";
-import FrequentlyBoughtTogether from "@/components/product/FrequentlyBoughtTogether";
 import ProductFAQ from "@/components/product/ProductFAQ";
 import type { Review } from "@/types/product";
+
+const ProductDetailClient = dynamic(
+  () => import("@/components/product/ProductDetailClient"),
+  { ssr: false }
+);
+
+const FrequentlyBoughtTogether = dynamic(
+  () => import("@/components/product/FrequentlyBoughtTogether"),
+  {
+    loading: () => (
+      <div className="mt-16 animate-pulse">
+        <div className="h-8 w-64 bg-surface-light rounded mb-6" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-48 bg-surface-light rounded-xl" />
+          ))}
+        </div>
+      </div>
+    ),
+  }
+);
+
+const RecentlyViewed = dynamic(
+  () => import("@/components/product/RecentlyViewed"),
+  { ssr: false }
+);
 
 interface ProductPageProps {
   params: { slug: string };
@@ -83,6 +107,28 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const price = defaultVariant?.price ?? product.base_price;
 
   // JSON-LD structured data
+  const currentYear = new Date().getFullYear();
+  const stockStatus =
+    defaultVariant?.stock_quantity > 0 || !defaultVariant?.stock_quantity
+      ? "https://schema.org/InStock"
+      : "https://schema.org/OutOfStock";
+
+  const reviewEntries = (reviews ?? []).slice(0, 3).map((r: Review) => ({
+    "@type": "Review",
+    reviewRating: {
+      "@type": "Rating",
+      ratingValue: r.rating,
+      bestRating: 5,
+    },
+    author: {
+      "@type": "Person",
+      name: r.profiles?.full_name || "Verified Buyer",
+    },
+    ...(r.title && { name: r.title }),
+    ...(r.body && { reviewBody: r.body }),
+    datePublished: r.created_at,
+  }));
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -93,11 +139,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
       "@type": "Brand",
       name: "PETLIBRO",
     },
+    ...(defaultVariant?.sku && { sku: defaultVariant.sku }),
     offers: {
       "@type": "Offer",
       price: price,
       priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
+      availability: stockStatus,
+      priceValidUntil: `${currentYear}-12-31`,
+      seller: {
+        "@type": "Organization",
+        name: "PETLIBRO",
+      },
     },
     ...(product.rating_count > 0 && {
       aggregateRating: {
@@ -106,6 +158,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         reviewCount: product.rating_count,
       },
     }),
+    ...(reviewEntries.length > 0 && { review: reviewEntries }),
   };
 
   return (
