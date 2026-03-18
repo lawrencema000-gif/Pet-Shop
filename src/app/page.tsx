@@ -5,14 +5,18 @@ import ShopByPet from "@/components/home/ShopByPet";
 import CategoryCards from "@/components/home/CategoryCards";
 import BestSellers from "@/components/home/BestSellers";
 import ProductShowcase from "@/components/home/ProductShowcase";
+import ProblemSolution from "@/components/home/ProblemSolution";
 import BrandStory from "@/components/home/BrandStory";
+import LifestyleStory from "@/components/home/LifestyleStory";
 import FeaturedBundles from "@/components/home/FeaturedBundles";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import HelpMeChooseWidget from "@/components/home/HelpMeChooseWidget";
 import Testimonials from "@/components/home/Testimonials";
 import FAQPreview from "@/components/home/FAQPreview";
 import MediaMentions from "@/components/home/MediaMentions";
+import SocialProof from "@/components/home/SocialProof";
 import Newsletter from "@/components/home/Newsletter";
+import FinalCTA from "@/components/home/FinalCTA";
 
 export default async function Home() {
   const supabase = createServerSupabaseClient();
@@ -95,6 +99,10 @@ export default async function Home() {
         reversed={false}
       />
 
+      <ProblemSolution />
+
+      <LifestyleStory />
+
       <BrandStory />
 
       <FeaturedBundles />
@@ -111,7 +119,11 @@ export default async function Home() {
 
       <MediaMentions />
 
+      <SocialProof />
+
       <Newsletter />
+
+      <FinalCTA />
     </>
   );
 }

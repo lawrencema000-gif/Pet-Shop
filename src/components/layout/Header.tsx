@@ -135,6 +135,13 @@ export function Header() {
 
             {/* Right: Icons */}
             <div className="flex items-center gap-0.5">
+              <Link
+                href="/quiz"
+                className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-accent text-white text-[13px] font-medium hover:bg-accent-dark transition-colors mr-1"
+              >
+                <HelpCircle size={14} />
+                Help Me Choose
+              </Link>
               <button
                 onClick={() => setSearchOpen(true)}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-light hover:bg-surface text-muted hover:text-foreground transition-colors text-sm"

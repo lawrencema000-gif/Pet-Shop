@@ -3,10 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Star, Truck } from "lucide-react";
+import { Heart, Star, Truck, Eye } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatPrice, getDiscountPercentage } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
+import QuickView from "./QuickView";
 import type { Product } from "@/types/product";
 
 const COLOR_MAP: Record<string, string> = {
@@ -34,6 +35,7 @@ interface ProductCardProps {
 export default function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
   const [wishlisted, setWishlisted] = useState(false);
+  const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   const primaryImage = product.images?.find((img) => img.is_primary) || product.images?.[0];
   const secondaryImage = product.images?.find(
@@ -135,20 +137,33 @@ export default function ProductCard({ product }: ProductCardProps) {
             )}
           </div>
 
-          {/* Wishlist heart */}
-          <button
-            onClick={handleWishlist}
-            className="absolute top-3 right-3 p-2 bg-background/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:scale-110 z-10"
-            aria-label="Add to wishlist"
-          >
-            <Heart
-              className={`w-4 h-4 transition-colors ${
-                wishlisted
-                  ? "fill-red-500 text-red-500"
-                  : "text-foreground"
-              }`}
-            />
-          </button>
+          {/* Action buttons */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+            <button
+              onClick={handleWishlist}
+              className="p-2 bg-background/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:scale-110"
+              aria-label="Add to wishlist"
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  wishlisted
+                    ? "fill-red-500 text-red-500"
+                    : "text-foreground"
+                }`}
+              />
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setQuickViewOpen(true);
+              }}
+              className="p-2 bg-background/80 backdrop-blur-sm rounded-full shadow-sm opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background hover:scale-110"
+              aria-label="Quick view"
+            >
+              <Eye className="w-4 h-4 text-foreground" />
+            </button>
+          </div>
 
         </div>
 
@@ -231,6 +246,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           Add to Cart
         </motion.button>
       </div>
+
+      {/* Quick View Modal */}
+      <QuickView
+        product={product}
+        isOpen={quickViewOpen}
+        onClose={() => setQuickViewOpen(false)}
+      />
     </div>
   );
 }
