@@ -34,11 +34,11 @@ export default async function Home() {
     <>
       <HeroBanner />
 
-      <section className="container-main py-16 md:py-24">
+      <section className="container-main py-20 md:py-28">
         <CategoryCards categories={categories || []} />
       </section>
 
-      <section className="container-main py-16 md:py-24">
+      <section className="container-main py-20 md:py-28">
         <BestSellers products={bestSellers || []} />
       </section>
 
@@ -46,7 +46,7 @@ export default async function Home() {
 
       <WhyChooseUs />
 
-      <section className="container-main py-16 md:py-24">
+      <section className="container-main py-20 md:py-28">
         <Testimonials />
       </section>
 

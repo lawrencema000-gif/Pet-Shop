@@ -32,8 +32,8 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
     <Drawer isOpen={isOpen} onClose={onClose} title={SITE_CONFIG.name} side="left">
       <div className="flex flex-col h-full">
         {/* Main navigation */}
-        <nav className="flex-1 px-4 py-4 overflow-y-auto">
-          <ul className="flex flex-col gap-0.5">
+        <nav className="flex-1 px-4 py-5 overflow-y-auto">
+          <ul className="flex flex-col gap-1">
             {NAV_LINKS.map((link) => (
               <li key={link.label}>
                 {link.children ? (
@@ -41,7 +41,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     <button
                       onClick={() => toggle(link.label)}
                       className={cn(
-                        "flex items-center justify-between w-full px-3 py-3 text-sm font-medium rounded-lg hover:bg-surface-light transition-colors",
+                        "flex items-center justify-between w-full px-4 py-3.5 text-[15px] font-medium rounded-lg hover:bg-surface-light transition-colors min-h-[48px]",
                         link.highlight && link.highlightColor === "red"
                           ? "text-sale"
                           : link.highlight && link.highlightColor === "accent"
@@ -78,7 +78,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                             <Link
                               href={link.href}
                               onClick={onClose}
-                              className="block px-3 py-2.5 text-sm font-medium text-accent hover:text-accent/70 transition-colors"
+                              className="block px-4 py-3 text-[15px] font-medium text-accent hover:text-accent/70 transition-colors min-h-[44px]"
                             >
                               Shop All {link.label}
                             </Link>
@@ -88,7 +88,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                               <Link
                                 href={child.href}
                                 onClick={onClose}
-                                className="flex items-center gap-2 px-3 py-2.5 text-sm text-muted hover:text-foreground transition-colors"
+                                className="flex items-center gap-2 px-4 py-3 text-[15px] text-muted hover:text-foreground transition-colors min-h-[44px]"
                               >
                                 <span>{child.label}</span>
                                 {child.badge && (
@@ -117,7 +117,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                     href={link.href}
                     onClick={onClose}
                     className={cn(
-                      "block px-3 py-3 text-sm font-medium rounded-lg hover:bg-surface-light transition-colors",
+                      "block px-4 py-3.5 text-[15px] font-medium rounded-lg hover:bg-surface-light transition-colors min-h-[48px] flex items-center",
                       link.highlight && link.highlightColor === "red"
                         ? "text-sale font-semibold"
                         : link.highlight && link.highlightColor === "accent"
@@ -139,7 +139,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             <Link
               href="/track-order"
               onClick={onClose}
-              className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light"
+              className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <Package size={16} />
               Track Order
@@ -147,7 +147,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             <Link
               href="/support"
               onClick={onClose}
-              className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light"
+              className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <HelpCircle size={16} />
               Help Center
@@ -155,7 +155,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
             <Link
               href="/auth/login"
               onClick={onClose}
-              className="flex items-center gap-3 px-3 py-2.5 text-sm text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light"
+              className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <User size={16} />
               Account
@@ -172,7 +172,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2.5 rounded-lg bg-surface-light text-muted hover:text-foreground transition-colors"
+                className="p-3 rounded-lg bg-surface-light text-muted hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label={label}
               >
                 <Icon size={16} />

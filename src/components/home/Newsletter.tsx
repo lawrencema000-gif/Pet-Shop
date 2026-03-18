@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { Gift } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -29,64 +29,67 @@ export default function Newsletter() {
   };
 
   return (
-    <section className="py-16 md:py-24 bg-accent">
-      <div className="container-main max-w-2xl mx-auto text-center">
-        <div className="w-16 h-16 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-6">
-          <Gift className="w-8 h-8 text-white" />
-        </div>
+    <section className="py-20 md:py-28 border-t border-border">
+      <div className="container-main">
+        <div className="max-w-3xl mx-auto text-center">
+          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-accent mb-4 block">
+            Stay Connected
+          </span>
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground">
+            Get 10% Off Your First Order
+          </h2>
+          <p className="text-muted mt-4 max-w-md mx-auto leading-relaxed">
+            Join 15,000+ pet parents for exclusive deals, new product alerts,
+            and smart pet care tips.
+          </p>
 
-        <h2 className="text-2xl md:text-3xl font-bold text-white">
-          Get 10% Off Your First Order
-        </h2>
-        <p className="text-white/70 mt-3 max-w-md mx-auto">
-          Plus exclusive deals, new product alerts, and pet care tips delivered
-          straight to your inbox.
-        </p>
-
-        <p className="text-white/50 text-xs mt-4 mb-8">
-          Join 15,000+ pet parents. Unsubscribe anytime.
-        </p>
-
-        {status === "success" ? (
-          <div className="bg-white/10 rounded-2xl p-6">
-            <p className="text-white font-medium text-lg">
-              Thanks for subscribing! Check your inbox for your 10% off code.
-            </p>
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="flex max-w-md mx-auto shadow-lg rounded-lg overflow-hidden"
-          >
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-              className="flex-1 px-5 py-4 text-sm focus:outline-none bg-background text-foreground"
-            />
-            <button
-              type="submit"
-              disabled={status === "loading"}
-              className="bg-sale text-white px-6 text-sm font-semibold hover:bg-sale/90 transition-colors disabled:opacity-60 whitespace-nowrap"
+          {status === "success" ? (
+            <div className="mt-10 inline-flex items-center gap-3 bg-success/10 text-success px-8 py-4 font-medium">
+              <Check size={20} />
+              Check your inbox for your 10% off code!
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              className="mt-10 flex flex-col sm:flex-row max-w-lg mx-auto gap-3"
             >
-              {status === "loading" ? "..." : "Claim My 10% Off"}
-            </button>
-          </form>
-        )}
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email address"
+                required
+                className="flex-1 px-5 py-4 text-sm border border-border bg-background text-foreground placeholder:text-muted focus:outline-none focus:border-accent transition-colors"
+              />
+              <button
+                type="submit"
+                disabled={status === "loading"}
+                className="group inline-flex items-center justify-center gap-2 bg-foreground text-white px-8 py-4 text-sm font-semibold hover:bg-foreground/90 transition-colors disabled:opacity-60 whitespace-nowrap"
+              >
+                {status === "loading" ? (
+                  "Subscribing..."
+                ) : (
+                  <>
+                    Subscribe
+                    <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
 
-        {status === "error" && (
-          <p className="text-white/80 text-sm mt-3">
-            Something went wrong. Please try again.
-          </p>
-        )}
+          {status === "error" && (
+            <p className="text-sale text-sm mt-4">
+              Something went wrong. Please try again.
+            </p>
+          )}
 
-        {status !== "success" && (
-          <p className="text-white/40 text-xs mt-3">
-            No spam, ever. Unsubscribe in one click.
-          </p>
-        )}
+          {status !== "success" && (
+            <p className="text-muted text-xs mt-4">
+              No spam, ever. Unsubscribe in one click.
+            </p>
+          )}
+        </div>
       </div>
     </section>
   );
