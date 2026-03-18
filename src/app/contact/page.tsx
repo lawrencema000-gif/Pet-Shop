@@ -171,6 +171,7 @@ export default function ContactPage() {
                           placeholder="you@example.com"
                           className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors"
                         />
+                        <p className="text-xs text-muted mt-1">We&apos;ll only use this to respond to your message</p>
                       </div>
                     </div>
 
@@ -209,7 +210,6 @@ export default function ContactPage() {
                       <textarea
                         id="message"
                         name="message"
-                        required
                         rows={5}
                         placeholder="Tell us how we can help..."
                         className="w-full px-4 py-2.5 text-sm border border-border rounded-premium bg-background focus:outline-none focus:border-accent transition-colors resize-none"
@@ -221,8 +221,9 @@ export default function ContactPage() {
                       className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors"
                     >
                       <Send size={16} />
-                      Send Message
+                      Send My Message
                     </button>
+                    <p className="text-xs text-muted mt-2">We typically respond within 24 hours</p>
                   </form>
                 )}
               </div>

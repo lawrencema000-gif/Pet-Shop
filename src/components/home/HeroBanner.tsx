@@ -54,8 +54,8 @@ export default function HeroBanner() {
               transition={{ duration: 0.5, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
               className="text-display-lg md:text-display-xl text-foreground"
             >
-              Smart Care for{" "}
-              <span className="text-accent">Happy Pets</span>
+              Smarter Care,{" "}
+              <span className="text-accent">Happier Pets</span>
             </motion.h1>
 
             <motion.p
@@ -64,8 +64,8 @@ export default function HeroBanner() {
               transition={{ duration: 0.5, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="text-body-lg text-muted mt-5 max-w-lg leading-relaxed"
             >
-              Premium smart pet technology designed to keep your furry friends
-              healthy, happy, and connected — even when you&apos;re away.
+              From app-controlled feeders to self-cleaning litter boxes — our
+              smart pet tech saves you 2+ hours a week while keeping your pets healthier.
             </motion.p>
 
             <motion.div
@@ -78,14 +78,14 @@ export default function HeroBanner() {
                 href="/products?sort=best-sellers"
                 className="inline-flex items-center gap-2 bg-accent text-white px-8 py-4 rounded-premium font-semibold hover:bg-accent-dark transition-all duration-200 shadow-sm hover:shadow-md text-sm group"
               >
-                Shop Best Sellers
+                Explore Best Sellers
                 <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/products"
                 className="inline-flex items-center gap-2 border-2 border-accent text-accent px-8 py-4 rounded-premium font-semibold hover:bg-accent hover:text-white transition-all duration-200 text-sm"
               >
-                Shop All Products
+                Browse Collection
               </Link>
             </motion.div>
 
@@ -123,6 +123,9 @@ export default function HeroBanner() {
                   <span className="text-caption font-medium">{badge.label}</span>
                 </div>
               ))}
+              <p className="text-caption text-muted mt-4">
+                Trusted by <span className="font-semibold text-foreground-muted">150,000+</span> pet parents &middot; 4.8/5 average rating
+              </p>
             </motion.div>
           </div>
 

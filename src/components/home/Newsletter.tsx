@@ -38,9 +38,13 @@ export default function Newsletter() {
         <h2 className="text-2xl md:text-3xl font-bold text-white">
           Get 10% Off Your First Order
         </h2>
-        <p className="text-white/70 mt-3 mb-8 max-w-md mx-auto">
+        <p className="text-white/70 mt-3 max-w-md mx-auto">
           Plus exclusive deals, new product alerts, and pet care tips delivered
           straight to your inbox.
+        </p>
+
+        <p className="text-white/50 text-xs mt-4 mb-8">
+          Join 15,000+ pet parents. Unsubscribe anytime.
         </p>
 
         {status === "success" ? (
@@ -67,7 +71,7 @@ export default function Newsletter() {
               disabled={status === "loading"}
               className="bg-sale text-white px-6 text-sm font-semibold hover:bg-sale/90 transition-colors disabled:opacity-60 whitespace-nowrap"
             >
-              {status === "loading" ? "..." : "Get 10% Off"}
+              {status === "loading" ? "..." : "Claim My 10% Off"}
             </button>
           </form>
         )}
@@ -78,9 +82,11 @@ export default function Newsletter() {
           </p>
         )}
 
-        <p className="text-white/50 text-xs mt-4">
-          Join 15,000+ pet parents. Unsubscribe anytime.
-        </p>
+        {status !== "success" && (
+          <p className="text-white/40 text-xs mt-3">
+            No spam, ever. Unsubscribe in one click.
+          </p>
+        )}
       </div>
     </section>
   );

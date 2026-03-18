@@ -26,6 +26,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Georgia", "serif"],
       },
       fontSize: {
         "display-xl": ["4rem", { lineHeight: "1.05", letterSpacing: "-0.03em", fontWeight: "700" }],
