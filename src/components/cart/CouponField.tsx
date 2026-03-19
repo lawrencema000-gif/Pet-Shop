@@ -59,7 +59,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
         return;
       }
 
-      if (coupon.max_uses && coupon.times_used >= coupon.max_uses) {
+      if (coupon.max_uses && coupon.current_uses >= coupon.max_uses) {
         setError("This coupon has reached its usage limit");
         setLoading(false);
         return;
@@ -71,6 +71,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
       } else {
         discount = Math.min(coupon.discount_value, subtotal);
       }
+      discount = Math.round(discount * 100) / 100;
 
       setApplied({ code: coupon.code, discount });
       onApply(discount, coupon.code);

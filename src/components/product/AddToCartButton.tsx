@@ -27,8 +27,13 @@ export default function AddToCartButton({
   const compareAt =
     selectedVariant?.compare_at_price ?? product.compare_at_price;
 
+  const stockQuantity = selectedVariant?.stock_quantity ?? Infinity;
+  const isOutOfStock = stockQuantity === 0;
+
   const handleAdd = () => {
+    if (isOutOfStock) return;
     setStatus("loading");
+    const addQuantity = Math.min(quantity, stockQuantity);
     setTimeout(() => {
       addItem(
         {
@@ -42,7 +47,7 @@ export default function AddToCartButton({
           image_url: selectedVariant?.image_url ?? primaryImage?.url ?? "",
           slug: product.slug,
         },
-        quantity
+        addQuantity
       );
       setStatus("success");
       setTimeout(() => setStatus("idle"), 1500);
@@ -64,7 +69,7 @@ export default function AddToCartButton({
           {quantity}
         </span>
         <button
-          onClick={() => setQuantity((q) => Math.min(MAX_ITEM_QUANTITY, q + 1))}
+          onClick={() => setQuantity((q) => Math.min(MAX_ITEM_QUANTITY, stockQuantity, q + 1))}
           className="px-3 py-3 hover:bg-surface transition-colors rounded-r-lg"
           aria-label="Increase quantity"
         >
@@ -75,13 +80,15 @@ export default function AddToCartButton({
       {/* Add to Cart */}
       <motion.button
         onClick={handleAdd}
-        disabled={status === "loading"}
+        disabled={status === "loading" || isOutOfStock}
         whileTap={{ scale: 0.98 }}
         className={cn(
           "w-full flex items-center justify-center gap-2 py-4 text-lg font-semibold rounded transition-colors",
-          status === "success"
-            ? "bg-success text-white"
-            : "bg-accent text-white hover:bg-accent-dark"
+          isOutOfStock
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : status === "success"
+              ? "bg-success text-white"
+              : "bg-accent text-white hover:bg-accent-dark"
         )}
       >
         <AnimatePresence mode="wait">
@@ -115,8 +122,14 @@ export default function AddToCartButton({
               exit={{ opacity: 0 }}
               className="flex items-center gap-2"
             >
-              <ShoppingCart className="w-5 h-5" />
-              Add to Cart
+              {isOutOfStock ? (
+                "Out of Stock"
+              ) : (
+                <>
+                  <ShoppingCart className="w-5 h-5" />
+                  Add to Cart
+                </>
+              )}
             </motion.span>
           )}
         </AnimatePresence>

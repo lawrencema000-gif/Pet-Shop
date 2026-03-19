@@ -8,7 +8,6 @@ import { ShieldCheck, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
-import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import { SITE_CONFIG, SHIPPING_COST, TAX_RATE } from "@/lib/constants";
 import { CouponField } from "@/components/cart/CouponField";
@@ -65,45 +64,29 @@ export default function CheckoutPage() {
 
     setLoading(true);
     try {
-      const { data: userData } = await supabase.auth.getUser();
-
-      const { data: order, error: orderError } = await supabase
-        .from("orders")
-        .insert({
-          user_id: userData?.user?.id ?? null,
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            product_id: item.product_id,
+            variant_id: item.variant_id,
+            quantity: item.quantity,
+          })),
           email,
-          status: "pending",
-          subtotal,
-          discount_amount: discount,
-          shipping_amount: shipping,
-          tax_amount: tax,
-          total,
           shipping_address: address,
-          coupon_code: couponCode,
-        })
-        .select()
-        .single();
+          coupon_code: couponCode ?? undefined,
+        }),
+      });
 
-      if (orderError) throw orderError;
+      const data = await res.json();
 
-      const orderItems = items.map((item) => ({
-        order_id: order.id,
-        product_id: item.product_id,
-        variant_id: item.variant_id,
-        product_name: item.name,
-        variant_name: item.variant_name,
-        quantity: item.quantity,
-        unit_price: item.price,
-        total_price: item.price * item.quantity,
-      }));
+      if (!res.ok) {
+        setErrors({ form: data.error || "Something went wrong. Please try again." });
+        return;
+      }
 
-      const { error: itemsError } = await supabase
-        .from("order_items")
-        .insert(orderItems);
-
-      if (itemsError) throw itemsError;
-
-      setOrderId(order.id);
+      setOrderId(data.order_id);
       clearCart();
     } catch (err) {
       console.error("Checkout error:", err);
