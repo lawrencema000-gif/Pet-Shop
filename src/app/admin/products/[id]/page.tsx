@@ -99,13 +99,14 @@ export default function EditProductPage() {
   }
 
   async function handleDeleteProduct() {
-    await supabase.from("products").delete().eq("id", id);
+    const { error } = await supabase.from("products").delete().eq("id", id);
+    if (error) { console.error("Delete product failed:", error.message); return; }
     await logAdminAction("delete_product", "product", id);
     router.push("/admin/products");
   }
 
   async function addVariant() {
-    const { data } = await supabase.from("product_variants").insert({
+    const { data, error } = await supabase.from("product_variants").insert({
       product_id: id,
       name: "New Variant",
       variant_type: "color",
@@ -113,39 +114,46 @@ export default function EditProductPage() {
       stock_quantity: 100,
       is_default: false,
     }).select().single();
+    if (error) { console.error("Add variant failed:", error.message); return; }
     if (data) setVariants((prev) => [...prev, data]);
   }
 
   async function updateVariant(vid: string, updates: Partial<Variant>) {
-    await supabase.from("product_variants").update(updates).eq("id", vid);
+    const { error } = await supabase.from("product_variants").update(updates).eq("id", vid);
+    if (error) { console.error("Update variant failed:", error.message); return; }
     setVariants((prev) => prev.map((v) => (v.id === vid ? { ...v, ...updates } : v)));
   }
 
   async function deleteVariant(vid: string) {
-    await supabase.from("product_variants").delete().eq("id", vid);
+    const { error } = await supabase.from("product_variants").delete().eq("id", vid);
+    if (error) { console.error("Delete variant failed:", error.message); return; }
     setVariants((prev) => prev.filter((v) => v.id !== vid));
   }
 
   async function addImageUrl() {
     const url = prompt("Enter image URL:");
     if (!url) return;
-    const { data } = await supabase.from("product_images").insert({
+    const { data, error } = await supabase.from("product_images").insert({
       product_id: id,
       url,
       display_order: images.length,
       is_primary: images.length === 0,
     }).select().single();
+    if (error) { console.error("Add image failed:", error.message); return; }
     if (data) setImages((prev) => [...prev, data]);
   }
 
   async function deleteImage(imgId: string) {
-    await supabase.from("product_images").delete().eq("id", imgId);
+    const { error } = await supabase.from("product_images").delete().eq("id", imgId);
+    if (error) { console.error("Delete image failed:", error.message); return; }
     setImages((prev) => prev.filter((i) => i.id !== imgId));
   }
 
   async function setPrimaryImage(imgId: string) {
-    await supabase.from("product_images").update({ is_primary: false }).eq("product_id", id);
-    await supabase.from("product_images").update({ is_primary: true }).eq("id", imgId);
+    const { error: e1 } = await supabase.from("product_images").update({ is_primary: false }).eq("product_id", id);
+    if (e1) { console.error("Set primary image failed:", e1.message); return; }
+    const { error: e2 } = await supabase.from("product_images").update({ is_primary: true }).eq("id", imgId);
+    if (e2) { console.error("Set primary image failed:", e2.message); return; }
     setImages((prev) => prev.map((i) => ({ ...i, is_primary: i.id === imgId })));
   }
 

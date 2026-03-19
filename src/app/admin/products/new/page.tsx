@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase/client";
 import { slugify } from "@/lib/utils";
@@ -27,11 +27,12 @@ export default function NewProductPage() {
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
   // Load categories on mount
-  useState(() => {
-    supabase.from("categories").select("id, name").order("display_order").then(({ data }) => {
+  useEffect(() => {
+    supabase.from("categories").select("id, name").order("display_order").then(({ data, error }) => {
+      if (error) { console.error("Failed to load categories:", error.message); return; }
       setCategories(data ?? []);
     });
-  });
+  }, []);
 
   function updateField(key: string, value: string | boolean) {
     setForm((prev) => {

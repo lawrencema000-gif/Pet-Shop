@@ -170,28 +170,21 @@ export async function POST(request: Request) {
         .from("coupons")
         .select("*")
         .eq("code", coupon_code.toUpperCase())
-        .eq("active", true)
+        .eq("is_active", true)
         .single();
 
       if (coupon) {
         const now = new Date().toISOString();
         const isValid =
-          (!coupon.valid_from || coupon.valid_from <= now) &&
-          (!coupon.valid_until || coupon.valid_until >= now) &&
+          (!coupon.expires_at || coupon.expires_at >= now) &&
           (coupon.max_uses === null ||
-            (coupon.times_used ?? 0) < coupon.max_uses) &&
+            (coupon.current_uses ?? 0) < coupon.max_uses) &&
           (coupon.min_order_amount === null ||
             subtotal >= coupon.min_order_amount);
 
         if (isValid) {
           if (coupon.discount_type === "percentage") {
             discountAmount = subtotal * (coupon.discount_value / 100);
-            if (coupon.max_discount_amount) {
-              discountAmount = Math.min(
-                discountAmount,
-                coupon.max_discount_amount
-              );
-            }
           } else {
             discountAmount = Math.min(coupon.discount_value, subtotal);
           }

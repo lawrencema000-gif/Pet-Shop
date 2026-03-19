@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { DollarSign, ShoppingBag, TrendingUp, Package } from "lucide-react";
+import { DollarSign, ShoppingBag, TrendingUp, Package, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { StatsCard } from "@/components/admin/StatsCard";
 import { formatPrice } from "@/lib/utils";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 type Period = "7d" | "30d" | "90d" | "all";
 
@@ -22,6 +23,7 @@ interface OrderItem {
 }
 
 export default function AdminAnalyticsPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [orders, setOrders] = useState<Order[]>([]);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,6 +100,16 @@ export default function AdminAnalyticsPage() {
     const max = Math.max(...entries.map(([, v]) => v), 1);
     return { entries, max };
   }, [orders]);
+
+  if (loaded && !isSuperAdmin && !hasPermission("analytics:read")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view analytics.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

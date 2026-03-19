@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Download, Trash2 } from "lucide-react";
+import { Download, Trash2, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { logAdminAction } from "@/lib/audit-log";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface Subscriber {
   id: string;
@@ -15,6 +16,7 @@ interface Subscriber {
 }
 
 export default function AdminNewsletterPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [subscribers, setSubscribers] = useState<Subscriber[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -47,7 +49,8 @@ export default function AdminNewsletterPage() {
 
   async function handleDelete() {
     if (!deleteId) return;
-    await supabase.from("newsletter_subscribers").delete().eq("id", deleteId);
+    const { error } = await supabase.from("newsletter_subscribers").delete().eq("id", deleteId);
+    if (error) { console.error("Delete subscriber failed:", error.message); return; }
     await logAdminAction("delete_subscriber", "newsletter", deleteId);
     setDeleteId(null);
     load();
@@ -73,6 +76,16 @@ export default function AdminNewsletterPage() {
       ),
     },
   ];
+
+  if (loaded && !isSuperAdmin && !hasPermission("newsletter:read")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view newsletter subscribers.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

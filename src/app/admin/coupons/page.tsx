@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface Coupon {
   id: string;
@@ -20,6 +21,7 @@ interface Coupon {
 }
 
 export default function AdminCouponsPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
   const [showNew, setShowNew] = useState(false);
@@ -68,6 +70,16 @@ export default function AdminCouponsPage() {
     await logAdminAction("delete_coupon", "coupon", deleteId);
     setDeleteId(null);
     load();
+  }
+
+  if (loaded && !isSuperAdmin && !hasPermission("coupons:write")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage coupons.</p>
+      </div>
+    );
   }
 
   return (

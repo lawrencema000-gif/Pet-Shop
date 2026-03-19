@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Menu, Search, Bell } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-provider";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
@@ -12,6 +13,11 @@ interface AdminTopbarProps {
 export function AdminTopbar({ onMenuClick, onSearchClick }: AdminTopbarProps) {
   const { profile } = useAuth();
   const { roleName } = useStaffPermissions();
+  const [isMac, setIsMac] = useState(true);
+
+  useEffect(() => {
+    setIsMac(navigator.platform.includes("Mac"));
+  }, []);
 
   return (
     <header className="h-16 bg-white border-b border-border flex items-center justify-between px-4 lg:px-8">
@@ -38,11 +44,11 @@ export function AdminTopbar({ onMenuClick, onSearchClick }: AdminTopbarProps) {
           <Search size={16} />
           <span className="hidden sm:inline">Search...</span>
           <kbd className="hidden sm:inline text-[10px] font-mono bg-surface px-1.5 py-0.5 rounded text-muted">
-            ⌘K
+            {isMac ? "⌘K" : "Ctrl+K"}
           </kbd>
         </button>
 
-        <button className="p-2 hover:bg-surface rounded-md transition-colors relative" aria-label="Notifications">
+        <button className="p-2 hover:bg-surface rounded-md transition-colors relative" aria-label="Notifications" title="Notifications coming soon">
           <Bell size={18} className="text-muted" />
         </button>
 

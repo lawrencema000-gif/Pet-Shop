@@ -154,7 +154,7 @@ export function CommandPalette({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-start justify-center pt-[15vh]">
+    <div className="fixed inset-0 z-[50] flex items-start justify-center pt-[15vh]">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
       <div className="relative bg-white w-full max-w-lg rounded-lg shadow-luxe border border-border overflow-hidden">
         {/* Search input */}

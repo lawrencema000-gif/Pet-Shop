@@ -42,14 +42,16 @@ export default function AdminStaffPage() {
   useEffect(() => { load(); }, []);
 
   async function assignRole(userId: string, roleId: string | null) {
-    await supabase.from("profiles").update({ staff_role_id: roleId }).eq("id", userId);
+    const { error } = await supabase.from("profiles").update({ staff_role_id: roleId }).eq("id", userId);
+    if (error) { console.error("Assign role failed:", error.message); return; }
     await logAdminAction("assign_role", "profile", userId, { staff_role_id: roleId });
     load();
   }
 
   async function revokeAdmin() {
     if (!revokeId) return;
-    await supabase.from("profiles").update({ role: "customer", staff_role_id: null }).eq("id", revokeId);
+    const { error } = await supabase.from("profiles").update({ role: "customer", staff_role_id: null }).eq("id", revokeId);
+    if (error) { console.error("Revoke admin failed:", error.message); return; }
     await logAdminAction("revoke_admin", "profile", revokeId);
     setRevokeId(null);
     load();
@@ -57,12 +59,13 @@ export default function AdminStaffPage() {
 
   async function createRole() {
     if (!newRole.name) return;
-    const { data } = await supabase.from("staff_roles").insert({
+    const { data, error } = await supabase.from("staff_roles").insert({
       name: newRole.name,
       description: newRole.description || null,
       permissions: newRole.permissions,
       is_system: false,
     }).select().single();
+    if (error) { console.error("Create role failed:", error.message); return; }
     if (data) {
       await logAdminAction("create_role", "staff_role", data.id, { name: newRole.name });
       setShowNewRole(false);
@@ -73,7 +76,8 @@ export default function AdminStaffPage() {
 
   async function deleteRole() {
     if (!deleteRoleId) return;
-    await supabase.from("staff_roles").delete().eq("id", deleteRoleId);
+    const { error } = await supabase.from("staff_roles").delete().eq("id", deleteRoleId);
+    if (error) { console.error("Delete role failed:", error.message); return; }
     await logAdminAction("delete_role", "staff_role", deleteRoleId);
     setDeleteRoleId(null);
     load();

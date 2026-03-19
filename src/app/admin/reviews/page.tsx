@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Trash2, Star } from "lucide-react";
+import { Trash2, Star, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { logAdminAction } from "@/lib/audit-log";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface ReviewRow {
   id: string;
@@ -21,6 +22,7 @@ interface ReviewRow {
 const PAGE_SIZE = 20;
 
 export default function AdminReviewsPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -63,7 +65,8 @@ export default function AdminReviewsPage() {
 
   async function handleDelete() {
     if (!deleteId) return;
-    await supabase.from("reviews").delete().eq("id", deleteId);
+    const { error } = await supabase.from("reviews").delete().eq("id", deleteId);
+    if (error) { console.error("Delete review failed:", error.message); return; }
     await logAdminAction("delete_review", "review", deleteId);
     setDeleteId(null);
     fetchReviews();
@@ -114,6 +117,16 @@ export default function AdminReviewsPage() {
       ),
     },
   ];
+
+  if (loaded && !isSuperAdmin && !hasPermission("reviews:write")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage reviews.</p>
+      </div>
+    );
+  }
 
   return (
     <div>

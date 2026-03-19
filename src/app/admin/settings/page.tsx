@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Save, Check } from "lucide-react";
+import { Save, Check, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface SettingsState {
   store_name: string;
@@ -13,6 +14,7 @@ interface SettingsState {
 }
 
 export default function AdminSettingsPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [settings, setSettings] = useState<SettingsState>({
     store_name: "PETLIBRO",
     store_currency: "USD",
@@ -42,7 +44,8 @@ export default function AdminSettingsPage() {
   }, []);
 
   async function saveSetting(key: string, value: unknown) {
-    await supabase.from("app_settings").upsert({ key, value, updated_at: new Date().toISOString() });
+    const { error } = await supabase.from("app_settings").upsert({ key, value, updated_at: new Date().toISOString() });
+    if (error) { console.error(`Save setting "${key}" failed:`, error.message); return; }
     await logAdminAction("update_setting", "settings", key, { value });
   }
 
@@ -84,6 +87,16 @@ export default function AdminSettingsPage() {
       ...settings,
       custom_admin_nav: settings.custom_admin_nav.filter((_, i) => i !== idx),
     });
+  }
+
+  if (loaded && !isSuperAdmin && !hasPermission("settings:write")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage settings.</p>
+      </div>
+    );
   }
 
   if (loading) {

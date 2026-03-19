@@ -81,7 +81,8 @@ export default function AdminProductsPage() {
 
   async function handleDelete() {
     if (!deleteId) return;
-    await supabase.from("products").delete().eq("id", deleteId);
+    const { error } = await supabase.from("products").delete().eq("id", deleteId);
+    if (error) { console.error("Delete product failed:", error.message); return; }
     await logAdminAction("delete_product", "product", deleteId);
     setDeleteId(null);
     setSelectedIds([]);
@@ -90,7 +91,8 @@ export default function AdminProductsPage() {
 
   async function handleBulkDelete(ids: string[]) {
     for (const id of ids) {
-      await supabase.from("products").delete().eq("id", id);
+      const { error } = await supabase.from("products").delete().eq("id", id);
+      if (error) { console.error("Delete product failed:", error.message); continue; }
       await logAdminAction("delete_product", "product", id);
     }
     setSelectedIds([]);

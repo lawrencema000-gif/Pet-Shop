@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Edit, Trash2, Save, X, GripVertical } from "lucide-react";
+import { Plus, Edit, Trash2, Save, X, GripVertical, Shield } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface Category {
   id: string;
@@ -17,6 +18,7 @@ interface Category {
 }
 
 export default function AdminCategoriesPage() {
+  const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [editId, setEditId] = useState<string | null>(null);
@@ -36,13 +38,14 @@ export default function AdminCategoriesPage() {
   async function handleCreate() {
     if (!newForm.name) return;
     const slug = newForm.slug || newForm.name.toLowerCase().replace(/\s+/g, "-");
-    const { data } = await supabase.from("categories").insert({
+    const { data, error } = await supabase.from("categories").insert({
       name: newForm.name,
       slug,
       description: newForm.description || null,
       image_url: newForm.image_url || null,
       display_order: categories.length,
     }).select().single();
+    if (error) { console.error("Create category failed:", error.message); return; }
     if (data) {
       await logAdminAction("create_category", "category", data.id, { name: newForm.name });
       setShowNew(false);
@@ -53,7 +56,8 @@ export default function AdminCategoriesPage() {
 
   async function handleUpdate() {
     if (!editId) return;
-    await supabase.from("categories").update(editForm).eq("id", editId);
+    const { error } = await supabase.from("categories").update(editForm).eq("id", editId);
+    if (error) { console.error("Update category failed:", error.message); return; }
     await logAdminAction("update_category", "category", editId);
     setEditId(null);
     load();
@@ -61,10 +65,21 @@ export default function AdminCategoriesPage() {
 
   async function handleDelete() {
     if (!deleteId) return;
-    await supabase.from("categories").delete().eq("id", deleteId);
+    const { error } = await supabase.from("categories").delete().eq("id", deleteId);
+    if (error) { console.error("Delete category failed:", error.message); return; }
     await logAdminAction("delete_category", "category", deleteId);
     setDeleteId(null);
     load();
+  }
+
+  if (loaded && !isSuperAdmin && !hasPermission("categories:write")) {
+    return (
+      <div className="text-center py-20">
+        <Shield size={40} className="text-muted mx-auto mb-3" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage categories.</p>
+      </div>
+    );
   }
 
   return (

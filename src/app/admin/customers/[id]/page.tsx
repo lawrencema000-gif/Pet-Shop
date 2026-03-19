@@ -34,7 +34,8 @@ export default function CustomerDetailPage() {
   async function toggleBan() {
     if (!profile) return;
     const newBan = !profile.is_banned;
-    await supabase.from("profiles").update({ is_banned: newBan }).eq("id", id);
+    const { error } = await supabase.from("profiles").update({ is_banned: newBan }).eq("id", id);
+    if (error) { console.error("Toggle ban failed:", error.message); return; }
     await logAdminAction(newBan ? "ban_customer" : "unban_customer", "profile", id);
     setProfile({ ...profile, is_banned: newBan });
   }

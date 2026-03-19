@@ -60,10 +60,13 @@ export default function OrderDetailPage() {
     if (!order) return;
     setUpdating(true);
     const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", id);
-    if (!error) {
-      await logAdminAction("update_order_status", "order", id, { from: order.status, to: newStatus });
-      setOrder({ ...order, status: newStatus });
+    if (error) {
+      console.error("Update order status failed:", error.message);
+      setUpdating(false);
+      return;
     }
+    await logAdminAction("update_order_status", "order", id, { from: order.status, to: newStatus });
+    setOrder({ ...order, status: newStatus });
     setUpdating(false);
   }
 

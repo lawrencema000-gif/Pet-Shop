@@ -64,7 +64,8 @@ export default function AdminCustomersPage() {
   useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
   async function toggleBan(id: string, ban: boolean) {
-    await supabase.from("profiles").update({ is_banned: ban }).eq("id", id);
+    const { error } = await supabase.from("profiles").update({ is_banned: ban }).eq("id", id);
+    if (error) { console.error("Toggle ban failed:", error.message); return; }
     await logAdminAction(ban ? "ban_customer" : "unban_customer", "profile", id);
     fetchCustomers();
   }
