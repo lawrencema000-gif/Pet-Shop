@@ -1,17 +1,11 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import StickyTab from "@/components/layout/StickyTab";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import WebsiteSchema from "@/components/seo/WebsiteSchema";
 import { AuthProvider } from "@/lib/supabase/auth-provider";
 import { ToastProvider } from "@/components/ui/Toast";
-import SkipLink from "@/components/ui/SkipLink";
-import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
+import { StoreShell } from "@/components/layout/StoreShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -91,17 +85,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <AuthProvider>
           <ToastProvider>
-            <SkipLink />
             <OrganizationSchema />
             <WebsiteSchema />
-            <AnnouncementBar />
-            <Header />
-            <main id="main-content" className="min-h-screen">{children}</main>
-            <Footer />
-            <StickyTab />
-            <CartDrawer />
-            <ExitIntentPopup />
-            <div id="aria-live" aria-live="polite" role="status" className="sr-only" />
+            <StoreShell>{children}</StoreShell>
           </ToastProvider>
         </AuthProvider>
       </body>

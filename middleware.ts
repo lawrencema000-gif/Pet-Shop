@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const PROTECTED_PATHS = ["/account"];
+const PROTECTED_PATHS = ["/account", "/admin"];
 
 function isProtectedPath(pathname: string): boolean {
   return PROTECTED_PATHS.some(
@@ -39,5 +39,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/account/:path*"],
+  matcher: ["/account/:path*", "/admin/:path*"],
 };
