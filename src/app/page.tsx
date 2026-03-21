@@ -7,6 +7,7 @@ import ProductSpotlight from "@/components/home/ProductSpotlight";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
 import Testimonials from "@/components/home/Testimonials";
 import Newsletter from "@/components/home/Newsletter";
+import FeaturedRevealCards from "@/components/home/FeaturedRevealCards";
 
 export default async function Home() {
   const supabase = createServerSupabaseClient();
@@ -31,6 +32,14 @@ export default async function Home() {
     console.error("Failed to fetch best sellers:", bestSellersError.message);
   }
 
+  const { data: featuredProducts } = await supabase
+    .from("products")
+    .select("*, images:product_images(*), variants:product_variants(*)")
+    .eq("is_featured", true)
+    .eq("status", "active")
+    .order("created_at", { ascending: false })
+    .limit(4);
+
   return (
     <>
       <HeroBanner />
@@ -44,6 +53,8 @@ export default async function Home() {
       <section className="container-main py-24 md:py-32">
         <BestSellers products={bestSellers || []} />
       </section>
+
+      <FeaturedRevealCards products={featuredProducts || []} />
 
       <ProductSpotlight />
 
