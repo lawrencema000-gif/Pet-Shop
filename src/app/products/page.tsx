@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import ProductGrid from "@/components/product/ProductGrid";
+import AnimatedProductGrid from "@/components/product/AnimatedProductGrid";
 import FilterSidebar from "@/components/product/FilterSidebar";
 
 interface ProductsPageProps {
@@ -117,7 +117,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
 
         <div className="flex-1 min-w-0">
           {products && products.length > 0 ? (
-            <ProductGrid products={products} />
+            <AnimatedProductGrid products={products} />
           ) : (
             <div className="text-center py-16">
               <p className="text-muted text-lg">No products found.</p>
