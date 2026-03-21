@@ -8,6 +8,7 @@ import StickyTab from "./StickyTab";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import ExitIntentPopup from "@/components/ui/ExitIntentPopup";
 import SkipLink from "@/components/ui/SkipLink";
+import { LiveChatWidget } from "@/components/chat/LiveChatWidget";
 
 export function StoreShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -29,6 +30,7 @@ export function StoreShell({ children }: { children: React.ReactNode }) {
       <StickyTab />
       <CartDrawer />
       <ExitIntentPopup />
+      <LiveChatWidget />
       <div id="aria-live" aria-live="polite" role="status" className="sr-only" />
     </>
   );
