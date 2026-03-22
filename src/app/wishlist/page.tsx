@@ -1,28 +1,89 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { Heart } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Wishlist | Pet Shop",
-  description: "Save your favorite pet products to your wishlist.",
-};
+import Link from "next/link";
+import { Breadcrumb } from "@/components/ui/Breadcrumb";
+import { Heart, ShoppingBag, ArrowRight, LogIn } from "lucide-react";
+import { useAuth } from "@/lib/supabase/auth-provider";
 
 export default function WishlistPage() {
+  const { user, loading } = useAuth();
+
   return (
-    <main className="container-main py-20 text-center">
-      <div className="max-w-md mx-auto">
-        <Heart className="w-16 h-16 text-muted/30 mx-auto mb-6" strokeWidth={1.5} />
-        <h1 className="text-3xl font-bold mb-3">Your Wishlist</h1>
-        <p className="text-muted mb-8">
-          Sign in to save your favorites and get notified about price drops.
-        </p>
-        <Link
-          href="/auth/login"
-          className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
-        >
-          Sign In to Get Started
-        </Link>
+    <>
+      <div className="container-main">
+        <Breadcrumb items={[{ label: "Wishlist" }]} />
       </div>
-    </main>
+
+      <div className="container-main pb-20">
+        {loading ? (
+          /* Loading State */
+          <div className="max-w-md mx-auto text-center py-16">
+            <div className="w-12 h-12 rounded-full border-2 border-accent border-t-transparent animate-spin mx-auto" />
+          </div>
+        ) : !user ? (
+          /* Unauthenticated State */
+          <div className="max-w-lg mx-auto text-center py-8">
+            <div className="rounded-2xl bg-gradient-to-br from-accent/5 via-surface to-accent/10 border border-border p-10 md:p-14">
+              <div className="relative inline-flex mb-6">
+                <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Heart
+                    className="w-10 h-10 text-accent"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-surface border-2 border-border flex items-center justify-center">
+                  <LogIn size={14} className="text-muted" />
+                </div>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                Your Wishlist
+              </h1>
+              <p className="text-muted leading-relaxed mb-8 max-w-sm mx-auto">
+                Sign in to save your favorite products, track price drops, and
+                build your perfect pet care collection.
+              </p>
+              <Link
+                href="/auth/login"
+                className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
+              >
+                Sign In to Get Started
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        ) : (
+          /* Authenticated Empty State */
+          <div className="max-w-lg mx-auto text-center py-8">
+            <div className="rounded-2xl border border-border p-10 md:p-14">
+              <div className="relative inline-flex mb-6">
+                <div className="w-20 h-20 rounded-full bg-surface flex items-center justify-center">
+                  <ShoppingBag
+                    className="w-10 h-10 text-muted/40"
+                    strokeWidth={1.5}
+                  />
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-accent/10 border-2 border-white flex items-center justify-center">
+                  <Heart size={14} className="text-accent" />
+                </div>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                Your Wishlist Is Empty
+              </h1>
+              <p className="text-muted leading-relaxed mb-8 max-w-sm mx-auto">
+                Start adding favorites! Browse our collection of smart pet care
+                products and tap the heart icon to save items here.
+              </p>
+              <Link
+                href="/products"
+                className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
+              >
+                Browse Products
+                <ArrowRight size={14} />
+              </Link>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
