@@ -28,7 +28,8 @@ export function useStaffPermissions() {
       .select("id, name, description, permissions, is_system, created_at")
       .eq("id", profile.staff_role_id)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) console.error("Failed to load staff role:", error);
         setStaffRole(data as StaffRole | null);
         setLoaded(true);
       });
@@ -41,7 +42,8 @@ export function useStaffPermissions() {
       .select("value")
       .eq("key", "super_admin_emails")
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) console.error("Failed to load super admin emails:", error);
         const emails = Array.isArray(data?.value)
           ? (data.value as string[])
           : DEFAULT_SUPER_EMAILS;

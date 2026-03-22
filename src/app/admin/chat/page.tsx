@@ -13,6 +13,7 @@ import { ShadcnButton } from "@/components/ui/shadcn-button";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth-provider";
 import { cn } from "@/lib/utils";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 interface Conversation {
   id: string;
@@ -40,6 +41,7 @@ export default function AdminChatPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { isSuperAdmin, hasPermission } = useStaffPermissions();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   // Fetch all conversations
@@ -196,20 +198,23 @@ export default function AdminChatPage() {
       const convoIds = conversations.map((c) => c.id);
       if (convoIds.length === 0) return;
 
-      // Fetch last message per conversation
+      // Batch fetch last message for all conversations in one query
+      const { data } = await supabase
+        .from("chat_messages")
+        .select("conversation_id, message, sender_role, created_at")
+        .in("conversation_id", convoIds)
+        .order("created_at", { ascending: false });
+
+      if (!data) return;
+
+      // Group by conversation, take first (most recent) per conversation
       const newPreviews: Record<string, string> = {};
-      for (const id of convoIds) {
-        const { data } = await supabase
-          .from("chat_messages")
-          .select("message, sender_role")
-          .eq("conversation_id", id)
-          .order("created_at", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (data) {
-          const prefix = data.sender_role === "admin" ? "You: " : "";
-          newPreviews[id] = prefix + (data.message.length > 50 ? data.message.slice(0, 50) + "..." : data.message);
-        }
+      const seen = new Set<string>();
+      for (const msg of data) {
+        if (seen.has(msg.conversation_id)) continue;
+        seen.add(msg.conversation_id);
+        const prefix = msg.sender_role === "admin" ? "You: " : "";
+        newPreviews[msg.conversation_id] = prefix + (msg.message.length > 50 ? msg.message.slice(0, 50) + "..." : msg.message);
       }
       setPreviews(newPreviews);
     }
@@ -220,6 +225,14 @@ export default function AdminChatPage() {
     return (
       <div className="flex items-center justify-center h-64">
         <RefreshCw className="h-6 w-6 animate-spin text-muted" />
+      </div>
+    );
+  }
+
+  if (!isSuperAdmin && !hasPermission("chat:read")) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-muted">You don&apos;t have permission to access chat.</p>
       </div>
     );
   }

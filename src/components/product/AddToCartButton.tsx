@@ -27,31 +27,29 @@ export default function AddToCartButton({
   const compareAt =
     selectedVariant?.compare_at_price ?? product.compare_at_price;
 
-  const stockQuantity = selectedVariant?.stock_quantity ?? Infinity;
+  const stockQuantity = selectedVariant?.stock_quantity ?? 99;
   const isOutOfStock = stockQuantity === 0;
 
   const handleAdd = () => {
     if (isOutOfStock) return;
     setStatus("loading");
     const addQuantity = Math.min(quantity, stockQuantity);
-    setTimeout(() => {
-      addItem(
-        {
-          id: selectedVariant?.id ?? product.id,
-          product_id: product.id,
-          variant_id: selectedVariant?.id ?? null,
-          name: product.name,
-          variant_name: selectedVariant?.name ?? null,
-          price,
-          compare_at_price: compareAt ?? null,
-          image_url: selectedVariant?.image_url ?? primaryImage?.url ?? "",
-          slug: product.slug,
-        },
-        addQuantity
-      );
-      setStatus("success");
-      setTimeout(() => setStatus("idle"), 1500);
-    }, 400);
+    addItem(
+      {
+        id: selectedVariant?.id ?? product.id,
+        product_id: product.id,
+        variant_id: selectedVariant?.id ?? null,
+        name: product.name,
+        variant_name: selectedVariant?.name ?? null,
+        price,
+        compare_at_price: compareAt ?? null,
+        image_url: selectedVariant?.image_url ?? primaryImage?.url ?? "",
+        slug: product.slug,
+      },
+      addQuantity
+    );
+    setStatus("success");
+    setTimeout(() => setStatus("idle"), 1500);
   };
 
   return (

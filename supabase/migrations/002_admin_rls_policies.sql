@@ -273,6 +273,7 @@ CREATE POLICY "Admins can view audit log"
 
 -- Replace the existing authenticated-only insert policy on orders
 DROP POLICY IF EXISTS "Authenticated users can create orders" ON orders;
+DROP POLICY IF EXISTS "Anyone can create orders" ON orders;
 CREATE POLICY "Anyone can create orders"
   ON orders FOR INSERT
   WITH CHECK (true);

@@ -28,30 +28,40 @@ CREATE INDEX IF NOT EXISTS idx_chat_messages_created ON chat_messages(created_at
 ALTER TABLE chat_conversations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE chat_messages ENABLE ROW LEVEL SECURITY;
 
--- Enable Realtime for chat_messages
-ALTER PUBLICATION supabase_realtime ADD TABLE chat_messages;
-ALTER PUBLICATION supabase_realtime ADD TABLE chat_conversations;
+-- Enable Realtime for chat tables (safe: drop first if already added)
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE chat_messages;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
+DO $$ BEGIN
+  ALTER PUBLICATION supabase_realtime ADD TABLE chat_conversations;
+EXCEPTION WHEN duplicate_object THEN NULL;
+END $$;
 
 -- ============================================
 -- RLS Policies for chat_conversations
 -- ============================================
 
 -- Customers can see their own conversations
+DROP POLICY IF EXISTS "Customers can view own conversations" ON chat_conversations;
 CREATE POLICY "Customers can view own conversations"
   ON chat_conversations FOR SELECT
   USING (customer_id = auth.uid());
 
 -- Customers can create conversations
+DROP POLICY IF EXISTS "Customers can create conversations" ON chat_conversations;
 CREATE POLICY "Customers can create conversations"
   ON chat_conversations FOR INSERT
   WITH CHECK (customer_id = auth.uid());
 
 -- Customers can update their own conversations (e.g. close)
+DROP POLICY IF EXISTS "Customers can update own conversations" ON chat_conversations;
 CREATE POLICY "Customers can update own conversations"
   ON chat_conversations FOR UPDATE
   USING (customer_id = auth.uid());
 
 -- Admins can view all conversations
+DROP POLICY IF EXISTS "Admins can view all conversations" ON chat_conversations;
 CREATE POLICY "Admins can view all conversations"
   ON chat_conversations FOR SELECT
   USING (
@@ -61,6 +71,7 @@ CREATE POLICY "Admins can view all conversations"
   );
 
 -- Admins can update all conversations
+DROP POLICY IF EXISTS "Admins can update all conversations" ON chat_conversations;
 CREATE POLICY "Admins can update all conversations"
   ON chat_conversations FOR UPDATE
   USING (
@@ -74,6 +85,7 @@ CREATE POLICY "Admins can update all conversations"
 -- ============================================
 
 -- Customers can view messages in their own conversations
+DROP POLICY IF EXISTS "Customers can view own conversation messages" ON chat_messages;
 CREATE POLICY "Customers can view own conversation messages"
   ON chat_messages FOR SELECT
   USING (
@@ -85,6 +97,7 @@ CREATE POLICY "Customers can view own conversation messages"
   );
 
 -- Customers can insert messages to their own conversations (sender_role must be 'customer')
+DROP POLICY IF EXISTS "Customers can send messages in own conversations" ON chat_messages;
 CREATE POLICY "Customers can send messages in own conversations"
   ON chat_messages FOR INSERT
   WITH CHECK (
@@ -97,6 +110,7 @@ CREATE POLICY "Customers can send messages in own conversations"
   );
 
 -- Admins can view all messages
+DROP POLICY IF EXISTS "Admins can view all messages" ON chat_messages;
 CREATE POLICY "Admins can view all messages"
   ON chat_messages FOR SELECT
   USING (
@@ -106,6 +120,7 @@ CREATE POLICY "Admins can view all messages"
   );
 
 -- Admins can insert messages to any conversation (sender_role must be 'admin')
+DROP POLICY IF EXISTS "Admins can send messages to any conversation" ON chat_messages;
 CREATE POLICY "Admins can send messages to any conversation"
   ON chat_messages FOR INSERT
   WITH CHECK (
@@ -124,6 +139,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+DROP TRIGGER IF EXISTS chat_conversation_updated_at ON chat_conversations;
 CREATE TRIGGER chat_conversation_updated_at
   BEFORE UPDATE ON chat_conversations
   FOR EACH ROW

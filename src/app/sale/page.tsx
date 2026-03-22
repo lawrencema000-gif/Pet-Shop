@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Spring Sale — Up to 30% Off | PETLIBRO",
@@ -168,11 +169,11 @@ export default async function SalePage() {
                     </h3>
                     <div className="mt-2 flex items-center gap-2">
                       <span className="text-base font-bold text-sale">
-                        ${product.base_price.toFixed(2)}
+                        {formatPrice(product.base_price)}
                       </span>
                       {product.compare_at_price && (
                         <span className="text-sm text-muted line-through">
-                          ${product.compare_at_price.toFixed(2)}
+                          {formatPrice(product.compare_at_price)}
                         </span>
                       )}
                     </div>

@@ -2,9 +2,7 @@ import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
 import type { ShippingAddress } from "@/types/order";
 
-const SHIPPING_COST = 5.99;
-const FREE_SHIPPING_THRESHOLD = 75;
-const TAX_RATE = 0.08;
+import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from "@/lib/constants";
 
 interface CheckoutItem {
   product_id: string;
@@ -85,13 +83,13 @@ export async function POST(request: Request) {
 
     let variantMap = new Map<
       string,
-      { id: string; product_id: string; name: string; price: number }
+      { id: string; product_id: string; name: string; price: number; stock_quantity: number }
     >();
 
     if (variantIds.length > 0) {
       const { data: variants, error: variantsError } = await supabase
         .from("product_variants")
-        .select("id, product_id, name, price")
+        .select("id, product_id, name, price, stock_quantity")
         .in("id", variantIds);
 
       if (variantsError) {
@@ -140,6 +138,13 @@ export async function POST(request: Request) {
         }
         unitPrice = variant.price;
         variantName = variant.name;
+
+        if (variant.stock_quantity !== null && variant.stock_quantity < item.quantity) {
+          return NextResponse.json(
+            { error: `Insufficient stock for ${product.name} (${variantName}). Only ${variant.stock_quantity} available.` },
+            { status: 400 }
+          );
+        }
       }
 
       if (item.quantity < 1 || !Number.isInteger(item.quantity)) {
@@ -165,6 +170,7 @@ export async function POST(request: Request) {
 
     // Validate coupon code if provided
     let discountAmount = 0;
+    let couponId: string | null = null;
     if (coupon_code) {
       const { data: coupon } = await supabase
         .from("coupons")
@@ -189,19 +195,15 @@ export async function POST(request: Request) {
             discountAmount = Math.min(coupon.discount_value, subtotal);
           }
           discountAmount = Math.round(discountAmount * 100) / 100;
+          couponId = coupon.id;
         }
       }
     }
 
-    // Calculate totals
-    const discountedSubtotal = subtotal - discountAmount;
-    const shippingAmount =
-      discountedSubtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
-    const taxAmount =
-      Math.round(discountedSubtotal * TAX_RATE * 100) / 100;
-    const total =
-      Math.round((discountedSubtotal + shippingAmount + taxAmount) * 100) /
-      100;
+    // Calculate totals — discount applied at end, shipping/tax on full subtotal
+    const shippingAmount = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+    const taxAmount = Math.round(subtotal * TAX_RATE * 100) / 100;
+    const total = Math.round((subtotal + shippingAmount + taxAmount - discountAmount) * 100) / 100;
 
     // Insert order
     const { data: order, error: orderError } = await supabase
@@ -245,6 +247,21 @@ export async function POST(request: Request) {
         { error: "Failed to create order items" },
         { status: 500 }
       );
+    }
+
+    // Increment coupon usage
+    if (couponId) {
+      await supabase.rpc("increment_coupon_usage", { coupon_id: couponId });
+    }
+
+    // Decrement stock for variants
+    for (const item of items) {
+      if (item.variant_id) {
+        await supabase.rpc("decrement_variant_stock", {
+          p_variant_id: item.variant_id,
+          p_quantity: item.quantity,
+        });
+      }
     }
 
     return NextResponse.json({

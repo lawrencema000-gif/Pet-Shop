@@ -36,8 +36,8 @@ export default function CheckoutPage() {
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
-  const tax = subtotal * TAX_RATE;
-  const total = subtotal + shipping + tax - discount;
+  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
+  const total = Math.round((subtotal + shipping + tax - discount) * 100) / 100;
 
   useEffect(() => {
     if (items.length === 0 && !orderId) {

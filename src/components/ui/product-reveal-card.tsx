@@ -17,6 +17,7 @@ interface ProductRevealCardProps {
   onAdd?: () => void
   onFavorite?: () => void
   enableAnimations?: boolean
+  features?: { label: string; sublabel: string }[]
   className?: string
 }
 
@@ -31,6 +32,10 @@ export function ProductRevealCard({
   onAdd,
   onFavorite,
   enableAnimations = true,
+  features = [
+    { label: "Premium", sublabel: "Quality materials" },
+    { label: "Fast Ship", sublabel: "2-day delivery" },
+  ],
   className,
 }: ProductRevealCardProps) {
   const [isFavorite, setIsFavorite] = useState(false)
@@ -244,14 +249,12 @@ export function ProductRevealCard({
           {/* Features */}
           <motion.div variants={contentVariants}>
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="bg-muted/50 rounded-lg p-2 text-center">
-                <div className="font-semibold">30h Battery</div>
-                <div className="text-muted-foreground">Long-lasting</div>
-              </div>
-              <div className="bg-muted/50 rounded-lg p-2 text-center">
-                <div className="font-semibold">Noise Cancel</div>
-                <div className="text-muted-foreground">Studio quality</div>
-              </div>
+              {features.map((f, i) => (
+                <div key={i} className="bg-muted/50 rounded-lg p-2 text-center">
+                  <div className="font-semibold">{f.label}</div>
+                  <div className="text-muted-foreground">{f.sublabel}</div>
+                </div>
+              ))}
             </div>
           </motion.div>
 
