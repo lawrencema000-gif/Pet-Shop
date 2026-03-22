@@ -1,9 +1,22 @@
 "use client";
 
-import { FileText, BookOpen } from "lucide-react";
+import { FileText, BookOpen, Shield } from "lucide-react";
 import Link from "next/link";
+import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 
 export default function AdminContentPage() {
+  const { isSuperAdmin, hasPermission, loaded } = useStaffPermissions();
+
+  if (loaded && !isSuperAdmin && !hasPermission("content:read")) {
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center">
+        <Shield size={48} className="text-muted mb-4" />
+        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
+        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view content management.</p>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-6">
