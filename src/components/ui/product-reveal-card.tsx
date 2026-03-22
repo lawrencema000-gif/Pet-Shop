@@ -1,7 +1,7 @@
 "use client"
 
 import { motion, useReducedMotion } from "framer-motion"
-import { buttonVariants } from "@/components/ui/shadcn-button"
+import { buttonVariants } from "@/components/ui/Button"
 import { ShoppingCart, Star, Heart } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
@@ -17,7 +17,6 @@ interface ProductRevealCardProps {
   onAdd?: () => void
   onFavorite?: () => void
   enableAnimations?: boolean
-  features?: { label: string; sublabel: string }[]
   className?: string
 }
 
@@ -25,17 +24,13 @@ export function ProductRevealCard({
   name = "Premium Wireless Headphones",
   price = "$199",
   originalPrice = "$299",
-  image = "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800&h=600&fit=crop",
+  image = "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800&h=600&fit=crop", // Premium headphones
   description = "Experience studio-quality sound with advanced noise cancellation and 30-hour battery life. Perfect for music lovers and professionals.",
   rating = 4.8,
   reviewCount = 124,
   onAdd,
   onFavorite,
   enableAnimations = true,
-  features = [
-    { label: "Premium", sublabel: "Quality materials" },
-    { label: "Fast Ship", sublabel: "2-day delivery" },
-  ],
   className,
 }: ProductRevealCardProps) {
   const [isFavorite, setIsFavorite] = useState(false)
@@ -193,7 +188,7 @@ export function ProductRevealCard({
         {/* Rating */}
         <div className="flex items-center gap-2">
           <div className="flex">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
                 className={cn(
@@ -249,12 +244,14 @@ export function ProductRevealCard({
           {/* Features */}
           <motion.div variants={contentVariants}>
             <div className="grid grid-cols-2 gap-3 text-xs">
-              {features.map((f, i) => (
-                <div key={i} className="bg-muted/50 rounded-lg p-2 text-center">
-                  <div className="font-semibold">{f.label}</div>
-                  <div className="text-muted-foreground">{f.sublabel}</div>
-                </div>
-              ))}
+              <div className="bg-muted/50 rounded-lg p-2 text-center">
+                <div className="font-semibold">30h Battery</div>
+                <div className="text-muted-foreground">Long-lasting</div>
+              </div>
+              <div className="bg-muted/50 rounded-lg p-2 text-center">
+                <div className="font-semibold">Noise Cancel</div>
+                <div className="text-muted-foreground">Studio quality</div>
+              </div>
             </div>
           </motion.div>
 
@@ -269,9 +266,9 @@ export function ProductRevealCard({
               className={cn(
                 buttonVariants({ variant: "default" }),
                 "w-full h-12 font-medium",
-                "bg-gradient-to-r from-accent to-accent/90",
-                "hover:from-accent/90 hover:to-accent",
-                "shadow-lg shadow-accent/25"
+                "bg-gradient-to-r from-primary to-primary/90",
+                "hover:from-primary/90 hover:to-primary",
+                "shadow-lg shadow-primary/25"
               )}
             >
               <ShoppingCart className="w-4 h-4 mr-2" />
