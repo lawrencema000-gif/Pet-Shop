@@ -44,7 +44,7 @@ export default function CartPage() {
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
-  const tax = subtotal * TAX_RATE;
+  const tax = Math.round((subtotal + shipping) * TAX_RATE * 100) / 100;
   const total = subtotal + shipping + tax - discount;
 
   if (items.length === 0) {

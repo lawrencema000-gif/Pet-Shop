@@ -41,15 +41,45 @@ export default function AdminCouponsPage() {
 
   async function handleCreate() {
     if (!newForm.code || !newForm.discount_value) return;
-    const { data } = await supabase.from("coupons").insert({
+
+    const discountVal = parseFloat(newForm.discount_value);
+    if (isNaN(discountVal) || discountVal <= 0) {
+      alert("Discount value must be greater than 0.");
+      return;
+    }
+    if (newForm.discount_type === "percentage" && discountVal > 100) {
+      alert("Percentage discount cannot exceed 100%.");
+      return;
+    }
+    const minOrder = newForm.min_order_amount ? parseFloat(newForm.min_order_amount) : null;
+    if (minOrder !== null && (isNaN(minOrder) || minOrder < 0)) {
+      alert("Minimum order amount must be 0 or greater.");
+      return;
+    }
+    const maxUses = newForm.max_uses ? parseInt(newForm.max_uses) : null;
+    if (maxUses !== null && (isNaN(maxUses) || maxUses < 1)) {
+      alert("Max uses must be at least 1.");
+      return;
+    }
+    if (newForm.expires_at && new Date(newForm.expires_at) < new Date()) {
+      alert("Expiration date must be in the future.");
+      return;
+    }
+
+    const { data, error } = await supabase.from("coupons").insert({
       code: newForm.code.toUpperCase(),
       discount_type: newForm.discount_type,
-      discount_value: parseFloat(newForm.discount_value),
-      min_order_amount: newForm.min_order_amount ? parseFloat(newForm.min_order_amount) : null,
-      max_uses: newForm.max_uses ? parseInt(newForm.max_uses) : null,
+      discount_value: discountVal,
+      min_order_amount: minOrder,
+      max_uses: maxUses,
       expires_at: newForm.expires_at || null,
       is_active: true,
     }).select().single();
+
+    if (error) {
+      alert("Failed to create coupon: " + error.message);
+      return;
+    }
     if (data) {
       await logAdminAction("create_coupon", "coupon", data.id, { code: newForm.code });
       setShowNew(false);

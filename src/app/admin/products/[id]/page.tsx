@@ -130,9 +130,22 @@ export default function EditProductPage() {
     setVariants((prev) => prev.filter((v) => v.id !== vid));
   }
 
+  function isValidImageUrl(url: string): boolean {
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === "https:" || parsed.protocol === "http:";
+    } catch {
+      return false;
+    }
+  }
+
   async function addImageUrl() {
-    const url = prompt("Enter image URL:");
+    const url = prompt("Enter image URL (must be https:// or http://):");
     if (!url) return;
+    if (!isValidImageUrl(url)) {
+      alert("Invalid URL. Please enter a valid https:// or http:// image URL.");
+      return;
+    }
     const { data, error } = await supabase.from("product_images").insert({
       product_id: id,
       url,
@@ -238,7 +251,7 @@ export default function EditProductPage() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1.5">Price</label>
-                <input type="number" step="0.01" value={product.base_price} onChange={(e) => setProduct({ ...product, base_price: parseFloat(e.target.value) || 0 })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                <input type="number" step="0.01" min="0.01" value={product.base_price} onChange={(e) => setProduct({ ...product, base_price: Math.max(0, parseFloat(e.target.value) || 0) })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-foreground mb-1.5">Compare at Price</label>
@@ -306,13 +319,13 @@ export default function EditProductPage() {
                       </select>
                     </td>
                     <td className="px-4 py-2">
-                      <input type="number" step="0.01" value={v.price} onChange={(e) => updateVariant(v.id, { price: parseFloat(e.target.value) || 0 })} className="w-24 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
+                      <input type="number" step="0.01" min="0.01" value={v.price} onChange={(e) => updateVariant(v.id, { price: Math.max(0, parseFloat(e.target.value) || 0) })} className="w-24 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
                     </td>
                     <td className="px-4 py-2">
                       <input type="text" value={v.sku ?? ""} onChange={(e) => updateVariant(v.id, { sku: e.target.value || null })} className="w-28 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" placeholder="SKU" />
                     </td>
                     <td className="px-4 py-2">
-                      <input type="number" value={v.stock_quantity} onChange={(e) => updateVariant(v.id, { stock_quantity: parseInt(e.target.value) || 0 })} className="w-20 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
+                      <input type="number" min="0" value={v.stock_quantity} onChange={(e) => updateVariant(v.id, { stock_quantity: Math.max(0, parseInt(e.target.value) || 0) })} className="w-20 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
                     </td>
                     <td className="px-4 py-2">
                       <button onClick={() => deleteVariant(v.id)} className="p-1 hover:bg-sale/10 rounded"><X size={14} className="text-muted hover:text-sale" /></button>

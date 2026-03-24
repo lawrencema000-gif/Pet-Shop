@@ -21,6 +21,7 @@ export default function CheckoutPage() {
 
   const [loading, setLoading] = useState(false);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState<ShippingAddress>({
     line1: "",
@@ -36,7 +37,7 @@ export default function CheckoutPage() {
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
-  const tax = Math.round(subtotal * TAX_RATE * 100) / 100;
+  const tax = Math.round((subtotal + shipping) * TAX_RATE * 100) / 100;
   const total = Math.round((subtotal + shipping + tax - discount) * 100) / 100;
 
   useEffect(() => {
@@ -76,6 +77,7 @@ export default function CheckoutPage() {
           email,
           shipping_address: address,
           coupon_code: couponCode ?? undefined,
+          idempotency_key: idempotencyKey,
         }),
       });
 
