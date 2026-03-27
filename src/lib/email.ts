@@ -1,6 +1,17 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Lazy-init to avoid crash during build when RESEND_API_KEY is not yet set
+let _resend: Resend | null = null;
+function getResend() {
+  if (!_resend) {
+    const key = process.env.RESEND_API_KEY;
+    if (!key || key.startsWith("re_placeholder")) {
+      return null;
+    }
+    _resend = new Resend(key);
+  }
+  return _resend;
+}
 
 const FROM = "PETLIBRO <onboarding@resend.dev>"; // Change to your domain once verified
 
@@ -137,6 +148,8 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
     </div>
   `);
 
+  const resend = getResend();
+  if (!resend) return { data: null, error: { message: "Email not configured", name: "missing_key" } };
   return resend.emails.send({
     from: FROM,
     to: [data.email],
@@ -175,6 +188,8 @@ export async function sendOrderShipped(data: ShippedEmailData) {
     </div>
   `);
 
+  const resend = getResend();
+  if (!resend) return { data: null, error: { message: "Email not configured", name: "missing_key" } };
   return resend.emails.send({
     from: FROM,
     to: [data.email],
@@ -201,6 +216,8 @@ export async function sendContactFormEmail(data: {
   `);
 
   // Send to store owner
+  const resend = getResend();
+  if (!resend) return { data: null, error: { message: "Email not configured", name: "missing_key" } };
   return resend.emails.send({
     from: FROM,
     to: [process.env.ADMIN_EMAIL ?? "lawrence.ma000@gmail.com"],
