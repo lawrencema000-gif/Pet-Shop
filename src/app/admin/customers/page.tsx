@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Eye, Ban, CheckCircle } from "lucide-react";
+import { Eye, Ban, CheckCircle, Download } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { logAdminAction } from "@/lib/audit-log";
 
@@ -63,6 +64,29 @@ export default function AdminCustomersPage() {
 
   useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
+  async function handleExport() {
+    const { data } = await supabase
+      .from("profiles")
+      .select("id, full_name, email, phone, is_banned, created_at")
+      .eq("role", "customer")
+      .order("created_at", { ascending: false })
+      .limit(5000);
+
+    if (!data || data.length === 0) return;
+
+    exportCsv(
+      "customers",
+      ["Name", "Email", "Phone", "Status", "Joined"],
+      data.map((c) => [
+        c.full_name,
+        c.email,
+        c.phone,
+        c.is_banned ? "Banned" : "Active",
+        new Date(c.created_at).toLocaleDateString(),
+      ])
+    );
+  }
+
   async function toggleBan(id: string, ban: boolean) {
     const { error } = await supabase.from("profiles").update({ is_banned: ban }).eq("id", id);
     if (error) { console.error("Toggle ban failed:", error.message); return; }
@@ -120,9 +144,14 @@ export default function AdminCustomersPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h1 className="text-2xl font-display font-bold text-foreground">Customers</h1>
-        <p className="text-sm text-muted mt-1">{total} total customers</p>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-foreground">Customers</h1>
+          <p className="text-sm text-muted mt-1">{total} total customers</p>
+        </div>
+        <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
+          <Download size={14} /> Export CSV
+        </button>
       </div>
       <DataTable
         columns={columns}

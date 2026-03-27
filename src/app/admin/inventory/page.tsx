@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
+import { exportCsv } from "@/lib/csv-export";
 
 interface VariantStock {
   id: string;
@@ -183,18 +184,12 @@ export default function InventoryPage() {
     setSavingSettings(false);
   }
 
-  function exportCsv() {
-    const header = "Product,Variant,SKU,Stock,Threshold,Status\n";
-    const rows = variants.map((v) =>
-      `"${v.product_name}","${v.name}","${v.sku ?? ""}",${v.stock_quantity},${v.low_stock_threshold},"${v.product_status}"`
-    ).join("\n");
-    const blob = new Blob([header + rows], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `inventory-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+  function handleExport() {
+    exportCsv(
+      "inventory",
+      ["Product", "Variant", "SKU", "Stock", "Threshold", "Status"],
+      variants.map((v) => [v.product_name, v.name, v.sku, v.stock_quantity, v.low_stock_threshold, v.product_status])
+    );
   }
 
   function stockBadge(qty: number, threshold: number) {
@@ -231,7 +226,7 @@ export default function InventoryPage() {
           <p className="text-sm text-muted mt-1">Manage stock levels and track movements</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={exportCsv} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
+          <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
             <Download size={14} /> Export CSV
           </button>
           <button onClick={() => { setLoading(true); loadVariants(); }} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">

@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Download } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
@@ -78,6 +79,38 @@ export default function AdminProductsPage() {
   }, [page, search]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
+
+  async function handleExport() {
+    const { data } = await supabase
+      .from("products")
+      .select("id, name, slug, base_price, compare_at_price, status, is_featured, is_best_seller, is_new, category:categories(name), variants:product_variants(stock_quantity)")
+      .order("created_at", { ascending: false })
+      .limit(5000);
+
+    if (!data || data.length === 0) return;
+
+    exportCsv(
+      "products",
+      ["Name", "Slug", "Price", "Compare Price", "Status", "Category", "Stock", "Featured", "Best Seller", "New"],
+      data.map((p: Record<string, unknown>) => {
+        const cat = p.category as { name: string } | null;
+        const vars = p.variants as { stock_quantity: number }[] | null;
+        const stock = vars?.reduce((s, v) => s + (v.stock_quantity ?? 0), 0) ?? 0;
+        return [
+          p.name as string,
+          p.slug as string,
+          p.base_price as number,
+          p.compare_at_price as number | null,
+          p.status as string,
+          cat?.name,
+          stock,
+          p.is_featured ? "Yes" : "No",
+          p.is_best_seller ? "Yes" : "No",
+          p.is_new ? "Yes" : "No",
+        ];
+      })
+    );
+  }
 
   async function handleDelete() {
     if (!deleteId) return;
@@ -179,13 +212,18 @@ export default function AdminProductsPage() {
           <h1 className="text-2xl font-display font-bold text-foreground">Products</h1>
           <p className="text-sm text-muted mt-1">{total} total products</p>
         </div>
-        <Link
-          href="/admin/products/new"
-          className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
-        >
-          <Plus size={16} />
-          Add Product
-        </Link>
+        <div className="flex items-center gap-2">
+          <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
+            <Download size={14} /> Export CSV
+          </button>
+          <Link
+            href="/admin/products/new"
+            className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
+          >
+            <Plus size={16} />
+            Add Product
+          </Link>
+        </div>
       </div>
 
       <DataTable

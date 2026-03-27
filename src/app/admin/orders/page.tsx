@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Eye } from "lucide-react";
+import { Eye, Download } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
+import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatPrice } from "@/lib/utils";
@@ -64,6 +65,36 @@ export default function AdminOrdersPage() {
 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
 
+  async function handleExport() {
+    const { data } = await supabase
+      .from("orders")
+      .select("id, email, status, total, subtotal, discount_amount, shipping_amount, tax_amount, coupon_code, tracking_number, carrier, payment_status, created_at")
+      .order("created_at", { ascending: false })
+      .limit(5000);
+
+    if (!data || data.length === 0) return;
+
+    exportCsv(
+      "orders",
+      ["Order ID", "Email", "Status", "Payment", "Total", "Subtotal", "Discount", "Shipping", "Tax", "Coupon", "Carrier", "Tracking", "Date"],
+      data.map((o) => [
+        o.id.slice(0, 8),
+        o.email,
+        o.status,
+        o.payment_status ?? "unpaid",
+        o.total,
+        o.subtotal,
+        o.discount_amount,
+        o.shipping_amount,
+        o.tax_amount,
+        o.coupon_code,
+        o.carrier,
+        o.tracking_number,
+        new Date(o.created_at).toLocaleDateString(),
+      ])
+    );
+  }
+
   const columns: Column<OrderRow>[] = [
     {
       key: "id",
@@ -103,9 +134,13 @@ export default function AdminOrdersPage() {
           <h1 className="text-2xl font-display font-bold text-foreground">Orders</h1>
           <p className="text-sm text-muted mt-1">{total} total orders</p>
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
+        <div className="flex items-center gap-2">
+          <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
+            <Download size={14} /> Export CSV
+          </button>
+          <select
+            value={statusFilter}
+            onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
           className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
         >
           <option value="">All Statuses</option>
@@ -113,8 +148,9 @@ export default function AdminOrdersPage() {
           <option value="confirmed">Confirmed</option>
           <option value="shipped">Shipped</option>
           <option value="delivered">Delivered</option>
-          <option value="cancelled">Cancelled</option>
-        </select>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
       </div>
 
       <DataTable
