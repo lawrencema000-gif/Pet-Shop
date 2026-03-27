@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Download } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -216,6 +216,12 @@ export default function AdminProductsPage() {
           <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
             <Download size={14} /> Export CSV
           </button>
+          <Link
+            href="/admin/products/import"
+            className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors"
+          >
+            <Upload size={14} /> Import CSV
+          </Link>
           <Link
             href="/admin/products/new"
             className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
