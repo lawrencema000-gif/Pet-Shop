@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,8 +17,6 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [resending, setResending] = useState(false);
-  const [resent, setResent] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,13 +55,16 @@ export default function SignUpPage() {
 
       if (profileError) {
         console.error("Profile upsert failed:", profileError.message);
-        // Account was created successfully, profile can be updated later
-        setError(
-          "Account created, but profile setup had an issue. You can update your profile after signing in."
-        );
+      }
+
+      // Auto-confirmed — user has a session, redirect to account
+      if (data.session) {
+        router.push("/account");
+        return;
       }
     }
 
+    // Fallback: if email confirmation is re-enabled later
     setSuccess(true);
     setLoading(false);
   };
@@ -82,45 +85,16 @@ export default function SignUpPage() {
           <div className="bg-background rounded-md shadow-sm p-8">
             <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Check Your Email
+              Account Created!
             </h1>
-            <p className="text-muted mb-4">
-              We&apos;ve sent a confirmation link to{" "}
-              <span className="font-medium text-foreground">{email}</span>.
-              Click the link to activate your account.
+            <p className="text-muted mb-6">
+              Welcome to PETLIBRO! Your account is ready.
             </p>
-            <p className="text-xs text-muted mb-6">
-              Don&apos;t see it? Check your <strong>spam or junk folder</strong>. The email
-              comes from <span className="font-mono text-foreground">noreply@mail.app.supabase.io</span>.
-              It may take a minute to arrive.
-            </p>
-            <div className="space-y-3">
-              <Button
-                variant="outline"
-                fullWidth
-                loading={resending}
-                disabled={resent}
-                onClick={async () => {
-                  setResending(true);
-                  await supabase.auth.resend({
-                    type: "signup",
-                    email,
-                    options: {
-                      emailRedirectTo: `${window.location.origin}/auth/callback`,
-                    },
-                  });
-                  setResending(false);
-                  setResent(true);
-                }}
-              >
-                {resent ? "Email Resent!" : "Resend Confirmation Email"}
+            <Link href="/auth/login">
+              <Button fullWidth>
+                Sign In
               </Button>
-              <Link href="/auth/login">
-                <Button variant="ghost" fullWidth>
-                  Back to Sign In
-                </Button>
-              </Link>
-            </div>
+            </Link>
           </div>
         </div>
       </div>
