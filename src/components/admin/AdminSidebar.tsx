@@ -18,6 +18,7 @@ import {
   UserCog,
   Settings,
   LogOut,
+  Warehouse,
   type LucideIcon,
 } from "lucide-react";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
@@ -35,6 +36,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/admin/products", icon: Package, label: "Products", perm: "products:read" },
+  { href: "/admin/inventory", icon: Warehouse, label: "Inventory", perm: "products:read" },
   { href: "/admin/categories", icon: FolderOpen, label: "Categories", perm: "categories:read" },
   { href: "/admin/orders", icon: ShoppingBag, label: "Orders", perm: "orders:read" },
   { href: "/admin/customers", icon: Users, label: "Customers", perm: "customers:read" },

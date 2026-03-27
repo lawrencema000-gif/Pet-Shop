@@ -176,7 +176,7 @@ export default function AdminDashboard() {
         <div className="bg-white border border-border rounded-lg">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">Low Stock Alerts</h2>
-            <Link href="/admin/products" className="text-xs text-accent hover:underline flex items-center gap-1">
+            <Link href="/admin/inventory" className="text-xs text-accent hover:underline flex items-center gap-1">
               View All <ArrowRight size={12} />
             </Link>
           </div>
