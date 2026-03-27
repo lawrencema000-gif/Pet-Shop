@@ -19,6 +19,7 @@ import {
   Settings,
   LogOut,
   Warehouse,
+  RotateCcw,
   type LucideIcon,
 } from "lucide-react";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
@@ -39,6 +40,7 @@ const navItems: NavItem[] = [
   { href: "/admin/inventory", icon: Warehouse, label: "Inventory", perm: "products:read" },
   { href: "/admin/categories", icon: FolderOpen, label: "Categories", perm: "categories:read" },
   { href: "/admin/orders", icon: ShoppingBag, label: "Orders", perm: "orders:read" },
+  { href: "/admin/returns", icon: RotateCcw, label: "Returns", perm: "orders:read" },
   { href: "/admin/customers", icon: Users, label: "Customers", perm: "customers:read" },
   { href: "/admin/reviews", icon: MessageSquare, label: "Reviews", perm: "reviews:read" },
   { href: "/admin/chat", icon: MessageCircle, label: "Chat" },
