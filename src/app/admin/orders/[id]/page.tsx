@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Truck, Check, X as XIcon, Package, Printer,
-  MessageSquarePlus, Send, Copy, ExternalLink, DollarSign,
+  MessageSquarePlus, Send, Copy, ExternalLink, DollarSign, Mail,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -80,6 +80,9 @@ export default function OrderDetailPage() {
   const [addingNote, setAddingNote] = useState(false);
   const noteInputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Email
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -175,6 +178,34 @@ export default function OrderDetailPage() {
       setNewNote("");
     }
     setAddingNote(false);
+  }
+
+  async function sendEmail(emailType: "order_confirmation" | "order_shipped") {
+    setSendingEmail(true);
+    setEmailSent(null);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch("/api/email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({ type: emailType, orderId: id }),
+      });
+      const result = await res.json();
+      if (res.ok) {
+        setEmailSent(emailType === "order_confirmation" ? "Confirmation email sent!" : "Shipped email sent!");
+        setTimeout(() => setEmailSent(null), 4000);
+      } else {
+        setEmailSent(`Failed: ${result.error}`);
+        setTimeout(() => setEmailSent(null), 5000);
+      }
+    } catch {
+      setEmailSent("Failed to send email");
+      setTimeout(() => setEmailSent(null), 5000);
+    }
+    setSendingEmail(false);
   }
 
   function copyTracking() {
@@ -485,6 +516,36 @@ export default function OrderDetailPage() {
             <div className="bg-white border border-border rounded-lg p-5">
               <h3 className="text-sm font-semibold text-foreground mb-3">Customer</h3>
               <p className="text-sm text-foreground">{order.email}</p>
+            </div>
+
+            {/* Email Notifications */}
+            <div className="bg-white border border-border rounded-lg p-5">
+              <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                <Mail size={14} /> Send Email
+              </h3>
+              {emailSent && (
+                <p className={`text-xs mb-2 ${emailSent.startsWith("Failed") ? "text-sale" : "text-success"}`}>
+                  {emailSent}
+                </p>
+              )}
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => sendEmail("order_confirmation")}
+                  disabled={sendingEmail}
+                  className="w-full text-left px-3 py-2 text-xs font-medium border border-border rounded-md hover:bg-surface transition-colors disabled:opacity-60"
+                >
+                  {sendingEmail ? "Sending..." : "Send Order Confirmation"}
+                </button>
+                {(order.status === "shipped" || order.status === "delivered") && (
+                  <button
+                    onClick={() => sendEmail("order_shipped")}
+                    disabled={sendingEmail}
+                    className="w-full text-left px-3 py-2 text-xs font-medium border border-border rounded-md hover:bg-surface transition-colors disabled:opacity-60"
+                  >
+                    {sendingEmail ? "Sending..." : "Send Shipped Notification"}
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Shipping Address */}

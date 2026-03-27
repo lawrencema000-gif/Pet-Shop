@@ -101,6 +101,27 @@ export async function POST(request: Request) {
       );
     }
 
+    // Fire-and-forget: send order confirmation email
+    if (!data.duplicate && process.env.RESEND_API_KEY) {
+      import("@/lib/email").then(({ sendOrderConfirmation }) => {
+        sendOrderConfirmation({
+          orderId: data.order_id,
+          email,
+          items: items.map((i) => ({
+            name: i.product_id, // Will be resolved server-side in a future update
+            quantity: i.quantity,
+            price: 0,
+          })),
+          subtotal: data.subtotal,
+          shipping: data.shipping_amount,
+          tax: data.tax_amount,
+          discount: data.discount_amount,
+          total: data.total,
+          shippingAddress: shipping_address,
+        }).catch((err) => console.error("Order confirmation email failed:", err));
+      });
+    }
+
     return NextResponse.json({
       order_id: data.order_id,
       subtotal: data.subtotal,

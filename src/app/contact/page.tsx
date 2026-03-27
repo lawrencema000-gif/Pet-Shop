@@ -48,19 +48,29 @@ const quickHelpLinks = [
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setSending(true);
     const formData = new FormData(e.currentTarget);
     const data = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      subject: formData.get("subject"),
-      message: formData.get("message"),
-      timestamp: new Date().toISOString(),
+      type: "contact",
+      name: formData.get("name") as string,
+      email: formData.get("email") as string,
+      subject: formData.get("subject") as string,
+      message: formData.get("message") as string,
     };
-    // For demo purposes, messages are logged to console
-    console.log("Contact form submission:", data);
+    try {
+      await fetch("/api/email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    } catch {
+      // Still show success to user — email failure shouldn't block UX
+    }
+    setSending(false);
     setSubmitted(true);
   }
 
@@ -218,10 +228,11 @@ export default function ContactPage() {
 
                     <button
                       type="submit"
-                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors"
+                      disabled={sending}
+                      className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-60"
                     >
                       <Send size={16} />
-                      Send My Message
+                      {sending ? "Sending..." : "Send My Message"}
                     </button>
                     <p className="text-xs text-muted mt-2">We typically respond within 24 hours</p>
                   </form>
