@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
+import { ProductImagesManager } from "@/components/admin/ProductImagesManager";
 
 interface ProductData {
   id: string;
@@ -38,20 +39,11 @@ interface Variant {
   is_default: boolean;
 }
 
-interface ProductImage {
-  id: string;
-  url: string;
-  alt_text: string | null;
-  display_order: number;
-  is_primary: boolean;
-}
-
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [product, setProduct] = useState<ProductData | null>(null);
   const [variants, setVariants] = useState<Variant[]>([]);
-  const [images, setImages] = useState<ProductImage[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -60,15 +52,13 @@ export default function EditProductPage() {
 
   useEffect(() => {
     async function load() {
-      const [{ data: prod }, { data: vars }, { data: imgs }, { data: cats }] = await Promise.all([
+      const [{ data: prod }, { data: vars }, { data: cats }] = await Promise.all([
         supabase.from("products").select("*").eq("id", id).single(),
         supabase.from("product_variants").select("*").eq("product_id", id).order("is_default", { ascending: false }),
-        supabase.from("product_images").select("*").eq("product_id", id).order("display_order"),
         supabase.from("categories").select("id, name").order("display_order"),
       ]);
       setProduct(prod);
       setVariants(vars ?? []);
-      setImages(imgs ?? []);
       setCategories(cats ?? []);
       setLoading(false);
     }
@@ -130,45 +120,6 @@ export default function EditProductPage() {
     setVariants((prev) => prev.filter((v) => v.id !== vid));
   }
 
-  function isValidImageUrl(url: string): boolean {
-    try {
-      const parsed = new URL(url);
-      return parsed.protocol === "https:" || parsed.protocol === "http:";
-    } catch {
-      return false;
-    }
-  }
-
-  async function addImageUrl() {
-    const url = prompt("Enter image URL (must be https:// or http://):");
-    if (!url) return;
-    if (!isValidImageUrl(url)) {
-      alert("Invalid URL. Please enter a valid https:// or http:// image URL.");
-      return;
-    }
-    const { data, error } = await supabase.from("product_images").insert({
-      product_id: id,
-      url,
-      display_order: images.length,
-      is_primary: images.length === 0,
-    }).select().single();
-    if (error) { console.error("Add image failed:", error.message); return; }
-    if (data) setImages((prev) => [...prev, data]);
-  }
-
-  async function deleteImage(imgId: string) {
-    const { error } = await supabase.from("product_images").delete().eq("id", imgId);
-    if (error) { console.error("Delete image failed:", error.message); return; }
-    setImages((prev) => prev.filter((i) => i.id !== imgId));
-  }
-
-  async function setPrimaryImage(imgId: string) {
-    const { error: e1 } = await supabase.from("product_images").update({ is_primary: false }).eq("product_id", id);
-    if (e1) { console.error("Set primary image failed:", e1.message); return; }
-    const { error: e2 } = await supabase.from("product_images").update({ is_primary: true }).eq("id", imgId);
-    if (e2) { console.error("Set primary image failed:", e2.message); return; }
-    setImages((prev) => prev.map((i) => ({ ...i, is_primary: i.id === imgId })));
-  }
 
   if (loading) {
     return <div className="flex items-center justify-center py-20"><div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
@@ -181,7 +132,7 @@ export default function EditProductPage() {
   const tabs = [
     { key: "details", label: "Details" },
     { key: "variants", label: `Variants (${variants.length})` },
-    { key: "images", label: `Images (${images.length})` },
+    { key: "images", label: "Images" },
   ] as const;
 
   return (
@@ -344,31 +295,7 @@ export default function EditProductPage() {
       {/* Images Tab */}
       {activeTab === "images" && (
         <div className="max-w-4xl">
-          <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-muted">{images.length} images</p>
-            <button onClick={addImageUrl} className="inline-flex items-center gap-2 bg-accent text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors">
-              <Plus size={14} /> Add Image URL
-            </button>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {images.map((img) => (
-              <div key={img.id} className={`relative group border-2 rounded-lg overflow-hidden ${img.is_primary ? "border-accent" : "border-border"}`}>
-                <img src={img.url} alt={img.alt_text ?? ""} className="w-full aspect-square object-cover" />
-                {img.is_primary && (
-                  <span className="absolute top-2 left-2 text-[10px] font-bold bg-accent text-white px-1.5 py-0.5 rounded">Primary</span>
-                )}
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                  {!img.is_primary && (
-                    <button onClick={() => setPrimaryImage(img.id)} className="px-2 py-1 text-xs font-medium bg-white text-foreground rounded hover:bg-surface">Set Primary</button>
-                  )}
-                  <button onClick={() => deleteImage(img.id)} className="px-2 py-1 text-xs font-medium bg-sale text-white rounded hover:bg-sale/90">Delete</button>
-                </div>
-              </div>
-            ))}
-          </div>
-          {images.length === 0 && (
-            <div className="bg-white border border-border rounded-lg py-12 text-center text-sm text-muted">No images yet. Add an image URL to get started.</div>
-          )}
+          <ProductImagesManager productId={id} />
         </div>
       )}
 
