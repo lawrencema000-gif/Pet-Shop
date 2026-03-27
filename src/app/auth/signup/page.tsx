@@ -15,6 +15,8 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resent, setResent] = useState(false);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,7 @@ export default function SignUpPage() {
         data: {
           full_name: fullName,
         },
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
       },
     });
 
@@ -81,16 +84,43 @@ export default function SignUpPage() {
             <h1 className="text-2xl font-bold text-foreground mb-2">
               Check Your Email
             </h1>
-            <p className="text-muted mb-6">
+            <p className="text-muted mb-4">
               We&apos;ve sent a confirmation link to{" "}
               <span className="font-medium text-foreground">{email}</span>.
               Click the link to activate your account.
             </p>
-            <Link href="/auth/login">
-              <Button variant="outline" fullWidth>
-                Back to Sign In
+            <p className="text-xs text-muted mb-6">
+              Don&apos;t see it? Check your <strong>spam or junk folder</strong>. The email
+              comes from <span className="font-mono text-foreground">noreply@mail.app.supabase.io</span>.
+              It may take a minute to arrive.
+            </p>
+            <div className="space-y-3">
+              <Button
+                variant="outline"
+                fullWidth
+                loading={resending}
+                disabled={resent}
+                onClick={async () => {
+                  setResending(true);
+                  await supabase.auth.resend({
+                    type: "signup",
+                    email,
+                    options: {
+                      emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    },
+                  });
+                  setResending(false);
+                  setResent(true);
+                }}
+              >
+                {resent ? "Email Resent!" : "Resend Confirmation Email"}
               </Button>
-            </Link>
+              <Link href="/auth/login">
+                <Button variant="ghost" fullWidth>
+                  Back to Sign In
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
