@@ -364,11 +364,20 @@ export default function AdminProductsPage() {
       label: "",
       className: "w-12",
       render: (row) => (
-        <div className="w-10 h-10 rounded bg-surface overflow-hidden">
-          {row.image_url ? (
-            <img src={row.image_url} alt="" className="w-full h-full object-cover" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted text-xs">N/A</div>
+        <div className="relative group/thumb">
+          <div className="w-10 h-10 rounded bg-surface overflow-hidden cursor-pointer">
+            {row.image_url ? (
+              <img src={row.image_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-muted text-xs">N/A</div>
+            )}
+          </div>
+          {row.image_url && (
+            <div className="absolute left-12 top-1/2 -translate-y-1/2 z-50 hidden group-hover/thumb:block">
+              <div className="w-48 h-48 rounded-lg border border-border bg-white shadow-lg overflow-hidden">
+                <img src={row.image_url} alt={row.name} className="w-full h-full object-cover" />
+              </div>
+            </div>
           )}
         </div>
       ),
