@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Ban, CheckCircle } from "lucide-react";
+import { ArrowLeft, Ban, CheckCircle, Crown, Repeat, UserPlus, User } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatPrice } from "@/lib/utils";
@@ -40,8 +40,18 @@ export default function CustomerDetailPage() {
     setProfile({ ...profile, is_banned: newBan });
   }
 
+  function getSegment(count: number) {
+    if (count === 0) return { label: "New", color: "bg-blue-50 text-blue-600", icon: UserPlus };
+    if (count < 5) return { label: "Active", color: "bg-success/10 text-success", icon: User };
+    if (count < 10) return { label: "Repeat", color: "bg-amber-50 text-amber-600", icon: Repeat };
+    return { label: "VIP", color: "bg-purple-50 text-purple-600", icon: Crown };
+  }
+
   if (loading) return <div className="flex justify-center py-20"><div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>;
   if (!profile) return <div className="text-center py-20 text-muted">Customer not found</div>;
+
+  const seg = getSegment(orders.length);
+  const SegIcon = seg.icon;
 
   return (
     <div>
@@ -49,8 +59,13 @@ export default function CustomerDetailPage() {
         <div className="flex items-center gap-3">
           <Link href="/admin/customers" className="p-2 hover:bg-surface rounded-md"><ArrowLeft size={18} /></Link>
           <div>
-            <h1 className="text-2xl font-display font-bold text-foreground">{profile.full_name as string ?? "Unknown"}</h1>
-            <p className="text-xs text-muted mt-1">ID: {id.slice(0, 8)} · Joined {new Date(profile.created_at as string).toLocaleDateString()}</p>
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-display font-bold text-foreground">{profile.full_name as string ?? "Unknown"}</h1>
+              <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${seg.color}`}>
+                <SegIcon size={10} /> {seg.label}
+              </span>
+            </div>
+            <p className="text-xs text-muted mt-1">ID: {id.slice(0, 8)} · Joined {new Date(profile.created_at as string).toLocaleDateString()} · {orders.length} orders</p>
           </div>
         </div>
         <button onClick={toggleBan} className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-md transition-colors ${profile.is_banned ? "bg-success/10 text-success hover:bg-success/20" : "bg-sale/10 text-sale hover:bg-sale/20"}`}>
@@ -65,6 +80,7 @@ export default function CustomerDetailPage() {
           <dl className="space-y-2 text-sm">
             <div><dt className="text-muted">Name</dt><dd className="font-medium">{profile.full_name as string ?? "—"}</dd></div>
             <div><dt className="text-muted">Phone</dt><dd>{profile.phone as string ?? "—"}</dd></div>
+            <div><dt className="text-muted">Segment</dt><dd><span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${seg.color}`}><SegIcon size={10} /> {seg.label}</span></dd></div>
             <div><dt className="text-muted">Status</dt><dd>{profile.is_banned ? <span className="text-sale font-medium">Banned</span> : <span className="text-success">Active</span>}</dd></div>
           </dl>
         </div>

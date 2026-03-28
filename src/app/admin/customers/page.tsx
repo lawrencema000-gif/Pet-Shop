@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Eye, Ban, CheckCircle, Download } from "lucide-react";
+import { Eye, Ban, CheckCircle, Download, Crown, Repeat, UserPlus, User } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -17,6 +17,21 @@ interface CustomerRow {
   order_count: number;
 }
 
+function getSegment(orderCount: number) {
+  if (orderCount === 0) return { label: "New", color: "bg-blue-50 text-blue-600", icon: UserPlus };
+  if (orderCount < 5) return { label: "Active", color: "bg-success/10 text-success", icon: User };
+  if (orderCount < 10) return { label: "Repeat", color: "bg-amber-50 text-amber-600", icon: Repeat };
+  return { label: "VIP", color: "bg-purple-50 text-purple-600", icon: Crown };
+}
+
+const SEGMENT_FILTERS = [
+  { key: "all", label: "All" },
+  { key: "new", label: "New", min: 0, max: 0 },
+  { key: "active", label: "Active", min: 1, max: 4 },
+  { key: "repeat", label: "Repeat", min: 5, max: 9 },
+  { key: "vip", label: "VIP", min: 10, max: Infinity },
+] as const;
+
 const PAGE_SIZE = 20;
 
 export default function AdminCustomersPage() {
@@ -25,6 +40,7 @@ export default function AdminCustomersPage() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [segment, setSegment] = useState("all");
 
   const fetchCustomers = useCallback(async () => {
     setLoading(true);
@@ -52,15 +68,21 @@ export default function AdminCustomersPage() {
       });
     }
 
-    setCustomers(
-      (data ?? []).map((d) => ({
-        ...d,
-        order_count: orderCounts[d.id] ?? 0,
-      }))
-    );
-    setTotal(count ?? 0);
+    let items = (data ?? []).map((d) => ({
+      ...d,
+      order_count: orderCounts[d.id] ?? 0,
+    }));
+
+    // Client-side segment filter
+    const segFilter = SEGMENT_FILTERS.find((f) => f.key === segment);
+    if (segFilter && segFilter.key !== "all" && "min" in segFilter) {
+      items = items.filter((c) => c.order_count >= segFilter.min && c.order_count <= segFilter.max);
+    }
+
+    setCustomers(items);
+    setTotal(segFilter && segFilter.key !== "all" ? items.length : (count ?? 0));
     setLoading(false);
-  }, [page, search]);
+  }, [page, search, segment]);
 
   useEffect(() => { fetchCustomers(); }, [fetchCustomers]);
 
@@ -108,6 +130,19 @@ export default function AdminCustomersPage() {
     { key: "phone", label: "Phone", render: (row) => <span className="text-sm text-muted">{row.phone ?? "—"}</span> },
     { key: "order_count", label: "Orders", render: (row) => <span className="text-sm">{row.order_count}</span> },
     {
+      key: "segment" as keyof CustomerRow,
+      label: "Segment",
+      render: (row) => {
+        const seg = getSegment(row.order_count);
+        const Icon = seg.icon;
+        return (
+          <span className={`inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${seg.color}`}>
+            <Icon size={10} /> {seg.label}
+          </span>
+        );
+      },
+    },
+    {
       key: "is_banned",
       label: "Status",
       render: (row) => (
@@ -153,6 +188,24 @@ export default function AdminCustomersPage() {
           <Download size={14} /> Export CSV
         </button>
       </div>
+
+      {/* Segment Filter */}
+      <div className="flex gap-1 border-b border-border mb-6">
+        {SEGMENT_FILTERS.map((f) => (
+          <button
+            key={f.key}
+            onClick={() => { setSegment(f.key); setPage(1); }}
+            className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
+              segment === f.key
+                ? "border-accent text-accent"
+                : "border-transparent text-muted hover:text-foreground"
+            }`}
+          >
+            {f.label}
+          </button>
+        ))}
+      </div>
+
       <DataTable
         columns={columns}
         data={customers}
