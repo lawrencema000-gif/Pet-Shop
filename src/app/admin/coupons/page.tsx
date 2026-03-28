@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Plus, Trash2, Shield } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Plus, Trash2, Shield, BarChart3, ChevronUp } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
@@ -30,6 +30,15 @@ export default function AdminCouponsPage() {
     code: "", discount_type: "percentage", discount_value: "10",
     min_order_amount: "", max_uses: "", expires_at: "",
   });
+  const [analyticsId, setAnalyticsId] = useState<string | null>(null);
+  const [analytics, setAnalytics] = useState<{
+    totalOrders: number;
+    totalRevenue: number;
+    totalDiscount: number;
+    avgOrderValue: number;
+    recentOrders: { id: string; total: number; discount: number; created_at: string }[];
+  } | null>(null);
+  const [loadingAnalytics, setLoadingAnalytics] = useState(false);
 
   async function load() {
     const { data } = await supabase.from("coupons").select("*").order("created_at", { ascending: false });
@@ -86,6 +95,36 @@ export default function AdminCouponsPage() {
       setNewForm({ code: "", discount_type: "percentage", discount_value: "10", min_order_amount: "", max_uses: "", expires_at: "" });
       load();
     }
+  }
+
+  async function loadAnalytics(couponCode: string, couponId: string) {
+    if (analyticsId === couponId) { setAnalyticsId(null); setAnalytics(null); return; }
+    setAnalyticsId(couponId);
+    setLoadingAnalytics(true);
+    const { data: orders } = await supabase
+      .from("orders")
+      .select("id, total, discount_amount, created_at")
+      .eq("coupon_code", couponCode)
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    const items = orders ?? [];
+    const totalRevenue = items.reduce((s, o) => s + Number(o.total), 0);
+    const totalDiscount = items.reduce((s, o) => s + Number(o.discount_amount), 0);
+
+    setAnalytics({
+      totalOrders: items.length,
+      totalRevenue,
+      totalDiscount,
+      avgOrderValue: items.length > 0 ? totalRevenue / items.length : 0,
+      recentOrders: items.slice(0, 5).map((o) => ({
+        id: o.id,
+        total: Number(o.total),
+        discount: Number(o.discount_amount),
+        created_at: o.created_at,
+      })),
+    });
+    setLoadingAnalytics(false);
   }
 
   async function toggleActive(id: string, active: boolean) {
@@ -168,21 +207,76 @@ export default function AdminCouponsPage() {
                 </tr>
               ))
             ) : coupons.map((c) => (
-              <tr key={c.id} className="border-b border-border/50 hover:bg-surface/30">
-                <td className="px-4 py-3 font-mono font-semibold text-foreground">{c.code}</td>
-                <td className="px-4 py-3">{c.discount_type === "percentage" ? `${c.discount_value}%` : formatPrice(c.discount_value)}</td>
-                <td className="px-4 py-3 text-muted">{c.min_order_amount ? formatPrice(c.min_order_amount) : "—"}</td>
-                <td className="px-4 py-3">{c.current_uses}{c.max_uses ? ` / ${c.max_uses}` : ""}</td>
-                <td className="px-4 py-3 text-xs text-muted">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "Never"}</td>
-                <td className="px-4 py-3">
-                  <button onClick={() => toggleActive(c.id, !c.is_active)} className={`text-xs font-medium px-2 py-0.5 rounded-full ${c.is_active ? "bg-success/10 text-success" : "bg-muted/10 text-muted"}`}>
-                    {c.is_active ? "Active" : "Inactive"}
-                  </button>
-                </td>
-                <td className="px-4 py-3">
-                  <button onClick={() => setDeleteId(c.id)} className="p-1.5 hover:bg-sale/10 rounded"><Trash2 size={14} className="text-muted hover:text-sale" /></button>
-                </td>
-              </tr>
+              <React.Fragment key={c.id}>
+                <tr className="border-b border-border/50 hover:bg-surface/30">
+                  <td className="px-4 py-3 font-mono font-semibold text-foreground">{c.code}</td>
+                  <td className="px-4 py-3">{c.discount_type === "percentage" ? `${c.discount_value}%` : formatPrice(c.discount_value)}</td>
+                  <td className="px-4 py-3 text-muted">{c.min_order_amount ? formatPrice(c.min_order_amount) : "—"}</td>
+                  <td className="px-4 py-3">{c.current_uses}{c.max_uses ? ` / ${c.max_uses}` : ""}</td>
+                  <td className="px-4 py-3 text-xs text-muted">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "Never"}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => toggleActive(c.id, !c.is_active)} className={`text-xs font-medium px-2 py-0.5 rounded-full ${c.is_active ? "bg-success/10 text-success" : "bg-muted/10 text-muted"}`}>
+                      {c.is_active ? "Active" : "Inactive"}
+                    </button>
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => loadAnalytics(c.code, c.id)} className="p-1.5 hover:bg-surface rounded" title="Analytics">
+                        {analyticsId === c.id ? <ChevronUp size={14} className="text-accent" /> : <BarChart3 size={14} className="text-muted" />}
+                      </button>
+                      <button onClick={() => setDeleteId(c.id)} className="p-1.5 hover:bg-sale/10 rounded"><Trash2 size={14} className="text-muted hover:text-sale" /></button>
+                    </div>
+                  </td>
+                </tr>
+                {analyticsId === c.id && (
+                  <tr className="border-b border-border/50">
+                    <td colSpan={7} className="px-4 py-4 bg-surface/30">
+                      {loadingAnalytics ? (
+                        <div className="flex justify-center py-4"><div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>
+                      ) : analytics ? (
+                        <div className="space-y-4">
+                          <div className="grid grid-cols-4 gap-3">
+                            <div className="bg-white rounded-md p-3 border border-border">
+                              <p className="text-xs text-muted">Orders</p>
+                              <p className="text-lg font-semibold text-foreground">{analytics.totalOrders}</p>
+                            </div>
+                            <div className="bg-white rounded-md p-3 border border-border">
+                              <p className="text-xs text-muted">Revenue Generated</p>
+                              <p className="text-lg font-semibold text-success">{formatPrice(analytics.totalRevenue)}</p>
+                            </div>
+                            <div className="bg-white rounded-md p-3 border border-border">
+                              <p className="text-xs text-muted">Total Discounted</p>
+                              <p className="text-lg font-semibold text-sale">{formatPrice(analytics.totalDiscount)}</p>
+                            </div>
+                            <div className="bg-white rounded-md p-3 border border-border">
+                              <p className="text-xs text-muted">Avg Order Value</p>
+                              <p className="text-lg font-semibold text-foreground">{formatPrice(analytics.avgOrderValue)}</p>
+                            </div>
+                          </div>
+                          {analytics.recentOrders.length > 0 && (
+                            <div>
+                              <p className="text-xs font-semibold text-muted uppercase mb-2">Recent Orders with this Coupon</p>
+                              <div className="bg-white rounded-md border border-border divide-y divide-border/50">
+                                {analytics.recentOrders.map((o) => (
+                                  <div key={o.id} className="flex items-center justify-between px-3 py-2 text-sm">
+                                    <span className="font-mono text-xs text-accent">#{o.id.slice(0, 8)}</span>
+                                    <span className="text-muted">{new Date(o.created_at).toLocaleDateString()}</span>
+                                    <span className="text-sale text-xs">-{formatPrice(o.discount)}</span>
+                                    <span className="font-medium">{formatPrice(o.total)}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {analytics.totalOrders === 0 && (
+                            <p className="text-sm text-muted text-center py-2">No orders have used this coupon yet.</p>
+                          )}
+                        </div>
+                      ) : null}
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </table>
