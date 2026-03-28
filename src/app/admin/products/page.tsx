@@ -10,6 +10,7 @@ import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
+import { useToast } from "@/components/ui/Toast";
 
 interface ProductRow {
   id: string;
@@ -33,7 +34,11 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { toast } = useToast();
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [bulkDeleteIds, setBulkDeleteIds] = useState<string[] | null>(null);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [bulkDeleteProgress, setBulkDeleteProgress] = useState(0);
 
   const fetchProducts = useCallback(async () => {
     setLoading(true);
@@ -115,20 +120,37 @@ export default function AdminProductsPage() {
   async function handleDelete() {
     if (!deleteId) return;
     const { error } = await supabase.from("products").delete().eq("id", deleteId);
-    if (error) { console.error("Delete product failed:", error.message); return; }
+    if (error) {
+      toast("Failed to delete product: " + error.message, "error");
+      return;
+    }
     await logAdminAction("delete_product", "product", deleteId);
     setDeleteId(null);
     setSelectedIds([]);
+    toast("Product deleted", "success");
     fetchProducts();
   }
 
-  async function handleBulkDelete(ids: string[]) {
-    for (const id of ids) {
+  async function handleBulkDelete() {
+    if (!bulkDeleteIds || bulkDeleteIds.length === 0) return;
+    setBulkDeleting(true);
+    setBulkDeleteProgress(0);
+    let deleted = 0;
+    let failed = 0;
+    for (const id of bulkDeleteIds) {
       const { error } = await supabase.from("products").delete().eq("id", id);
-      if (error) { console.error("Delete product failed:", error.message); continue; }
+      if (error) { console.error("Delete product failed:", error.message); failed++; } else { deleted++; }
       await logAdminAction("delete_product", "product", id);
+      setBulkDeleteProgress(Math.round(((deleted + failed) / bulkDeleteIds.length) * 100));
     }
+    setBulkDeleting(false);
+    setBulkDeleteIds(null);
     setSelectedIds([]);
+    if (failed > 0) {
+      toast(`Deleted ${deleted} products, ${failed} failed`, "error");
+    } else {
+      toast(`${deleted} product${deleted !== 1 ? "s" : ""} deleted`, "success");
+    }
     fetchProducts();
   }
 
@@ -247,7 +269,7 @@ export default function AdminProductsPage() {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         bulkActions={[
-          { label: "Delete Selected", onClick: handleBulkDelete, variant: "danger" },
+          { label: "Delete Selected", onClick: (ids) => setBulkDeleteIds(ids), variant: "danger" },
         ]}
         emptyTitle="No products found"
         emptyDescription="Create your first product to get started"
@@ -261,6 +283,21 @@ export default function AdminProductsPage() {
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
+      />
+
+      <ConfirmDialog
+        isOpen={!!bulkDeleteIds}
+        title={`Delete ${bulkDeleteIds?.length ?? 0} Products`}
+        message={
+          bulkDeleting
+            ? `Deleting... ${bulkDeleteProgress}% complete`
+            : `This will permanently delete ${bulkDeleteIds?.length ?? 0} product${(bulkDeleteIds?.length ?? 0) !== 1 ? "s" : ""} and all their variants and images. This cannot be undone.`
+        }
+        confirmLabel={bulkDeleting ? `Deleting... ${bulkDeleteProgress}%` : "Delete All"}
+        variant="danger"
+        loading={bulkDeleting}
+        onConfirm={handleBulkDelete}
+        onCancel={() => { if (!bulkDeleting) setBulkDeleteIds(null); }}
       />
     </div>
   );

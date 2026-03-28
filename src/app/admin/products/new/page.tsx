@@ -19,7 +19,7 @@ export default function NewProductPage() {
     category_id: "",
     base_price: "",
     compare_at_price: "",
-    status: "draft",
+    status: "active",
     is_featured: false,
     is_best_seller: false,
     is_new: true,
