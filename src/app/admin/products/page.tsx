@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown, AlertTriangle } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown, AlertTriangle, GripVertical, ArrowUpDown, Save } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -10,6 +10,23 @@ import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
 import { useToast } from "@/components/ui/Toast";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 interface ProductRow {
   id: string;
@@ -22,6 +39,62 @@ interface ProductRow {
   category_name: string | null;
   image_url: string | null;
   stock_total: number;
+  display_order: number;
+}
+
+function SortableRow({ product }: { product: ProductRow }) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: product.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <tr
+      ref={setNodeRef}
+      style={style}
+      className="border-b border-border/50 hover:bg-surface/30 transition-colors bg-white"
+    >
+      <td className="px-2 py-3 w-10">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-surface transition-colors text-muted hover:text-foreground"
+          title="Drag to reorder"
+        >
+          <GripVertical size={16} />
+        </button>
+      </td>
+      <td className="px-4 py-3 w-12">
+        <div className="w-10 h-10 rounded bg-surface overflow-hidden">
+          {product.image_url ? (
+            <img src={product.image_url} alt="" className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-muted text-xs">N/A</div>
+          )}
+        </div>
+      </td>
+      <td className="px-4 py-3">
+        <span className="text-sm font-medium text-foreground">{product.name}</span>
+        {product.category_name && <p className="text-xs text-muted">{product.category_name}</p>}
+      </td>
+      <td className="px-4 py-3">
+        <span className="text-sm font-medium">{formatPrice(product.base_price)}</span>
+      </td>
+      <td className="px-4 py-3">
+        <span className="text-xs text-muted">#{product.display_order}</span>
+      </td>
+    </tr>
+  );
 }
 
 const PAGE_SIZE = 20;
@@ -43,6 +116,14 @@ export default function AdminProductsPage() {
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteProgress, setBulkDeleteProgress] = useState(0);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+  const [reorderMode, setReorderMode] = useState(false);
+  const [reorderProducts, setReorderProducts] = useState<ProductRow[]>([]);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
 
   // Fetch categories for filter dropdown
   useEffect(() => {
@@ -56,7 +137,7 @@ export default function AdminProductsPage() {
     let query = supabase
       .from("products")
       .select(`
-        id, name, slug, base_price, compare_at_price, status, is_featured, category_id,
+        id, name, slug, base_price, compare_at_price, status, is_featured, category_id, display_order,
         category:categories(name),
         images:product_images(url),
         variants:product_variants(stock_quantity)
@@ -92,6 +173,7 @@ export default function AdminProductsPage() {
         category_name: cat?.name ?? null,
         image_url: imgs?.[0]?.url ?? null,
         stock_total: vars?.reduce((s, v) => s + (v.stock_quantity ?? 0), 0) ?? 0,
+        display_order: Number(p.display_order ?? 0),
       };
     });
 
@@ -208,6 +290,74 @@ export default function AdminProductsPage() {
     setUpdatingStatus(null);
   }
 
+  async function enterReorderMode() {
+    // Fetch ALL products sorted by display_order for reordering
+    const { data } = await supabase
+      .from("products")
+      .select(`
+        id, name, slug, base_price, compare_at_price, status, is_featured, category_id, display_order,
+        category:categories(name),
+        images:product_images(url),
+        variants:product_variants(stock_quantity)
+      `)
+      .eq("status", "active")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    const rows: ProductRow[] = (data ?? []).map((p: Record<string, unknown>, i: number) => {
+      const cat = p.category as { name: string } | null;
+      const imgs = p.images as { url: string }[] | null;
+      const vars = p.variants as { stock_quantity: number }[] | null;
+      return {
+        id: p.id as string,
+        name: p.name as string,
+        slug: p.slug as string,
+        base_price: Number(p.base_price),
+        compare_at_price: p.compare_at_price ? Number(p.compare_at_price) : null,
+        status: p.status as string,
+        is_featured: p.is_featured as boolean,
+        category_name: cat?.name ?? null,
+        image_url: imgs?.[0]?.url ?? null,
+        stock_total: vars?.reduce((s, v) => s + (v.stock_quantity ?? 0), 0) ?? 0,
+        display_order: Number(p.display_order ?? i),
+      };
+    });
+
+    setReorderProducts(rows);
+    setReorderMode(true);
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    setReorderProducts((items) => {
+      const oldIndex = items.findIndex((i) => i.id === active.id);
+      const newIndex = items.findIndex((i) => i.id === over.id);
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  }
+
+  async function saveOrder() {
+    setSavingOrder(true);
+    let failed = 0;
+    for (let i = 0; i < reorderProducts.length; i++) {
+      const { error } = await supabase
+        .from("products")
+        .update({ display_order: i })
+        .eq("id", reorderProducts[i].id);
+      if (error) failed++;
+    }
+    setSavingOrder(false);
+    if (failed > 0) {
+      toast(`Order saved with ${failed} errors`, "error");
+    } else {
+      toast("Product order saved", "success");
+    }
+    setReorderMode(false);
+    fetchProducts();
+  }
+
   const columns: Column<ProductRow>[] = [
     {
       key: "image",
@@ -319,6 +469,14 @@ export default function AdminProductsPage() {
           <p className="text-sm text-muted mt-1">{total} total products</p>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={reorderMode ? () => setReorderMode(false) : enterReorderMode}
+            className={`inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border rounded-md transition-colors ${
+              reorderMode ? "border-accent text-accent bg-accent-light" : "border-border hover:bg-surface"
+            }`}
+          >
+            <ArrowUpDown size={14} /> {reorderMode ? "Exit Reorder" : "Reorder"}
+          </button>
           <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
             <Download size={14} /> Export CSV
           </button>
@@ -338,6 +496,53 @@ export default function AdminProductsPage() {
         </div>
       </div>
 
+      {reorderMode ? (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-sm text-muted">
+              Drag products to set their display order on the storefront. Only active products are shown.
+            </p>
+            <button
+              onClick={saveOrder}
+              disabled={savingOrder}
+              className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-50"
+            >
+              <Save size={14} />
+              {savingOrder ? "Saving..." : "Save Order"}
+            </button>
+          </div>
+          <div className="bg-white border border-border rounded-lg overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border bg-surface/50">
+                  <th className="w-10 px-2 py-3" />
+                  <th className="w-12 px-4 py-3" />
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Product</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Price</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Order</th>
+                </tr>
+              </thead>
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext
+                  items={reorderProducts.map((p) => p.id)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <tbody>
+                    {reorderProducts.map((product, i) => (
+                      <SortableRow key={product.id} product={{ ...product, display_order: i + 1 }} />
+                    ))}
+                  </tbody>
+                </SortableContext>
+              </DndContext>
+            </table>
+          </div>
+        </div>
+      ) : (
+      <>
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center gap-1.5 text-sm text-muted">
@@ -432,6 +637,8 @@ export default function AdminProductsPage() {
         onConfirm={handleBulkDelete}
         onCancel={() => { if (!bulkDeleting) setBulkDeleteIds(null); }}
       />
+      </>
+      )}
     </div>
   );
 }
