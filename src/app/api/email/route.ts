@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendOrderConfirmation, sendOrderShipped, sendContactFormEmail } from "@/lib/email";
+import { sendOrderConfirmation, sendOrderShipped, sendContactFormEmail, sendNewsletterEmail } from "@/lib/email";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -134,6 +134,36 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json({ success: true, id: result.data?.id });
+    }
+
+    if (type === "newsletter_campaign") {
+      const { subject, body: emailBody, preheader, emails } = body;
+      if (!subject || !emailBody || !emails?.length) {
+        return NextResponse.json({ error: "Missing subject, body, or emails" }, { status: 400 });
+      }
+
+      const results = { sent: 0, failed: 0, errors: [] as string[] };
+      // Send in batches to avoid rate limits
+      for (const email of emails as string[]) {
+        try {
+          const result = await sendNewsletterEmail({ to: email, subject, body: emailBody, preheader });
+          if (result.error) {
+            results.failed++;
+            results.errors.push(`${email}: ${result.error.message}`);
+          } else {
+            results.sent++;
+          }
+        } catch {
+          results.failed++;
+          results.errors.push(`${email}: unexpected error`);
+        }
+        // Small delay between sends
+        if (results.sent % 10 === 0) {
+          await new Promise((r) => setTimeout(r, 100));
+        }
+      }
+
+      return NextResponse.json({ success: true, ...results });
     }
 
     return NextResponse.json({ error: "Unknown email type" }, { status: 400 });

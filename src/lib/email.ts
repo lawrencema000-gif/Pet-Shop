@@ -198,6 +198,35 @@ export async function sendOrderShipped(data: ShippedEmailData) {
   });
 }
 
+export async function sendNewsletterEmail(data: {
+  to: string;
+  subject: string;
+  body: string;
+  preheader?: string;
+}) {
+  const html = baseTemplate(`
+    ${data.preheader ? `<div style="display:none;max-height:0;overflow:hidden">${data.preheader}</div>` : ""}
+    <div style="font-size:15px;color:#1a1a1a;line-height:1.7">
+      ${data.body}
+    </div>
+    <div style="text-align:center;margin-top:32px">
+      <a href="https://pet-shop-lac-ten.vercel.app" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">Shop Now</a>
+    </div>
+    <p style="margin-top:32px;font-size:11px;color:#8b8680;text-align:center">
+      You're receiving this because you subscribed to the PETLIBRO newsletter.
+    </p>
+  `);
+
+  const resend = getResend();
+  if (!resend) return { data: null, error: { message: "Email not configured", name: "missing_key" } };
+  return resend.emails.send({
+    from: FROM,
+    to: [data.to],
+    subject: data.subject,
+    html,
+  });
+}
+
 export async function sendContactFormEmail(data: {
   name: string;
   email: string;
