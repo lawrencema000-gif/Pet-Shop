@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Download, Upload } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload, Filter, X } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -34,18 +34,28 @@ export default function AdminProductsPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const { toast } = useToast();
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [bulkDeleteIds, setBulkDeleteIds] = useState<string[] | null>(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteProgress, setBulkDeleteProgress] = useState(0);
 
+  // Fetch categories for filter dropdown
+  useEffect(() => {
+    supabase.from("categories").select("id, name").order("name").then(({ data }) => {
+      setCategories(data ?? []);
+    });
+  }, []);
+
   const fetchProducts = useCallback(async () => {
     setLoading(true);
     let query = supabase
       .from("products")
       .select(`
-        id, name, slug, base_price, compare_at_price, status, is_featured,
+        id, name, slug, base_price, compare_at_price, status, is_featured, category_id,
         category:categories(name),
         images:product_images(url),
         variants:product_variants(stock_quantity)
@@ -53,6 +63,12 @@ export default function AdminProductsPage() {
 
     if (search) {
       query = query.ilike("name", `%${search}%`);
+    }
+    if (statusFilter !== "all") {
+      query = query.eq("status", statusFilter);
+    }
+    if (categoryFilter !== "all") {
+      query = query.eq("category_id", categoryFilter);
     }
 
     const from = (page - 1) * PAGE_SIZE;
@@ -81,7 +97,7 @@ export default function AdminProductsPage() {
     setProducts(rows);
     setTotal(count ?? 0);
     setLoading(false);
-  }, [page, search]);
+  }, [page, search, statusFilter, categoryFilter]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -252,6 +268,43 @@ export default function AdminProductsPage() {
             Add Product
           </Link>
         </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="flex items-center gap-1.5 text-sm text-muted">
+          <Filter size={14} />
+          <span className="font-medium">Filters:</span>
+        </div>
+        <select
+          value={statusFilter}
+          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); setSelectedIds([]); }}
+          className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
+        >
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="draft">Draft</option>
+          <option value="archived">Archived</option>
+        </select>
+        <select
+          value={categoryFilter}
+          onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); setSelectedIds([]); }}
+          className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
+        >
+          <option value="all">All Categories</option>
+          {categories.map((c) => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+        {(statusFilter !== "all" || categoryFilter !== "all") && (
+          <button
+            onClick={() => { setStatusFilter("all"); setCategoryFilter("all"); setPage(1); }}
+            className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-muted hover:text-foreground transition-colors"
+          >
+            <X size={12} />
+            Clear filters
+          </button>
+        )}
       </div>
 
       <DataTable
