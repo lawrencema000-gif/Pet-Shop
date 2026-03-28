@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown, AlertTriangle } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -35,6 +35,7 @@ export default function AdminProductsPage() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [stockFilter, setStockFilter] = useState<string>("all");
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
   const { toast } = useToast();
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -94,10 +95,16 @@ export default function AdminProductsPage() {
       };
     });
 
-    setProducts(rows);
-    setTotal(count ?? 0);
+    // Apply stock filter client-side (stock is computed from variants)
+    const filtered = stockFilter === "all" ? rows
+      : stockFilter === "out" ? rows.filter((r) => r.stock_total === 0)
+      : stockFilter === "low" ? rows.filter((r) => r.stock_total > 0 && r.stock_total <= 10)
+      : rows;
+
+    setProducts(filtered);
+    setTotal(stockFilter === "all" ? (count ?? 0) : filtered.length);
     setLoading(false);
-  }, [page, search, statusFilter, categoryFilter]);
+  }, [page, search, statusFilter, categoryFilter, stockFilter]);
 
   useEffect(() => { fetchProducts(); }, [fetchProducts]);
 
@@ -247,9 +254,21 @@ export default function AdminProductsPage() {
       label: "Stock",
       sortable: true,
       render: (row) => (
-        <span className={`text-sm ${row.stock_total <= 10 ? "text-sale font-medium" : "text-foreground"}`}>
-          {row.stock_total}
-        </span>
+        <div className="flex items-center gap-1.5">
+          {row.stock_total === 0 ? (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-sale/10 text-sale">
+              <AlertTriangle size={10} />
+              Out of stock
+            </span>
+          ) : row.stock_total <= 10 ? (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-warning/10 text-warning">
+              <AlertTriangle size={10} />
+              {row.stock_total} left
+            </span>
+          ) : (
+            <span className="text-sm text-foreground">{row.stock_total}</span>
+          )}
+        </div>
       ),
     },
     {
@@ -345,9 +364,18 @@ export default function AdminProductsPage() {
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
         </select>
-        {(statusFilter !== "all" || categoryFilter !== "all") && (
+        <select
+          value={stockFilter}
+          onChange={(e) => { setStockFilter(e.target.value); setPage(1); setSelectedIds([]); }}
+          className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
+        >
+          <option value="all">All Stock Levels</option>
+          <option value="low">Low Stock (1-10)</option>
+          <option value="out">Out of Stock</option>
+        </select>
+        {(statusFilter !== "all" || categoryFilter !== "all" || stockFilter !== "all") && (
           <button
-            onClick={() => { setStatusFilter("all"); setCategoryFilter("all"); setPage(1); }}
+            onClick={() => { setStatusFilter("all"); setCategoryFilter("all"); setStockFilter("all"); setPage(1); }}
             className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-muted hover:text-foreground transition-colors"
           >
             <X size={12} />
