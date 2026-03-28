@@ -21,6 +21,7 @@ import {
   Warehouse,
   RotateCcw,
   Layers,
+  Store,
   type LucideIcon,
 } from "lucide-react";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
@@ -125,6 +126,14 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
             <p className="text-xs text-muted truncate">{roleName}</p>
           </div>
         </div>
+        <Link
+          href="/"
+          onClick={onClose}
+          className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-accent hover:bg-accent-light rounded-md transition-colors"
+        >
+          <Store size={16} />
+          Back to Store
+        </Link>
         <button
           onClick={signOut}
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-sale hover:bg-sale/5 rounded-md transition-colors"

@@ -10,9 +10,11 @@ import {
   PawPrint,
   Settings,
   LogOut,
+  Shield,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/supabase/auth-provider";
 
 const NAV_ITEMS = [
   { href: "/account", label: "Dashboard", icon: LayoutDashboard },
@@ -30,6 +32,8 @@ export default function AccountLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === "admin";
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -64,6 +68,15 @@ export default function AccountLayout({
               </Link>
             );
           })}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap bg-accent-light text-accent transition-colors"
+            >
+              <Shield size={16} />
+              Admin
+            </Link>
+          )}
           <button
             onClick={handleSignOut}
             className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap bg-surface-light text-muted hover:text-sale hover:bg-sale/5 transition-colors"
@@ -96,6 +109,18 @@ export default function AccountLayout({
                 </Link>
               );
             })}
+            {isAdmin && (
+              <>
+                <div className="border-t border-border my-3" />
+                <Link
+                  href="/admin"
+                  className="flex items-center gap-3 px-4 py-3 rounded text-sm font-medium text-accent hover:bg-accent-light transition-colors"
+                >
+                  <Shield size={18} />
+                  Admin Panel
+                </Link>
+              </>
+            )}
             <div className="border-t border-border my-3" />
             <button
               onClick={handleSignOut}
