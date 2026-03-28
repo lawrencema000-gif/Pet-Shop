@@ -88,7 +88,15 @@ export default function EditProductPage() {
     }).eq("id", id);
 
     if (error) alert("Error saving: " + error.message);
-    else await logAdminAction("update_product", "product", id, { name: product.name });
+    else {
+      await logAdminAction("update_product", "product", id, { name: product.name });
+      // Auto-sync to Stripe
+      fetch("/api/stripe/sync-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: id }),
+      }).catch((err) => console.error("Stripe sync failed:", err));
+    }
     setSaving(false);
   }
 
@@ -109,19 +117,41 @@ export default function EditProductPage() {
       is_default: false,
     }).select().single();
     if (error) { console.error("Add variant failed:", error.message); return; }
-    if (data) setVariants((prev) => [...prev, data]);
+    if (data) {
+      setVariants((prev) => [...prev, data]);
+      // Auto-sync to Stripe
+      fetch("/api/stripe/sync-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: id }),
+      }).catch((err) => console.error("Stripe sync failed:", err));
+    }
   }
 
   async function updateVariant(vid: string, updates: Partial<Variant>) {
     const { error } = await supabase.from("product_variants").update(updates).eq("id", vid);
     if (error) { console.error("Update variant failed:", error.message); return; }
     setVariants((prev) => prev.map((v) => (v.id === vid ? { ...v, ...updates } : v)));
+    // Auto-sync to Stripe if price changed
+    if ("price" in updates) {
+      fetch("/api/stripe/sync-product", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product_id: id }),
+      }).catch((err) => console.error("Stripe sync failed:", err));
+    }
   }
 
   async function deleteVariant(vid: string) {
     const { error } = await supabase.from("product_variants").delete().eq("id", vid);
     if (error) { console.error("Delete variant failed:", error.message); return; }
     setVariants((prev) => prev.filter((v) => v.id !== vid));
+    // Sync to Stripe (will clean up orphaned prices)
+    fetch("/api/stripe/sync-product", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ product_id: id }),
+    }).catch((err) => console.error("Stripe sync failed:", err));
   }
 
 

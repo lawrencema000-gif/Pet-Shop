@@ -26,6 +26,7 @@ export interface Product {
   features: string[];
   specifications: Record<string, string>;
   status: "active" | "draft" | "archived";
+  stripe_product_id?: string | null;
   created_at: string;
   updated_at: string;
   category?: Category;
@@ -53,6 +54,7 @@ export interface ProductVariant {
   stock_quantity: number;
   image_url: string | null;
   is_default: boolean;
+  stripe_price_id?: string | null;
 }
 
 export interface Review {

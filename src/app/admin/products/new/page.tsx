@@ -78,6 +78,14 @@ export default function NewProductPage() {
     }
 
     await logAdminAction("create_product", "product", data.id, { name: form.name });
+
+    // Auto-sync to Stripe
+    fetch("/api/stripe/sync-product", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ product_id: data.id }),
+    }).catch((err) => console.error("Stripe sync failed:", err));
+
     router.push(`/admin/products/${data.id}`);
   }
 

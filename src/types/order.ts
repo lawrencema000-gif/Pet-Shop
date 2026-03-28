@@ -10,6 +10,9 @@ export interface Order {
   total: number;
   shipping_address: ShippingAddress;
   coupon_code: string | null;
+  stripe_checkout_session_id?: string | null;
+  stripe_payment_intent_id?: string | null;
+  payment_status?: "unpaid" | "paid" | "refunded" | "failed";
   created_at: string;
   updated_at: string;
   items?: OrderItem[];

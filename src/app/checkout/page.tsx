@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
@@ -17,10 +17,8 @@ export default function CheckoutPage() {
   const router = useRouter();
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.subtotal());
-  const clearCart = useCartStore((s) => s.clearCart);
 
   const [loading, setLoading] = useState(false);
-  const [orderId, setOrderId] = useState<string | null>(null);
   const [idempotencyKey] = useState(() => crypto.randomUUID());
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState<ShippingAddress>({
@@ -41,10 +39,10 @@ export default function CheckoutPage() {
   const total = Math.round((subtotal + shipping + tax - discount) * 100) / 100;
 
   useEffect(() => {
-    if (items.length === 0 && !orderId) {
+    if (items.length === 0) {
       router.replace("/cart");
     }
-  }, [items.length, orderId, router]);
+  }, [items.length, router]);
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -88,8 +86,11 @@ export default function CheckoutPage() {
         return;
       }
 
-      setOrderId(data.order_id);
-      clearCart();
+      // Redirect to Stripe Checkout
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
     } catch (err) {
       console.error("Checkout error:", err);
       setErrors({ form: "Something went wrong. Please try again." });
@@ -97,38 +98,6 @@ export default function CheckoutPage() {
       setLoading(false);
     }
   };
-
-  // Order confirmation
-  if (orderId) {
-    return (
-      <div className="max-w-lg mx-auto px-4 py-16 text-center">
-        <div>
-          <CheckCircle2 size={64} className="text-success mx-auto mb-6" />
-        </div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">
-          Order Confirmed!
-        </h1>
-        <p className="text-muted mb-2">
-          Thank you for your order. We&apos;ll send a confirmation to{" "}
-          <span className="font-medium text-foreground">{email}</span>.
-        </p>
-        <p className="text-sm text-muted mb-8">
-          Order ID:{" "}
-          <span className="font-mono text-foreground">
-            {orderId.slice(0, 8).toUpperCase()}
-          </span>
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/products">
-            <Button variant="outline">Continue Shopping</Button>
-          </Link>
-          <Link href="/account/orders">
-            <Button>View Orders</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   if (items.length === 0) return null;
 
@@ -244,12 +213,12 @@ export default function CheckoutPage() {
               Payment
             </h2>
             <div className="border border-border rounded-xl p-4 space-y-3">
-              <div className="flex items-center gap-2 text-sm text-muted">
-                <ShieldCheck size={16} />
-                <span>Demo Mode</span>
+              <div className="flex items-center gap-2 text-sm text-foreground">
+                <ShieldCheck size={16} className="text-success" />
+                <span>Secure Payment via Stripe</span>
               </div>
               <p className="text-sm text-muted leading-relaxed">
-                Payment processing coming soon &mdash; orders are placed as pending for demo purposes.
+                You&apos;ll be redirected to Stripe&apos;s secure checkout to complete your payment. Your card details are never stored on our servers.
               </p>
             </div>
           </section>
@@ -261,7 +230,7 @@ export default function CheckoutPage() {
             loading={loading}
             className="lg:hidden"
           >
-            Place Order &mdash; {formatPrice(total)}
+            Continue to Payment &mdash; {formatPrice(total)}
           </Button>
         </div>
 
@@ -354,7 +323,7 @@ export default function CheckoutPage() {
                 loading={loading}
                 className="hidden lg:flex"
               >
-                Place Order
+                Continue to Payment
               </Button>
             </div>
           </div>
