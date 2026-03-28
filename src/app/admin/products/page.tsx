@@ -2,11 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Plus, Edit, Trash2, Download, Upload, Filter, X } from "lucide-react";
+import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
-import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
@@ -42,6 +41,7 @@ export default function AdminProductsPage() {
   const [bulkDeleteIds, setBulkDeleteIds] = useState<string[] | null>(null);
   const [bulkDeleting, setBulkDeleting] = useState(false);
   const [bulkDeleteProgress, setBulkDeleteProgress] = useState(0);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
   // Fetch categories for filter dropdown
   useEffect(() => {
@@ -170,6 +170,20 @@ export default function AdminProductsPage() {
     fetchProducts();
   }
 
+  async function handleStatusChange(id: string, newStatus: string) {
+    setUpdatingStatus(id);
+    const { error } = await supabase.from("products").update({ status: newStatus }).eq("id", id);
+    if (error) {
+      toast("Failed to update status: " + error.message, "error");
+    } else {
+      // Update local state immediately for instant feedback
+      setProducts((prev) => prev.map((p) => p.id === id ? { ...p, status: newStatus } : p));
+      toast(`Product set to ${newStatus}`, "success");
+      await logAdminAction("update_product_status", "product", id, { status: newStatus });
+    }
+    setUpdatingStatus(null);
+  }
+
   const columns: Column<ProductRow>[] = [
     {
       key: "image",
@@ -224,7 +238,25 @@ export default function AdminProductsPage() {
     {
       key: "status",
       label: "Status",
-      render: (row) => <StatusBadge status={row.status} />,
+      render: (row) => (
+        <div className="relative">
+          <select
+            value={row.status}
+            disabled={updatingStatus === row.id}
+            onChange={(e) => handleStatusChange(row.id, e.target.value)}
+            className={`appearance-none cursor-pointer text-xs font-medium rounded-full px-2.5 py-1 pr-6 border-0 focus:outline-none focus:ring-2 focus:ring-accent/30 transition-colors ${
+              row.status === "active" ? "bg-success/10 text-success" :
+              row.status === "draft" ? "bg-warning/10 text-warning" :
+              "bg-muted/10 text-muted"
+            } ${updatingStatus === row.id ? "opacity-50" : ""}`}
+          >
+            <option value="active">Active</option>
+            <option value="draft">Draft</option>
+            <option value="archived">Archived</option>
+          </select>
+          <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-current opacity-50" />
+        </div>
+      ),
     },
     {
       key: "actions",
