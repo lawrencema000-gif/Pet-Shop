@@ -23,6 +23,8 @@ export default function NewProductPage() {
     is_featured: false,
     is_best_seller: false,
     is_new: true,
+    meta_title: "",
+    meta_description: "",
   });
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
 
@@ -63,6 +65,8 @@ export default function NewProductPage() {
         is_featured: form.is_featured,
         is_best_seller: form.is_best_seller,
         is_new: form.is_new,
+        meta_title: form.meta_title || null,
+        meta_description: form.meta_description || null,
       })
       .select("id")
       .single();
@@ -215,6 +219,42 @@ export default function NewProductPage() {
                 {label}
               </label>
             ))}
+          </div>
+        </div>
+
+        {/* SEO */}
+        <div className="bg-white border border-border rounded-lg p-6 space-y-5 mt-5">
+          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Search Engine Optimization</h3>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Meta Title</label>
+            <input
+              type="text"
+              maxLength={70}
+              value={form.meta_title}
+              onChange={(e) => updateField("meta_title", e.target.value)}
+              className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
+              placeholder="Leave blank to use product name"
+            />
+            <p className="text-xs text-muted mt-1">{form.meta_title.length}/70 characters</p>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
+            <textarea
+              maxLength={160}
+              value={form.meta_description}
+              onChange={(e) => updateField("meta_description", e.target.value)}
+              rows={3}
+              className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors resize-none"
+              placeholder="Brief description for search engine results..."
+            />
+            <p className="text-xs text-muted mt-1">{form.meta_description.length}/160 characters</p>
+          </div>
+          {/* Preview */}
+          <div className="bg-surface/50 rounded-md p-4">
+            <p className="text-xs font-semibold text-muted uppercase mb-2">Google Preview</p>
+            <p className="text-[#1a0dab] text-base font-medium truncate">{form.meta_title || form.name || "Product Name"}</p>
+            <p className="text-[#006621] text-xs truncate">petlibro.com/products/{form.slug || "product-slug"}</p>
+            <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{form.meta_description || form.description || "No description"}</p>
           </div>
         </div>
 
