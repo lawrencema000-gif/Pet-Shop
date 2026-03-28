@@ -170,6 +170,23 @@ export default function AdminProductsPage() {
     fetchProducts();
   }
 
+  async function handleBulkStatusChange(ids: string[], newStatus: string) {
+    let updated = 0;
+    let failed = 0;
+    for (const id of ids) {
+      const { error } = await supabase.from("products").update({ status: newStatus }).eq("id", id);
+      if (error) { failed++; } else { updated++; }
+      await logAdminAction("update_product_status", "product", id, { status: newStatus });
+    }
+    setSelectedIds([]);
+    if (failed > 0) {
+      toast(`Updated ${updated} products, ${failed} failed`, "error");
+    } else {
+      toast(`${updated} product${updated !== 1 ? "s" : ""} set to ${newStatus}`, "success");
+    }
+    fetchProducts();
+  }
+
   async function handleStatusChange(id: string, newStatus: string) {
     setUpdatingStatus(id);
     const { error } = await supabase.from("products").update({ status: newStatus }).eq("id", id);
@@ -354,6 +371,9 @@ export default function AdminProductsPage() {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         bulkActions={[
+          { label: "Set Active", onClick: (ids) => handleBulkStatusChange(ids, "active") },
+          { label: "Set Draft", onClick: (ids) => handleBulkStatusChange(ids, "draft") },
+          { label: "Archive", onClick: (ids) => handleBulkStatusChange(ids, "archived") },
           { label: "Delete Selected", onClick: (ids) => setBulkDeleteIds(ids), variant: "danger" },
         ]}
         emptyTitle="No products found"
