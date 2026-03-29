@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Menu, Search, Bell } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-provider";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 interface AdminTopbarProps {
   onMenuClick: () => void;
@@ -13,6 +15,7 @@ interface AdminTopbarProps {
 export function AdminTopbar({ onMenuClick, onSearchClick }: AdminTopbarProps) {
   const { profile } = useAuth();
   const { roleName } = useStaffPermissions();
+  const { t } = useTranslation();
   const [isMac, setIsMac] = useState(true);
 
   useEffect(() => {
@@ -26,12 +29,12 @@ export function AdminTopbar({ onMenuClick, onSearchClick }: AdminTopbarProps) {
         <button
           onClick={onMenuClick}
           className="lg:hidden p-2 hover:bg-surface rounded-md transition-colors"
-          aria-label="Toggle menu"
+          aria-label={t("admin.topbar.toggleMenu")}
         >
           <Menu size={20} />
         </button>
         <div className="hidden lg:block">
-          <h2 className="text-sm font-semibold text-foreground">Admin Panel</h2>
+          <h2 className="text-sm font-semibold text-foreground">{t("admin.topbar.adminPanel")}</h2>
         </div>
       </div>
 
@@ -42,13 +45,15 @@ export function AdminTopbar({ onMenuClick, onSearchClick }: AdminTopbarProps) {
           className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted hover:text-foreground border border-border rounded-md hover:bg-surface transition-colors"
         >
           <Search size={16} />
-          <span className="hidden sm:inline">Search...</span>
+          <span className="hidden sm:inline">{t("admin.topbar.search")}</span>
           <kbd className="hidden sm:inline text-[10px] font-mono bg-surface px-1.5 py-0.5 rounded text-muted">
             {isMac ? "⌘K" : "Ctrl+K"}
           </kbd>
         </button>
 
-        <button className="p-2 hover:bg-surface rounded-md transition-colors relative" aria-label="Notifications" title="Notifications coming soon">
+        <LanguageSwitcher />
+
+        <button className="p-2 hover:bg-surface rounded-md transition-colors relative" aria-label={t("admin.topbar.notifications")} title={t("admin.topbar.notificationsComingSoon")}>
           <Bell size={18} className="text-muted" />
         </button>
 

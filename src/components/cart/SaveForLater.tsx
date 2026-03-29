@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
@@ -25,6 +26,7 @@ function setSavedItems(items: CartItem[]) {
 }
 
 export function SaveForLater() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<CartItem[]>([]);
   const addItem = useCartStore((s) => s.addItem);
 
@@ -61,7 +63,7 @@ export function SaveForLater() {
   return (
     <div>
       <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-4">
-        Saved for Later ({items.length})
+        {t("saveForLater.title", { count: items.length })}
       </h3>
       <ul className="flex flex-col gap-3">
         {items.map((item) => (
@@ -93,16 +95,16 @@ export function SaveForLater() {
               <button
                 onClick={() => moveToCart(item)}
                 className="p-1.5 text-accent hover:text-accent/80 transition-colors"
-                aria-label="Move to cart"
-                title="Move to Cart"
+                aria-label={t("saveForLater.moveToCartAria")}
+                title={t("saveForLater.moveToCart")}
               >
                 <ShoppingCart size={16} />
               </button>
               <button
                 onClick={() => removeItem(item.id)}
                 className="p-1.5 text-muted hover:text-sale transition-colors"
-                aria-label="Remove saved item"
-                title="Remove"
+                aria-label={t("saveForLater.removeAria")}
+                title={t("saveForLater.remove")}
               >
                 <X size={16} />
               </button>

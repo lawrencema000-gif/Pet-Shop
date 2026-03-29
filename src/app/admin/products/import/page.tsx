@@ -6,6 +6,7 @@ import {
   ArrowLeft, Upload, FileSpreadsheet, CheckCircle, XCircle,
   AlertTriangle, Download, Loader2,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { slugify } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
@@ -34,6 +35,7 @@ const TEMPLATE_EXAMPLE = `"Granary Smart Feeder",89.99,119.99,"Smart Feeders",ac
 "Water Fountain Pro",49.99,,,"draft","Stainless steel water fountain",100,PLB-WF002,`;
 
 export default function BulkImportPage() {
+  const { t } = useTranslation();
   const [step, setStep] = useState<"upload" | "preview" | "importing" | "done">("upload");
   const [rows, setRows] = useState<ParsedRow[]>([]);
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
@@ -263,8 +265,8 @@ export default function BulkImportPage() {
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Bulk Import Products</h1>
-          <p className="text-sm text-muted mt-1">Upload a CSV file to create multiple products at once</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.products.import.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.products.import.subtitle")}</p>
         </div>
       </div>
 
@@ -274,12 +276,12 @@ export default function BulkImportPage() {
           <div className="bg-white border border-border rounded-lg p-8">
             <div className="text-center mb-6">
               <FileSpreadsheet size={40} className="mx-auto text-muted mb-3" />
-              <h2 className="text-lg font-semibold text-foreground">Upload CSV File</h2>
+              <h2 className="text-lg font-semibold text-foreground">{t("admin.products.import.uploadTitle")}</h2>
               <p className="text-sm text-muted mt-1">
-                Required columns: <code className="bg-surface px-1 rounded text-xs">name</code>, <code className="bg-surface px-1 rounded text-xs">price</code>
+                {t("admin.products.import.requiredColumns")} <code className="bg-surface px-1 rounded text-xs">name</code>, <code className="bg-surface px-1 rounded text-xs">price</code>
               </p>
               <p className="text-xs text-muted mt-1">
-                Optional: compare_price, category, status, description, stock, sku, image_url
+                {t("admin.products.import.optionalColumns")}
               </p>
             </div>
 
@@ -291,12 +293,12 @@ export default function BulkImportPage() {
               }}
               className="border-2 border-dashed border-border rounded-xl p-8 text-center hover:border-accent/40 transition-colors"
             >
-              <p className="text-sm text-muted mb-3">Drag & drop your CSV file here, or</p>
+              <p className="text-sm text-muted mb-3">{t("admin.products.import.dragDropText")}</p>
               <button
                 onClick={() => fileInputRef.current?.click()}
                 className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
               >
-                <Upload size={14} /> Choose File
+                <Upload size={14} /> {t("admin.products.import.chooseFile")}
               </button>
               <input
                 ref={fileInputRef}
@@ -312,7 +314,7 @@ export default function BulkImportPage() {
 
             <div className="mt-4 text-center">
               <button onClick={downloadTemplate} className="inline-flex items-center gap-2 text-sm text-accent hover:underline">
-                <Download size={14} /> Download template CSV
+                <Download size={14} /> {t("admin.products.import.downloadTemplate")}
               </button>
             </div>
           </div>
@@ -324,28 +326,28 @@ export default function BulkImportPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
-              <span className="text-sm text-foreground font-medium">{rows.length} rows parsed</span>
+              <span className="text-sm text-foreground font-medium">{t("admin.products.import.rowsParsed", { count: rows.length })}</span>
               {validCount > 0 && (
                 <span className="inline-flex items-center gap-1 text-xs font-medium text-success bg-success/10 px-2 py-0.5 rounded-full">
-                  <CheckCircle size={10} /> {validCount} valid
+                  <CheckCircle size={10} /> {t("admin.products.import.validRows", { count: validCount })}
                 </span>
               )}
               {errorCount > 0 && (
                 <span className="inline-flex items-center gap-1 text-xs font-medium text-sale bg-sale/10 px-2 py-0.5 rounded-full">
-                  <XCircle size={10} /> {errorCount} errors
+                  <XCircle size={10} /> {t("admin.products.import.errorRows", { count: errorCount })}
                 </span>
               )}
             </div>
             <div className="flex gap-2">
               <button onClick={() => { setStep("upload"); setRows([]); }} className="px-3 py-2 text-sm border border-border rounded-md hover:bg-surface">
-                Cancel
+                {t("admin.products.import.cancelButton")}
               </button>
               <button
                 onClick={handleImport}
                 disabled={validCount === 0}
                 className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark disabled:opacity-60"
               >
-                <Upload size={14} /> Import {validCount} Products
+                <Upload size={14} /> {t("admin.products.import.importButton", { count: validCount })}
               </button>
             </div>
           </div>
@@ -354,13 +356,13 @@ export default function BulkImportPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface/50">
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase w-8">#</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">Name</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">Price</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">Category</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">Status</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">Stock</th>
-                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">SKU</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase w-8">{t("admin.products.import.columnRow")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnName")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnPrice")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnCategory")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnStatus")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnStock")}</th>
+                  <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.import.columnSku")}</th>
                   <th className="px-3 py-2.5 text-left text-xs font-semibold text-muted uppercase w-8"></th>
                 </tr>
               </thead>
@@ -395,7 +397,7 @@ export default function BulkImportPage() {
 
           {errorCount > 0 && (
             <div className="mt-4 bg-sale/5 border border-sale/20 rounded-lg p-4">
-              <p className="text-sm font-medium text-sale mb-2">Errors ({errorCount})</p>
+              <p className="text-sm font-medium text-sale mb-2">{t("admin.products.import.errorsTitle", { count: errorCount })}</p>
               <ul className="text-xs text-sale space-y-1">
                 {rows.filter((r) => r.error).map((r, i) => (
                   <li key={i}>{r.error}</li>
@@ -410,8 +412,8 @@ export default function BulkImportPage() {
       {step === "importing" && (
         <div className="max-w-md mx-auto text-center py-12">
           <Loader2 size={32} className="mx-auto text-accent animate-spin mb-4" />
-          <h2 className="text-lg font-semibold text-foreground">Importing Products...</h2>
-          <p className="text-sm text-muted mt-1">{progress}% complete</p>
+          <h2 className="text-lg font-semibold text-foreground">{t("admin.products.import.importingTitle")}</h2>
+          <p className="text-sm text-muted mt-1">{t("admin.products.import.progressComplete", { progress })}</p>
           <div className="w-full bg-surface rounded-full h-2 mt-4">
             <div
               className="bg-accent h-2 rounded-full transition-all duration-300"
@@ -426,20 +428,20 @@ export default function BulkImportPage() {
         <div className="max-w-lg mx-auto text-center py-8">
           <div className="bg-white border border-border rounded-lg p-8">
             <CheckCircle size={40} className="mx-auto text-success mb-4" />
-            <h2 className="text-lg font-semibold text-foreground">Import Complete</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("admin.products.import.importCompleteTitle")}</h2>
 
             <div className="flex justify-center gap-6 mt-6 mb-6">
               <div>
                 <p className="text-2xl font-bold text-success">{result.created}</p>
-                <p className="text-xs text-muted">Created</p>
+                <p className="text-xs text-muted">{t("admin.products.import.createdLabel")}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-amber-600">{result.skipped}</p>
-                <p className="text-xs text-muted">Skipped</p>
+                <p className="text-xs text-muted">{t("admin.products.import.skippedLabel")}</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-sale">{result.errors.length}</p>
-                <p className="text-xs text-muted">Errors</p>
+                <p className="text-xs text-muted">{t("admin.products.import.errorsLabel")}</p>
               </div>
             </div>
 
@@ -456,13 +458,13 @@ export default function BulkImportPage() {
                 href="/admin/products"
                 className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark"
               >
-                View Products
+                {t("admin.products.import.viewProducts")}
               </Link>
               <button
                 onClick={() => { setStep("upload"); setRows([]); setResult(null); setProgress(0); }}
                 className="px-4 py-2.5 text-sm font-medium border border-border rounded-md hover:bg-surface"
               >
-                Import More
+                {t("admin.products.import.importMore")}
               </button>
             </div>
           </div>

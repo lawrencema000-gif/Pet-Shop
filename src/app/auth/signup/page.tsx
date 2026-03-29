@@ -7,8 +7,10 @@ import { Eye, EyeOff, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 export default function SignUpPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,7 +25,7 @@ export default function SignUpPage() {
     setError(null);
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      setError(t("auth.passwordMinLength"));
       return;
     }
 
@@ -85,14 +87,14 @@ export default function SignUpPage() {
           <div className="bg-background rounded-md shadow-sm p-8">
             <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Account Created!
+              {t("auth.accountCreated")}
             </h1>
             <p className="text-muted mb-6">
-              Welcome to PETLIBRO! Your account is ready.
+              {t("auth.welcomeMessage")}
             </p>
             <Link href="/auth/login">
               <Button fullWidth>
-                Sign In
+                {t("auth.signIn")}
               </Button>
             </Link>
           </div>
@@ -107,10 +109,10 @@ export default function SignUpPage() {
         <div className="bg-background rounded-md shadow-sm p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground">
-              Create Account
+              {t("auth.createAccount")}
             </h1>
             <p className="text-sm text-muted mt-1">
-              Join PETLIBRO for a smarter pet care experience
+              {t("auth.joinSubtitle")}
             </p>
           </div>
 
@@ -136,7 +138,7 @@ export default function SignUpPage() {
                 fill="#EA4335"
               />
             </svg>
-            Continue with Google
+            {t("auth.continueWithGoogle")}
           </button>
 
           <div className="relative my-6">
@@ -144,7 +146,7 @@ export default function SignUpPage() {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-3 text-muted">or</span>
+              <span className="bg-background px-3 text-muted">{t("auth.or")}</span>
             </div>
           </div>
 
@@ -156,25 +158,25 @@ export default function SignUpPage() {
 
           <form onSubmit={handleSignUp} className="space-y-4">
             <Input
-              label="Full Name"
-              placeholder="John Doe"
+              label={t("auth.fullNameLabel")}
+              placeholder={t("auth.namePlaceholder")}
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
             />
             <Input
-              label="Email"
+              label={t("auth.emailLabel")}
               type="email"
-              placeholder="your@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <div className="relative">
               <Input
-                label="Password"
+                label={t("auth.passwordLabel")}
                 type={showPassword ? "text" : "password"}
-                placeholder="At least 6 characters"
+                placeholder={t("auth.passwordHint")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -187,22 +189,22 @@ export default function SignUpPage() {
               >
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
-              <p className="text-xs text-muted mt-1">Must be at least 6 characters</p>
+              <p className="text-xs text-muted mt-1">{t("auth.mustBe6Chars")}</p>
             </div>
 
             <Button type="submit" fullWidth size="lg" loading={loading}>
-              Create Account
+              {t("auth.createAccount")}
             </Button>
           </form>
-          <p className="text-xs text-muted text-center mt-3">Free forever &middot; No credit card needed</p>
+          <p className="text-xs text-muted text-center mt-3">{t("auth.freeForever")}</p>
 
           <p className="text-center text-sm text-muted mt-6">
-            Already have an account?{" "}
+            {t("auth.haveAccount")}{" "}
             <Link
               href="/auth/login"
               className="font-medium text-foreground hover:underline"
             >
-              Sign In
+              {t("auth.signIn")}
             </Link>
           </p>
         </div>

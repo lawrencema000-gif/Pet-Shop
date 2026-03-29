@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Eye, Download } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -21,6 +22,7 @@ interface OrderRow {
 const PAGE_SIZE = 20;
 
 export default function AdminOrdersPage() {
+  const { t } = useTranslation();
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -98,20 +100,20 @@ export default function AdminOrdersPage() {
   const columns: Column<OrderRow>[] = [
     {
       key: "id",
-      label: "Order",
+      label: t("admin.orders.columnOrder"),
       render: (row) => (
         <Link href={`/admin/orders/${row.id}`} className="text-sm font-mono text-accent hover:underline">
           #{row.id.slice(0, 8)}
         </Link>
       ),
     },
-    { key: "email", label: "Customer", sortable: true, render: (row) => <span className="text-sm">{row.email}</span> },
-    { key: "status", label: "Status", render: (row) => <StatusBadge status={row.status} /> },
-    { key: "item_count", label: "Items", render: (row) => <span className="text-sm">{row.item_count}</span> },
-    { key: "total", label: "Total", sortable: true, render: (row) => <span className="text-sm font-medium">{formatPrice(row.total)}</span> },
+    { key: "email", label: t("admin.orders.columnCustomer"), sortable: true, render: (row) => <span className="text-sm">{row.email}</span> },
+    { key: "status", label: t("admin.orders.columnStatus"), render: (row) => <StatusBadge status={row.status} /> },
+    { key: "item_count", label: t("admin.orders.columnItems"), render: (row) => <span className="text-sm">{row.item_count}</span> },
+    { key: "total", label: t("admin.orders.columnTotal"), sortable: true, render: (row) => <span className="text-sm font-medium">{formatPrice(row.total)}</span> },
     {
       key: "created_at",
-      label: "Date",
+      label: t("admin.orders.columnDate"),
       sortable: true,
       render: (row) => <span className="text-xs text-muted">{new Date(row.created_at).toLocaleDateString()}</span>,
     },
@@ -131,24 +133,24 @@ export default function AdminOrdersPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Orders</h1>
-          <p className="text-sm text-muted mt-1">{total} total orders</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.orders.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.orders.totalOrders", { count: total })}</p>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
-            <Download size={14} /> Export CSV
+            <Download size={14} /> {t("admin.orders.exportCsv")}
           </button>
           <select
             value={statusFilter}
             onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
           className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
         >
-          <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="confirmed">Confirmed</option>
-          <option value="shipped">Shipped</option>
-          <option value="delivered">Delivered</option>
-            <option value="cancelled">Cancelled</option>
+          <option value="">{t("admin.orders.allStatuses")}</option>
+          <option value="pending">{t("admin.orders.pending")}</option>
+          <option value="confirmed">{t("admin.orders.confirmed")}</option>
+          <option value="shipped">{t("admin.orders.shipped")}</option>
+          <option value="delivered">{t("admin.orders.delivered")}</option>
+            <option value="cancelled">{t("admin.orders.cancelled")}</option>
           </select>
         </div>
       </div>
@@ -158,13 +160,13 @@ export default function AdminOrdersPage() {
         data={orders}
         loading={loading}
         searchable
-        searchPlaceholder="Search by email..."
+        searchPlaceholder={t("admin.orders.searchByEmail")}
         onSearch={(q) => { setSearch(q); setPage(1); }}
         page={page}
         pageSize={PAGE_SIZE}
         total={total}
         onPageChange={setPage}
-        emptyTitle="No orders found"
+        emptyTitle={t("admin.orders.noOrdersFound")}
       />
     </div>
   );

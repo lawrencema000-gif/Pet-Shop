@@ -3,16 +3,18 @@
 import { FileText, BookOpen, Shield } from "lucide-react";
 import Link from "next/link";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 export default function AdminContentPage() {
+  const { t } = useTranslation();
   const { isSuperAdmin, hasPermission, loaded } = useStaffPermissions();
 
   if (loaded && !isSuperAdmin && !hasPermission("content:read")) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Shield size={48} className="text-muted mb-4" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view content management.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.content.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.content.noPermission")}</p>
       </div>
     );
   }
@@ -20,8 +22,8 @@ export default function AdminContentPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-display font-bold text-foreground">Content</h1>
-        <p className="text-sm text-muted mt-1">Manage your store&apos;s content</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.content.title")}</h1>
+        <p className="text-sm text-muted mt-1">{t("admin.content.subtitle")}</p>
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -32,16 +34,15 @@ export default function AdminContentPage() {
               <FileText size={20} className="text-accent" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Blog Posts</h2>
-              <p className="text-xs text-muted">Manage your blog articles</p>
+              <h2 className="text-sm font-semibold text-foreground">{t("admin.content.blogPosts")}</h2>
+              <p className="text-xs text-muted">{t("admin.content.blogDescription")}</p>
             </div>
           </div>
           <p className="text-sm text-muted mb-4">
-            Blog posts are currently managed via code in <code className="text-xs bg-surface px-1 py-0.5 rounded">lib/blog-data.ts</code>.
-            A database-backed blog editor is planned for a future update.
+            {t("admin.content.blogCodeNote")}
           </p>
           <Link href="/blog" target="_blank" className="text-sm text-accent hover:underline">
-            View Blog →
+            {t("admin.content.viewBlog")}
           </Link>
         </div>
 
@@ -52,27 +53,24 @@ export default function AdminContentPage() {
               <BookOpen size={20} className="text-accent" />
             </div>
             <div>
-              <h2 className="text-sm font-semibold text-foreground">Guides</h2>
-              <p className="text-xs text-muted">Pet care guides and tutorials</p>
+              <h2 className="text-sm font-semibold text-foreground">{t("admin.content.guides")}</h2>
+              <p className="text-xs text-muted">{t("admin.content.guidesDescription")}</p>
             </div>
           </div>
           <p className="text-sm text-muted mb-4">
-            Guides are managed via <code className="text-xs bg-surface px-1 py-0.5 rounded">lib/guides-data.ts</code>.
-            Database-backed guide management coming soon.
+            {t("admin.content.guidesCodeNote")}
           </p>
           <Link href="/guides" target="_blank" className="text-sm text-accent hover:underline">
-            View Guides →
+            {t("admin.content.viewGuides")}
           </Link>
         </div>
       </div>
 
       {/* Extensibility Note */}
       <div className="mt-8 bg-gold-light/50 border border-gold/20 rounded-lg p-5">
-        <h3 className="text-sm font-semibold text-foreground mb-2">Extensibility</h3>
+        <h3 className="text-sm font-semibold text-foreground mb-2">{t("admin.content.extensibility")}</h3>
         <p className="text-sm text-muted">
-          This content management section is designed to be extended. New content types
-          (FAQs, landing pages, announcements) can be added by creating new database tables
-          and admin pages. Use the Settings → Custom Nav feature to add new admin sections dynamically.
+          {t("admin.content.extensibilityDescription")}
         </p>
       </div>
     </div>

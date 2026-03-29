@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, ShoppingCart } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { useCartStore } from "@/lib/store/cart";
+import { useTranslatedProducts } from "@/hooks/useTranslatedProduct";
 
 interface Product {
   id: string;
@@ -24,7 +26,9 @@ export default function FrequentlyBoughtTogether({
   productId,
   categoryId,
 }: FrequentlyBoughtTogetherProps) {
-  const [suggestions, setSuggestions] = useState<Product[]>([]);
+  const { t } = useTranslation();
+  const [rawSuggestions, setRawSuggestions] = useState<Product[]>([]);
+  const suggestions = useTranslatedProducts(rawSuggestions);
   const addItem = useCartStore((s) => s.addItem);
 
   useEffect(() => {
@@ -39,7 +43,7 @@ export default function FrequentlyBoughtTogether({
         .limit(3);
 
       if (data && data.length > 0) {
-        setSuggestions(data as unknown as Product[]);
+        setRawSuggestions(data as unknown as Product[]);
       }
     }
     fetchSuggestions();
@@ -71,7 +75,7 @@ export default function FrequentlyBoughtTogether({
   return (
     <section className="mt-16">
       <h2 className="text-2xl font-bold text-foreground mb-8">
-        Frequently Bought Together
+        {t("common.frequentlyBoughtTogether")}
       </h2>
       <div className="flex flex-col lg:flex-row items-center gap-6 p-6 border border-border rounded-lg bg-background">
         {/* Product thumbnails */}
@@ -115,7 +119,7 @@ export default function FrequentlyBoughtTogether({
         <div className="flex flex-col items-center gap-3 lg:border-l lg:border-border lg:pl-6">
           <div className="text-center">
             <p className="text-xs text-muted uppercase tracking-wider mb-1">
-              Bundle Price
+              {t("common.bundlePrice")}
             </p>
             <p className="text-2xl font-bold text-foreground">
               ${bundlePrice.toFixed(2)}
@@ -126,7 +130,7 @@ export default function FrequentlyBoughtTogether({
             className="flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-full text-sm font-semibold transition-colors"
           >
             <ShoppingCart className="w-4 h-4" />
-            Add All to Cart
+            {t("common.addAllToCart")}
           </button>
         </div>
       </div>

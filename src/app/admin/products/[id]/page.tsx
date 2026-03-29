@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, Trash2, Plus, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -42,6 +43,7 @@ interface Variant {
 }
 
 export default function EditProductPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const [product, setProduct] = useState<ProductData | null>(null);
@@ -87,7 +89,7 @@ export default function EditProductPage() {
       meta_description: product.meta_description,
     }).eq("id", id);
 
-    if (error) alert("Error saving: " + error.message);
+    if (error) alert(t("admin.products.editor.errorSaving", { error: error.message }));
     else {
       await logAdminAction("update_product", "product", id, { name: product.name });
       // Auto-sync to Stripe
@@ -160,13 +162,13 @@ export default function EditProductPage() {
   }
 
   if (!product) {
-    return <div className="text-center py-20"><p className="text-muted">Product not found</p></div>;
+    return <div className="text-center py-20"><p className="text-muted">{t("admin.products.editor.productNotFound")}</p></div>;
   }
 
   const tabs = [
-    { key: "details", label: "Details" },
-    { key: "variants", label: `Variants (${variants.length})` },
-    { key: "images", label: "Images" },
+    { key: "details", label: t("admin.products.editor.tabDetails") },
+    { key: "variants", label: t("admin.products.editor.tabVariants", { count: variants.length }) },
+    { key: "images", label: t("admin.products.editor.tabImages") },
   ] as const;
 
   return (
@@ -184,7 +186,7 @@ export default function EditProductPage() {
             </div>
           </div>
         </div>
-        <button onClick={() => setShowDelete(true)} className="p-2 hover:bg-sale/10 rounded-md transition-colors" title="Delete product">
+        <button onClick={() => setShowDelete(true)} className="p-2 hover:bg-sale/10 rounded-md transition-colors" title={t("admin.products.editor.deleteProduct")}>
           <Trash2 size={18} className="text-muted hover:text-sale" />
         </button>
       </div>
@@ -211,51 +213,55 @@ export default function EditProductPage() {
         <form onSubmit={handleSave} className="max-w-3xl space-y-5">
           <div className="bg-white border border-border rounded-lg p-6 space-y-5">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Name</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelName")}</label>
               <input type="text" value={product.name} onChange={(e) => setProduct({ ...product, name: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Slug</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelSlug")}</label>
               <input type="text" value={product.slug} onChange={(e) => setProduct({ ...product, slug: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Subtitle</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelSubtitle")}</label>
               <input type="text" value={product.subtitle ?? ""} onChange={(e) => setProduct({ ...product, subtitle: e.target.value || null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Description</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelDescription")}</label>
               <textarea value={product.description ?? ""} onChange={(e) => setProduct({ ...product, description: e.target.value || null })} rows={4} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Category</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelCategory")}</label>
               <select value={product.category_id ?? ""} onChange={(e) => setProduct({ ...product, category_id: e.target.value || null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent">
-                <option value="">None</option>
+                <option value="">{t("admin.products.editor.categoryNone")}</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Price</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelPrice")}</label>
                 <input type="number" step="0.01" min="0.01" value={product.base_price} onChange={(e) => setProduct({ ...product, base_price: Math.max(0, parseFloat(e.target.value) || 0) })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Compare at Price</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelCompareAtPrice")}</label>
                 <input type="number" step="0.01" value={product.compare_at_price ?? ""} onChange={(e) => setProduct({ ...product, compare_at_price: e.target.value ? parseFloat(e.target.value) : null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Status</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelStatus")}</label>
               <select value={product.status} onChange={(e) => setProduct({ ...product, status: e.target.value })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent">
-                <option value="draft">Draft</option>
-                <option value="active">Active</option>
-                <option value="archived">Archived</option>
+                <option value="draft">{t("admin.products.statusDraft")}</option>
+                <option value="active">{t("admin.products.statusActive")}</option>
+                <option value="archived">{t("admin.products.statusArchived")}</option>
               </select>
             </div>
             <div className="flex flex-wrap gap-6">
-              {(["is_featured", "is_best_seller", "is_new"] as const).map((key) => (
+              {([
+                { key: "is_featured" as const, label: t("admin.products.editor.flagFeatured") },
+                { key: "is_best_seller" as const, label: t("admin.products.editor.flagBestSeller") },
+                { key: "is_new" as const, label: t("admin.products.editor.flagNew") },
+              ]).map(({ key, label }) => (
                 <label key={key} className="flex items-center gap-2 text-sm cursor-pointer">
                   <input type="checkbox" checked={product[key]} onChange={(e) => setProduct({ ...product, [key]: e.target.checked })} className="rounded border-border" />
-                  {key.replace("is_", "").replace("_", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                  {label}
                 </label>
               ))}
             </div>
@@ -263,28 +269,28 @@ export default function EditProductPage() {
 
           {/* SEO */}
           <div className="bg-white border border-border rounded-lg p-6 space-y-5">
-            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Search Engine Optimization</h3>
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t("admin.products.editor.seoTitle")}</h3>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Meta Title</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelMetaTitle")}</label>
               <input type="text" maxLength={70} value={product.meta_title ?? ""} onChange={(e) => setProduct({ ...product, meta_title: e.target.value || null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder={product.name} />
-              <p className="text-xs text-muted mt-1">{(product.meta_title ?? "").length}/70 characters — leave blank to use product name</p>
+              <p className="text-xs text-muted mt-1">{t("admin.products.editor.metaTitleHint", { count: (product.meta_title ?? "").length })}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
-              <textarea maxLength={160} value={product.meta_description ?? ""} onChange={(e) => setProduct({ ...product, meta_description: e.target.value || null })} rows={3} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-none" placeholder="Brief description for search engine results..." />
-              <p className="text-xs text-muted mt-1">{(product.meta_description ?? "").length}/160 characters</p>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelMetaDescription")}</label>
+              <textarea maxLength={160} value={product.meta_description ?? ""} onChange={(e) => setProduct({ ...product, meta_description: e.target.value || null })} rows={3} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-none" placeholder={t("admin.products.editor.metaDescriptionPlaceholder")} />
+              <p className="text-xs text-muted mt-1">{t("admin.products.editor.metaDescriptionHint", { count: (product.meta_description ?? "").length })}</p>
             </div>
             {/* Preview */}
             <div className="bg-surface/50 rounded-md p-4">
-              <p className="text-xs font-semibold text-muted uppercase mb-2">Google Preview</p>
+              <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.products.editor.googlePreview")}</p>
               <p className="text-[#1a0dab] text-base font-medium truncate">{product.meta_title || product.name}</p>
               <p className="text-[#006621] text-xs truncate">petlibro.com/products/{product.slug}</p>
-              <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{product.meta_description || product.description || "No description"}</p>
+              <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{product.meta_description || product.description || t("admin.products.editor.noDescription")}</p>
             </div>
           </div>
           <div className="flex justify-end">
             <button type="submit" disabled={saving} className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-60">
-              <Save size={16} />{saving ? "Saving..." : "Save Changes"}
+              <Save size={16} />{saving ? t("admin.products.editor.saving") : t("admin.products.editor.saveChanges")}
             </button>
           </div>
         </form>
@@ -294,20 +300,20 @@ export default function EditProductPage() {
       {activeTab === "variants" && (
         <div className="max-w-4xl">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-muted">{variants.length} variants</p>
+            <p className="text-sm text-muted">{t("admin.products.editor.variantsCount", { count: variants.length })}</p>
             <button onClick={addVariant} className="inline-flex items-center gap-2 bg-accent text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors">
-              <Plus size={14} /> Add Variant
+              <Plus size={14} /> {t("admin.products.editor.addVariant")}
             </button>
           </div>
           <div className="bg-white border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface/50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Type</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Price</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">SKU</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Stock</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.editor.variantName")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.editor.variantType")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.editor.variantPrice")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.editor.variantSku")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.products.editor.variantStock")}</th>
                   <th className="px-4 py-3 w-10"></th>
                 </tr>
               </thead>
@@ -319,17 +325,17 @@ export default function EditProductPage() {
                     </td>
                     <td className="px-4 py-2">
                       <select value={v.variant_type} onChange={(e) => updateVariant(v.id, { variant_type: e.target.value })} className="px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent">
-                        <option value="color">Color</option>
-                        <option value="size">Size</option>
-                        <option value="bundle">Bundle</option>
-                        <option value="style">Style</option>
+                        <option value="color">{t("admin.products.editor.variantTypeColor")}</option>
+                        <option value="size">{t("admin.products.editor.variantTypeSize")}</option>
+                        <option value="bundle">{t("admin.products.editor.variantTypeBundle")}</option>
+                        <option value="style">{t("admin.products.editor.variantTypeStyle")}</option>
                       </select>
                     </td>
                     <td className="px-4 py-2">
                       <input type="number" step="0.01" min="0.01" value={v.price} onChange={(e) => updateVariant(v.id, { price: Math.max(0, parseFloat(e.target.value) || 0) })} className="w-24 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
                     </td>
                     <td className="px-4 py-2">
-                      <input type="text" value={v.sku ?? ""} onChange={(e) => updateVariant(v.id, { sku: e.target.value || null })} className="w-28 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" placeholder="SKU" />
+                      <input type="text" value={v.sku ?? ""} onChange={(e) => updateVariant(v.id, { sku: e.target.value || null })} className="w-28 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" placeholder={t("admin.products.editor.skuPlaceholder")} />
                     </td>
                     <td className="px-4 py-2">
                       <input type="number" min="0" value={v.stock_quantity} onChange={(e) => updateVariant(v.id, { stock_quantity: Math.max(0, parseInt(e.target.value) || 0) })} className="w-20 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
@@ -342,7 +348,7 @@ export default function EditProductPage() {
               </tbody>
             </table>
             {variants.length === 0 && (
-              <div className="py-8 text-center text-sm text-muted">No variants yet. Add one to get started.</div>
+              <div className="py-8 text-center text-sm text-muted">{t("admin.products.editor.noVariants")}</div>
             )}
           </div>
         </div>
@@ -357,9 +363,9 @@ export default function EditProductPage() {
 
       <ConfirmDialog
         isOpen={showDelete}
-        title="Delete Product"
-        message="This will permanently delete this product and all its variants and images."
-        confirmLabel="Delete"
+        title={t("admin.products.editor.deleteConfirmTitle")}
+        message={t("admin.products.editor.deleteConfirmMessage")}
+        confirmLabel={t("admin.products.deleteConfirmLabel")}
         variant="danger"
         onConfirm={handleDeleteProduct}
         onCancel={() => setShowDelete(false)}

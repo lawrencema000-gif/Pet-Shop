@@ -7,6 +7,7 @@ import {
   History, Settings2, RefreshCw, Download,
   Plus, Minus, Save,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { exportCsv } from "@/lib/csv-export";
@@ -39,6 +40,7 @@ interface StockMovement {
 type Tab = "overview" | "history" | "settings";
 
 export default function InventoryPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [variants, setVariants] = useState<VariantStock[]>([]);
   const [movements, setMovements] = useState<StockMovement[]>([]);
@@ -199,9 +201,9 @@ export default function InventoryPage() {
   }
 
   function stockLabel(qty: number, threshold: number) {
-    if (qty === 0) return "Out of stock";
-    if (qty <= threshold) return "Low stock";
-    return "In stock";
+    if (qty === 0) return t("admin.inventory.stockOutOfStock");
+    if (qty <= threshold) return t("admin.inventory.stockLowStock");
+    return t("admin.inventory.stockInStock");
   }
 
   const movementColor: Record<string, string> = {
@@ -213,24 +215,24 @@ export default function InventoryPage() {
   };
 
   const tabs = [
-    { key: "overview" as const, label: "Stock Overview", icon: Package },
-    { key: "history" as const, label: "Movement History", icon: History },
-    { key: "settings" as const, label: "Settings", icon: Settings2 },
+    { key: "overview" as const, label: t("admin.inventory.tabOverview"), icon: Package },
+    { key: "history" as const, label: t("admin.inventory.tabHistory"), icon: History },
+    { key: "settings" as const, label: t("admin.inventory.tabSettings"), icon: Settings2 },
   ];
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Inventory</h1>
-          <p className="text-sm text-muted mt-1">Manage stock levels and track movements</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.inventory.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.inventory.subtitle")}</p>
         </div>
         <div className="flex gap-2">
           <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
-            <Download size={14} /> Export CSV
+            <Download size={14} /> {t("admin.inventory.exportCsv")}
           </button>
           <button onClick={() => { setLoading(true); loadVariants(); }} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
-            <RefreshCw size={14} /> Refresh
+            <RefreshCw size={14} /> {t("admin.inventory.refresh")}
           </button>
         </div>
       </div>
@@ -238,19 +240,19 @@ export default function InventoryPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <button onClick={() => setFilter("all")} className={`bg-white border rounded-lg p-4 text-left transition-colors ${filter === "all" ? "border-accent" : "border-border"}`}>
-          <p className="text-xs text-muted font-semibold uppercase">Total Variants</p>
+          <p className="text-xs text-muted font-semibold uppercase">{t("admin.inventory.totalVariants")}</p>
           <p className="text-2xl font-bold text-foreground mt-1">{totalVariants}</p>
         </button>
         <button onClick={() => setFilter("all")} className={`bg-white border rounded-lg p-4 text-left transition-colors ${filter === "all" && !search ? "border-accent" : "border-border"}`}>
-          <p className="text-xs text-success font-semibold uppercase">In Stock</p>
+          <p className="text-xs text-success font-semibold uppercase">{t("admin.inventory.inStock")}</p>
           <p className="text-2xl font-bold text-success mt-1">{healthy}</p>
         </button>
         <button onClick={() => setFilter("low")} className={`bg-white border rounded-lg p-4 text-left transition-colors ${filter === "low" ? "border-amber-400" : "border-border"}`}>
-          <p className="text-xs text-amber-600 font-semibold uppercase">Low Stock</p>
+          <p className="text-xs text-amber-600 font-semibold uppercase">{t("admin.inventory.lowStock")}</p>
           <p className="text-2xl font-bold text-amber-600 mt-1">{lowStock}</p>
         </button>
         <button onClick={() => setFilter("out")} className={`bg-white border rounded-lg p-4 text-left transition-colors ${filter === "out" ? "border-sale" : "border-border"}`}>
-          <p className="text-xs text-sale font-semibold uppercase">Out of Stock</p>
+          <p className="text-xs text-sale font-semibold uppercase">{t("admin.inventory.outOfStock")}</p>
           <p className="text-2xl font-bold text-sale mt-1">{outOfStock}</p>
         </button>
       </div>
@@ -282,7 +284,7 @@ export default function InventoryPage() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search products, variants, SKUs..."
+                placeholder={t("admin.inventory.searchPlaceholder")}
                 className="w-full pl-10 pr-4 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
               />
             </div>
@@ -292,14 +294,14 @@ export default function InventoryPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface/50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Product</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Variant</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">SKU</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnProduct")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnVariant")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnSku")}</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">
-                    <span className="inline-flex items-center gap-1"><ArrowUpDown size={11} /> Stock</span>
+                    <span className="inline-flex items-center gap-1"><ArrowUpDown size={11} /> {t("admin.inventory.columnStock")}</span>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Threshold</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Status</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnThreshold")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnStatus")}</th>
                   <th className="px-4 py-3 w-24"></th>
                 </tr>
               </thead>
@@ -319,7 +321,7 @@ export default function InventoryPage() {
                 ) : filtered.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-4 py-12 text-center text-sm text-muted">
-                      {search || filter !== "all" ? "No variants match your filters." : "No product variants found."}
+                      {search || filter !== "all" ? t("admin.inventory.noMatchingVariants") : t("admin.inventory.noVariantsFound")}
                     </td>
                   </tr>
                 ) : (
@@ -366,14 +368,14 @@ export default function InventoryPage() {
                               onClick={() => adjustStock(v.id)}
                               disabled={saving}
                               className="p-1.5 bg-accent text-white rounded hover:bg-accent-dark disabled:opacity-60"
-                              title="Save"
+                              title={t("admin.inventory.saveAction")}
                             >
                               <Save size={12} />
                             </button>
                             <button
                               onClick={() => setEditingId(null)}
                               className="p-1.5 border border-border rounded hover:bg-surface"
-                              title="Cancel"
+                              title={t("admin.inventory.cancelAction")}
                             >
                               <span className="text-xs">✕</span>
                             </button>
@@ -383,7 +385,7 @@ export default function InventoryPage() {
                             onClick={() => startEdit(v)}
                             className="text-xs text-accent hover:underline font-medium"
                           >
-                            Adjust
+                            {t("admin.inventory.adjustAction")}
                           </button>
                         )}
                       </td>
@@ -397,12 +399,12 @@ export default function InventoryPage() {
           {/* Inline reason input when editing */}
           {editingId && (
             <div className="mt-3 flex items-center gap-3 bg-surface/50 rounded-lg p-3">
-              <span className="text-xs text-muted whitespace-nowrap">Reason (optional):</span>
+              <span className="text-xs text-muted whitespace-nowrap">{t("admin.inventory.reasonLabel")}</span>
               <input
                 type="text"
                 value={editReason}
                 onChange={(e) => setEditReason(e.target.value)}
-                placeholder="e.g. Restocked from supplier, damaged goods, inventory count..."
+                placeholder={t("admin.inventory.reasonPlaceholder")}
                 className="flex-1 px-3 py-1.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
               />
             </div>
@@ -417,19 +419,19 @@ export default function InventoryPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-surface/50">
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Date</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Type</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Change</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">After</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Reference</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Notes</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnDate")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnType")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnChange")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnAfter")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnReference")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.inventory.columnNotes")}</th>
                 </tr>
               </thead>
               <tbody>
                 {movements.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted">
-                      No stock movements recorded yet.
+                      {t("admin.inventory.noMovements")}
                     </td>
                   </tr>
                 ) : (
@@ -471,10 +473,9 @@ export default function InventoryPage() {
         <div className="max-w-lg">
           <div className="bg-white border border-border rounded-lg p-6 space-y-5">
             <div>
-              <h3 className="text-sm font-semibold text-foreground mb-1">Default Low Stock Threshold</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-1">{t("admin.inventory.defaultThresholdTitle")}</h3>
               <p className="text-xs text-muted mb-3">
-                Products with stock at or below this number will show &quot;Low Stock&quot; warnings.
-                This updates all variants currently at the default threshold (10).
+                {t("admin.inventory.defaultThresholdDescription")}
               </p>
               <div className="flex gap-3 items-center">
                 <input
@@ -489,20 +490,19 @@ export default function InventoryPage() {
                   disabled={savingSettings}
                   className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-accent-dark disabled:opacity-60"
                 >
-                  <Save size={14} /> {savingSettings ? "Saving..." : "Apply to All"}
+                  <Save size={14} /> {savingSettings ? t("admin.inventory.savingSettings") : t("admin.inventory.applyToAll")}
                 </button>
               </div>
             </div>
 
             <div className="pt-4 border-t border-border">
-              <h3 className="text-sm font-semibold text-foreground mb-1">Auto-Hide Out of Stock</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-1">{t("admin.inventory.autoHideTitle")}</h3>
               <p className="text-xs text-muted">
-                When all variants of a product reach 0 stock, the product is automatically archived
-                (hidden from the storefront). When stock is added back, it&apos;s automatically reactivated.
+                {t("admin.inventory.autoHideDescription")}
               </p>
               <div className="mt-3 flex items-center gap-2 bg-success/10 text-success rounded-lg px-3 py-2">
                 <AlertTriangle size={14} />
-                <span className="text-xs font-medium">This feature is always active via database trigger.</span>
+                <span className="text-xs font-medium">{t("admin.inventory.autoHideActive")}</span>
               </div>
             </div>
           </div>

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import type { Order, OrderItem } from "@/types/order";
 
 const STATUS_VARIANT: Record<string, "default" | "sale" | "new" | "popular"> = {
@@ -26,21 +27,22 @@ const STATUS_VARIANT: Record<string, "default" | "sale" | "new" | "popular"> = {
   cancelled: "sale",
 };
 
-const TIMELINE_STEPS = [
-  { key: "pending", label: "Pending", icon: Clock },
-  { key: "confirmed", label: "Processing", icon: Package },
-  { key: "shipped", label: "Shipped", icon: Truck },
-  { key: "delivered", label: "Delivered", icon: CheckCircle2 },
-];
-
 const STATUS_ORDER = ["pending", "confirmed", "shipped", "delivered"];
 
 export default function OrderDetailPage() {
+  const { t } = useTranslation();
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [order, setOrder] = useState<Order | null>(null);
   const [items, setItems] = useState<OrderItem[]>([]);
+
+  const TIMELINE_STEPS = [
+    { key: "pending", label: t('orderDetail.pending'), icon: Clock },
+    { key: "confirmed", label: t('orderDetail.processing'), icon: Package },
+    { key: "shipped", label: t('orderDetail.shipped'), icon: Truck },
+    { key: "delivered", label: t('orderDetail.delivered'), icon: CheckCircle2 },
+  ];
 
   useEffect(() => {
     const init = async () => {
@@ -99,7 +101,7 @@ export default function OrderDetailPage() {
         className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground transition-colors mb-6"
       >
         <ArrowLeft size={16} />
-        Back to Orders
+        {t('orderDetail.backToOrders')}
       </Link>
 
       {/* Order Header */}
@@ -113,12 +115,13 @@ export default function OrderDetailPage() {
           </Badge>
         </div>
         <p className="text-sm text-muted">
-          Placed on{" "}
-          {new Date(order.created_at).toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric",
+          {t('orderDetail.placedOn', {
+            date: new Date(order.created_at).toLocaleDateString("en-US", {
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })
           })}
         </p>
       </div>
@@ -126,7 +129,7 @@ export default function OrderDetailPage() {
       {/* Status Timeline */}
       {!isCancelled && (
         <div className="bg-background rounded-md border border-border p-6 mb-6">
-          <h2 className="text-lg font-semibold text-foreground mb-6">Order Status</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-6">{t('orderDetail.orderStatus')}</h2>
           <div className="flex items-center justify-between relative">
             {/* Progress line */}
             <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" />
@@ -168,13 +171,13 @@ export default function OrderDetailPage() {
 
       {isCancelled && (
         <div className="bg-sale/5 border border-sale/20 rounded-xl p-6 mb-6 text-center">
-          <p className="text-sale font-medium">This order has been cancelled.</p>
+          <p className="text-sale font-medium">{t('orderDetail.cancelledMessage')}</p>
         </div>
       )}
 
       {/* Order Items */}
       <div className="bg-background rounded-md border border-border p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Items</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">{t('orderDetail.items')}</h2>
         <div className="divide-y divide-border">
           {items.map((item) => (
             <div key={item.id} className="flex items-center gap-4 py-4 first:pt-0 last:pb-0">
@@ -188,7 +191,7 @@ export default function OrderDetailPage() {
                 {item.variant_name && (
                   <p className="text-xs text-muted mt-0.5">{item.variant_name}</p>
                 )}
-                <p className="text-xs text-muted mt-0.5">Qty: {item.quantity}</p>
+                <p className="text-xs text-muted mt-0.5">{t('orderDetail.qty', { count: item.quantity })}</p>
               </div>
               <p className="font-semibold text-foreground text-sm shrink-0">
                 {formatPrice(item.total_price)}
@@ -200,32 +203,32 @@ export default function OrderDetailPage() {
 
       {/* Totals */}
       <div className="bg-background rounded-md border border-border p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Order Summary</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">{t('orderDetail.orderSummary')}</h2>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted">Subtotal</span>
+            <span className="text-muted">{t('orderDetail.subtotal')}</span>
             <span className="text-foreground">{formatPrice(order.subtotal)}</span>
           </div>
           {order.discount_amount > 0 && (
             <div className="flex justify-between">
               <span className="text-muted">
-                Discount{order.coupon_code && ` (${order.coupon_code})`}
+                {t('orderDetail.discount')}{order.coupon_code && ` (${order.coupon_code})`}
               </span>
               <span className="text-success">-{formatPrice(order.discount_amount)}</span>
             </div>
           )}
           <div className="flex justify-between">
-            <span className="text-muted">Shipping</span>
+            <span className="text-muted">{t('orderDetail.shipping')}</span>
             <span className="text-foreground">
-              {order.shipping_amount === 0 ? "Free" : formatPrice(order.shipping_amount)}
+              {order.shipping_amount === 0 ? t('orderDetail.free') : formatPrice(order.shipping_amount)}
             </span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted">Tax</span>
+            <span className="text-muted">{t('orderDetail.tax')}</span>
             <span className="text-foreground">{formatPrice(order.tax_amount)}</span>
           </div>
           <div className="border-t border-border pt-2 mt-2 flex justify-between">
-            <span className="font-semibold text-foreground">Total</span>
+            <span className="font-semibold text-foreground">{t('orderDetail.total')}</span>
             <span className="font-bold text-foreground text-base">{formatPrice(order.total)}</span>
           </div>
         </div>
@@ -234,7 +237,7 @@ export default function OrderDetailPage() {
       {/* Shipping Address */}
       {order.shipping_address && (
         <div className="bg-background rounded-md border border-border p-6 mb-6">
-          <h2 className="text-lg font-semibold text-foreground mb-3">Shipping Address</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-3">{t('orderDetail.shippingAddress')}</h2>
           <p className="text-sm text-muted leading-relaxed">
             {order.shipping_address.line1}
             {order.shipping_address.line2 && <>, {order.shipping_address.line2}</>}
@@ -250,13 +253,13 @@ export default function OrderDetailPage() {
       {/* Need Help */}
       <div className="bg-surface-light rounded-xl p-6 text-center">
         <HelpCircle size={28} className="text-muted mx-auto mb-2" />
-        <h3 className="font-semibold text-foreground mb-1">Need Help?</h3>
+        <h3 className="font-semibold text-foreground mb-1">{t('orderDetail.needHelp')}</h3>
         <p className="text-sm text-muted mb-4">
-          Having an issue with this order? We&apos;re here to help.
+          {t('orderDetail.needHelpDesc')}
         </p>
         <Link href="/support">
           <Button variant="outline" size="sm">
-            Contact Support
+            {t('orderDetail.contactSupport')}
           </Button>
         </Link>
       </div>

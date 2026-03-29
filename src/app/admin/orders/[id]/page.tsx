@@ -7,6 +7,7 @@ import {
   ArrowLeft, Truck, Check, X as XIcon, Package, Printer,
   MessageSquarePlus, Send, Copy, ExternalLink, DollarSign, Mail,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatPrice } from "@/lib/utils";
@@ -61,6 +62,7 @@ const CARRIERS = [
 ];
 
 export default function OrderDetailPage() {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [items, setItems] = useState<OrderItemDetail[]>([]);
@@ -195,14 +197,14 @@ export default function OrderDetailPage() {
       });
       const result = await res.json();
       if (res.ok) {
-        setEmailSent(emailType === "order_confirmation" ? "Confirmation email sent!" : "Shipped email sent!");
+        setEmailSent(emailType === "order_confirmation" ? t("admin.orders.detail.confirmationEmailSent") : t("admin.orders.detail.shippedEmailSent"));
         setTimeout(() => setEmailSent(null), 4000);
       } else {
-        setEmailSent(`Failed: ${result.error}`);
+        setEmailSent(t("admin.orders.detail.emailFailed", { error: result.error }));
         setTimeout(() => setEmailSent(null), 5000);
       }
     } catch {
-      setEmailSent("Failed to send email");
+      setEmailSent(t("admin.orders.detail.emailSendFailed"));
       setTimeout(() => setEmailSent(null), 5000);
     }
     setSendingEmail(false);
@@ -223,7 +225,7 @@ export default function OrderDetailPage() {
   }
 
   if (!order) {
-    return <div className="text-center py-20"><p className="text-muted">Order not found</p></div>;
+    return <div className="text-center py-20"><p className="text-muted">{t("admin.orders.detail.orderNotFound")}</p></div>;
   }
 
   const addr = order.shipping_address;
@@ -248,7 +250,7 @@ export default function OrderDetailPage() {
           </Link>
           <div className="flex-1">
             <h1 className="text-2xl font-display font-bold text-foreground">
-              Order #{id.slice(0, 8)}
+              {t("admin.orders.detail.orderTitle", { id: id.slice(0, 8) })}
             </h1>
             <div className="flex items-center gap-3 mt-1">
               <StatusBadge status={order.status} />
@@ -265,7 +267,7 @@ export default function OrderDetailPage() {
               onClick={printInvoice}
               className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors"
             >
-              <Printer size={14} /> Invoice
+              <Printer size={14} /> {t("admin.orders.detail.invoice")}
             </button>
             {nextStatus && (
               <button
@@ -276,7 +278,7 @@ export default function OrderDetailPage() {
                 {nextStatus === "confirmed" && <Check size={14} />}
                 {nextStatus === "shipped" && <Truck size={14} />}
                 {nextStatus === "delivered" && <Check size={14} />}
-                Mark as {nextStatus.charAt(0).toUpperCase() + nextStatus.slice(1)}
+                {t("admin.orders.detail.markAs", { status: nextStatus.charAt(0).toUpperCase() + nextStatus.slice(1) })}
               </button>
             )}
             {order.status !== "cancelled" && (
@@ -285,7 +287,7 @@ export default function OrderDetailPage() {
                 disabled={updating}
                 className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-sale border border-sale/30 rounded-md hover:bg-sale/5 transition-colors disabled:opacity-60"
               >
-                <XIcon size={14} /> Cancel
+                <XIcon size={14} /> {t("admin.orders.detail.cancel")}
               </button>
             )}
           </div>
@@ -297,7 +299,7 @@ export default function OrderDetailPage() {
             {/* Order Items */}
             <div className="bg-white border border-border rounded-lg">
               <div className="px-5 py-4 border-b border-border">
-                <h2 className="text-sm font-semibold text-foreground">Items ({items.length})</h2>
+                <h2 className="text-sm font-semibold text-foreground">{t("admin.orders.detail.items", { count: items.length })}</h2>
               </div>
               <div className="divide-y divide-border/50">
                 {items.map((item) => (
@@ -314,11 +316,11 @@ export default function OrderDetailPage() {
                 ))}
               </div>
               <div className="border-t border-border px-5 py-4 space-y-1.5">
-                <div className="flex justify-between text-sm"><span className="text-muted">Subtotal</span><span>{formatPrice(order.subtotal)}</span></div>
-                {order.discount_amount > 0 && <div className="flex justify-between text-sm"><span className="text-muted">Discount{order.coupon_code && ` (${order.coupon_code})`}</span><span className="text-success">-{formatPrice(order.discount_amount)}</span></div>}
-                <div className="flex justify-between text-sm"><span className="text-muted">Shipping</span><span>{order.shipping_amount === 0 ? "Free" : formatPrice(order.shipping_amount)}</span></div>
-                <div className="flex justify-between text-sm"><span className="text-muted">Tax</span><span>{formatPrice(order.tax_amount)}</span></div>
-                <div className="flex justify-between text-sm font-bold pt-2 border-t border-border"><span>Total</span><span>{formatPrice(order.total)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted">{t("admin.orders.detail.subtotal")}</span><span>{formatPrice(order.subtotal)}</span></div>
+                {order.discount_amount > 0 && <div className="flex justify-between text-sm"><span className="text-muted">{t("admin.orders.detail.discount")}{order.coupon_code && ` (${order.coupon_code})`}</span><span className="text-success">-{formatPrice(order.discount_amount)}</span></div>}
+                <div className="flex justify-between text-sm"><span className="text-muted">{t("admin.orders.detail.shipping")}</span><span>{order.shipping_amount === 0 ? t("admin.orders.detail.free") : formatPrice(order.shipping_amount)}</span></div>
+                <div className="flex justify-between text-sm"><span className="text-muted">{t("admin.orders.detail.tax")}</span><span>{formatPrice(order.tax_amount)}</span></div>
+                <div className="flex justify-between text-sm font-bold pt-2 border-t border-border"><span>{t("admin.orders.detail.total")}</span><span>{formatPrice(order.total)}</span></div>
               </div>
             </div>
 
@@ -326,13 +328,13 @@ export default function OrderDetailPage() {
             <div className="bg-white border border-border rounded-lg">
               <div className="px-5 py-4 border-b border-border flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <Package size={15} /> Shipment Tracking
+                  <Package size={15} /> {t("admin.orders.detail.shipmentTracking")}
                 </h2>
                 <button
                   onClick={() => setShowTracking(!showTracking)}
                   className="text-xs text-accent hover:underline font-medium"
                 >
-                  {order.tracking_number ? "Edit" : "Add Tracking"}
+                  {order.tracking_number ? t("admin.orders.detail.edit") : t("admin.orders.detail.addTracking")}
                 </button>
               </div>
 
@@ -340,11 +342,11 @@ export default function OrderDetailPage() {
                 <div className="px-5 py-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-muted uppercase font-semibold">Carrier</p>
+                      <p className="text-xs text-muted uppercase font-semibold">{t("admin.orders.detail.carrier")}</p>
                       <p className="text-sm text-foreground">{carrierLabel ?? "—"}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-muted uppercase font-semibold">Tracking Number</p>
+                      <p className="text-xs text-muted uppercase font-semibold">{t("admin.orders.detail.trackingNumber")}</p>
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-mono text-foreground">{order.tracking_number}</p>
                         <button onClick={copyTracking} className="p-1 hover:bg-surface rounded" title="Copy">
@@ -359,16 +361,16 @@ export default function OrderDetailPage() {
                     </div>
                   </div>
                   {order.shipped_at && (
-                    <p className="text-xs text-muted">Shipped: {new Date(order.shipped_at).toLocaleString()}</p>
+                    <p className="text-xs text-muted">{t("admin.orders.detail.shippedAt", { date: new Date(order.shipped_at).toLocaleString() })}</p>
                   )}
                   {order.delivered_at && (
-                    <p className="text-xs text-muted">Delivered: {new Date(order.delivered_at).toLocaleString()}</p>
+                    <p className="text-xs text-muted">{t("admin.orders.detail.deliveredAt", { date: new Date(order.delivered_at).toLocaleString() })}</p>
                   )}
                 </div>
               ) : showTracking ? (
                 <div className="px-5 py-4 space-y-3">
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Carrier</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">{t("admin.orders.detail.carrier")}</label>
                     <select
                       value={trackCarrier}
                       onChange={(e) => {
@@ -377,23 +379,23 @@ export default function OrderDetailPage() {
                       }}
                       className="w-full px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
                     >
-                      <option value="">Select carrier...</option>
+                      <option value="">{t("admin.orders.detail.selectCarrier")}</option>
                       {CARRIERS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-foreground mb-1">Tracking Number</label>
+                    <label className="block text-xs font-medium text-foreground mb-1">{t("admin.orders.detail.trackingNumber")}</label>
                     <input
                       type="text"
                       value={trackNumber}
                       onChange={(e) => setTrackNumber(e.target.value)}
-                      placeholder="e.g. 1Z999AA10123456784"
+                      placeholder={t("admin.orders.detail.trackingNumberPlaceholder")}
                       className="w-full px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent font-mono"
                     />
                   </div>
                   {trackCarrier === "other" && (
                     <div>
-                      <label className="block text-xs font-medium text-foreground mb-1">Tracking URL (optional)</label>
+                      <label className="block text-xs font-medium text-foreground mb-1">{t("admin.orders.detail.trackingUrlOptional")}</label>
                       <input
                         type="url"
                         value={trackUrl}
@@ -405,20 +407,20 @@ export default function OrderDetailPage() {
                   )}
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => setShowTracking(false)} className="px-3 py-2 text-sm border border-border rounded-md hover:bg-surface">
-                      Cancel
+                      {t("admin.orders.detail.cancelButton")}
                     </button>
                     <button
                       onClick={saveTracking}
                       disabled={savingTracking}
                       className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-accent-dark disabled:opacity-60"
                     >
-                      {savingTracking ? "Saving..." : "Save Tracking"}
+                      {savingTracking ? t("admin.orders.detail.savingTracking") : t("admin.orders.detail.saveTracking")}
                     </button>
                   </div>
                 </div>
               ) : (
                 <div className="px-5 py-6 text-center text-sm text-muted">
-                  No tracking information yet.
+                  {t("admin.orders.detail.noTrackingYet")}
                 </div>
               )}
             </div>
@@ -427,7 +429,7 @@ export default function OrderDetailPage() {
             <div className="bg-white border border-border rounded-lg">
               <div className="px-5 py-4 border-b border-border">
                 <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                  <MessageSquarePlus size={15} /> Admin Notes
+                  <MessageSquarePlus size={15} /> {t("admin.orders.detail.adminNotes")}
                 </h2>
               </div>
               <div className="px-5 py-4">
@@ -436,7 +438,7 @@ export default function OrderDetailPage() {
                     ref={noteInputRef}
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
-                    placeholder="Add an internal note..."
+                    placeholder={t("admin.orders.detail.addNotePlaceholder")}
                     rows={2}
                     className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-none"
                     onKeyDown={(e) => {
@@ -447,7 +449,7 @@ export default function OrderDetailPage() {
                     onClick={addNote}
                     disabled={addingNote || !newNote.trim()}
                     className="self-end p-2.5 bg-accent text-white rounded-md hover:bg-accent-dark disabled:opacity-40 transition-colors"
-                    title="Add note (Ctrl+Enter)"
+                    title={t("admin.orders.detail.addNoteTitle")}
                   >
                     <Send size={14} />
                   </button>
@@ -465,7 +467,7 @@ export default function OrderDetailPage() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-sm text-muted text-center py-2">No notes yet.</p>
+                  <p className="text-sm text-muted text-center py-2">{t("admin.orders.detail.noNotesYet")}</p>
                 )}
               </div>
             </div>
@@ -476,17 +478,17 @@ export default function OrderDetailPage() {
             {/* Payment */}
             <div className="bg-white border border-border rounded-lg p-5">
               <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                <DollarSign size={14} /> Payment
+                <DollarSign size={14} /> {t("admin.orders.detail.payment")}
               </h3>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted">Status</span>
+                  <span className="text-sm text-muted">{t("admin.orders.detail.status")}</span>
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${paymentBadgeColor[order.payment_status] ?? paymentBadgeColor.unpaid}`}>
                     {order.payment_status.replace("_", " ").toUpperCase()}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted">Total</span>
+                  <span className="text-sm text-muted">{t("admin.orders.detail.total")}</span>
                   <span className="text-sm font-bold text-foreground">{formatPrice(order.total)}</span>
                 </div>
               </div>
@@ -497,7 +499,7 @@ export default function OrderDetailPage() {
                     disabled={updating}
                     className="flex-1 text-xs font-medium px-2 py-1.5 rounded bg-success/10 text-success hover:bg-success/20 disabled:opacity-60"
                   >
-                    Mark Paid
+                    {t("admin.orders.detail.markPaid")}
                   </button>
                 )}
                 {order.payment_status === "paid" && (
@@ -506,7 +508,7 @@ export default function OrderDetailPage() {
                     disabled={updating}
                     className="flex-1 text-xs font-medium px-2 py-1.5 rounded bg-sale/10 text-sale hover:bg-sale/20 disabled:opacity-60"
                   >
-                    Mark Refunded
+                    {t("admin.orders.detail.markRefunded")}
                   </button>
                 )}
               </div>
@@ -514,14 +516,14 @@ export default function OrderDetailPage() {
 
             {/* Customer */}
             <div className="bg-white border border-border rounded-lg p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-3">Customer</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-3">{t("admin.orders.detail.customer")}</h3>
               <p className="text-sm text-foreground">{order.email}</p>
             </div>
 
             {/* Email Notifications */}
             <div className="bg-white border border-border rounded-lg p-5">
               <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
-                <Mail size={14} /> Send Email
+                <Mail size={14} /> {t("admin.orders.detail.sendEmail")}
               </h3>
               {emailSent && (
                 <p className={`text-xs mb-2 ${emailSent.startsWith("Failed") ? "text-sale" : "text-success"}`}>
@@ -534,7 +536,7 @@ export default function OrderDetailPage() {
                   disabled={sendingEmail}
                   className="w-full text-left px-3 py-2 text-xs font-medium border border-border rounded-md hover:bg-surface transition-colors disabled:opacity-60"
                 >
-                  {sendingEmail ? "Sending..." : "Send Order Confirmation"}
+                  {sendingEmail ? t("admin.orders.detail.sending") : t("admin.orders.detail.sendOrderConfirmation")}
                 </button>
                 {(order.status === "shipped" || order.status === "delivered") && (
                   <button
@@ -542,7 +544,7 @@ export default function OrderDetailPage() {
                     disabled={sendingEmail}
                     className="w-full text-left px-3 py-2 text-xs font-medium border border-border rounded-md hover:bg-surface transition-colors disabled:opacity-60"
                   >
-                    {sendingEmail ? "Sending..." : "Send Shipped Notification"}
+                    {sendingEmail ? t("admin.orders.detail.sending") : t("admin.orders.detail.sendShippedNotification")}
                   </button>
                 )}
               </div>
@@ -551,7 +553,7 @@ export default function OrderDetailPage() {
             {/* Shipping Address */}
             {addr && (
               <div className="bg-white border border-border rounded-lg p-5">
-                <h3 className="text-sm font-semibold text-foreground mb-3">Shipping Address</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-3">{t("admin.orders.detail.shippingAddress")}</h3>
                 <div className="text-sm text-muted space-y-0.5">
                   <p>{addr.line1}</p>
                   {addr.line2 && <p>{addr.line2}</p>}
@@ -564,14 +566,14 @@ export default function OrderDetailPage() {
             {/* Customer Notes */}
             {order.notes && (
               <div className="bg-white border border-border rounded-lg p-5">
-                <h3 className="text-sm font-semibold text-foreground mb-3">Customer Notes</h3>
+                <h3 className="text-sm font-semibold text-foreground mb-3">{t("admin.orders.detail.customerNotes")}</h3>
                 <p className="text-sm text-muted">{order.notes}</p>
               </div>
             )}
 
             {/* Status Timeline */}
             <div className="bg-white border border-border rounded-lg p-5">
-              <h3 className="text-sm font-semibold text-foreground mb-3">Status</h3>
+              <h3 className="text-sm font-semibold text-foreground mb-3">{t("admin.orders.detail.statusTimeline")}</h3>
               <div className="space-y-3">
                 {STATUS_FLOW.map((s, i) => {
                   const reached = currentIdx >= i;
@@ -589,7 +591,7 @@ export default function OrderDetailPage() {
                 {order.status === "cancelled" && (
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-sale text-white flex items-center justify-center"><XIcon size={12} /></div>
-                    <span className="text-sm text-sale font-medium">Cancelled</span>
+                    <span className="text-sm text-sale font-medium">{t("admin.orders.cancelled")}</span>
                   </div>
                 )}
               </div>
@@ -600,7 +602,7 @@ export default function OrderDetailPage() {
 
       {/* Print-only Invoice */}
       <div className="hidden print:block">
-        <InvoicePrint order={order} items={items} />
+        <InvoicePrint order={order} items={items} t={t} />
       </div>
     </>
   );
@@ -610,9 +612,11 @@ export default function OrderDetailPage() {
 function InvoicePrint({
   order,
   items,
+  t,
 }: {
   order: OrderDetail;
   items: OrderItemDetail[];
+  t: (key: string, options?: Record<string, unknown>) => string;
 }) {
   const addr = order.shipping_address;
   return (
@@ -624,7 +628,7 @@ function InvoicePrint({
           <p className="text-gray-500 text-xs mt-1">Smart Pet Care</p>
         </div>
         <div className="text-right">
-          <h2 className="text-lg font-bold text-gray-800">INVOICE</h2>
+          <h2 className="text-lg font-bold text-gray-800">{t("admin.orders.detail.invoiceTitle")}</h2>
           <p className="text-gray-500 text-xs">#{order.id.slice(0, 8).toUpperCase()}</p>
           <p className="text-gray-500 text-xs">{new Date(order.created_at).toLocaleDateString()}</p>
         </div>
@@ -633,12 +637,12 @@ function InvoicePrint({
       {/* Bill To / Ship To */}
       <div className="grid grid-cols-2 gap-8 mb-8">
         <div>
-          <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Bill To</p>
+          <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t("admin.orders.detail.billTo")}</p>
           <p className="font-medium">{order.email}</p>
         </div>
         {addr && (
           <div>
-            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Ship To</p>
+            <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">{t("admin.orders.detail.shipTo")}</p>
             <p>{addr.line1}</p>
             {addr.line2 && <p>{addr.line2}</p>}
             <p>{addr.city}, {addr.state} {addr.zip}</p>
@@ -651,10 +655,10 @@ function InvoicePrint({
       <table className="w-full mb-6">
         <thead>
           <tr className="border-b-2 border-gray-200">
-            <th className="text-left py-2 text-[10px] font-bold text-gray-400 uppercase">Item</th>
-            <th className="text-center py-2 text-[10px] font-bold text-gray-400 uppercase w-16">Qty</th>
-            <th className="text-right py-2 text-[10px] font-bold text-gray-400 uppercase w-24">Price</th>
-            <th className="text-right py-2 text-[10px] font-bold text-gray-400 uppercase w-24">Total</th>
+            <th className="text-left py-2 text-[10px] font-bold text-gray-400 uppercase">{t("admin.orders.detail.invoiceItem")}</th>
+            <th className="text-center py-2 text-[10px] font-bold text-gray-400 uppercase w-16">{t("admin.orders.detail.invoiceQty")}</th>
+            <th className="text-right py-2 text-[10px] font-bold text-gray-400 uppercase w-24">{t("admin.orders.detail.invoicePrice")}</th>
+            <th className="text-right py-2 text-[10px] font-bold text-gray-400 uppercase w-24">{t("admin.orders.detail.invoiceTotal")}</th>
           </tr>
         </thead>
         <tbody>
@@ -675,14 +679,14 @@ function InvoicePrint({
       {/* Totals */}
       <div className="flex justify-end">
         <div className="w-64 space-y-1">
-          <div className="flex justify-between"><span className="text-gray-500">Subtotal</span><span>{formatPrice(order.subtotal)}</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">{t("admin.orders.detail.subtotal")}</span><span>{formatPrice(order.subtotal)}</span></div>
           {order.discount_amount > 0 && (
-            <div className="flex justify-between"><span className="text-gray-500">Discount</span><span>-{formatPrice(order.discount_amount)}</span></div>
+            <div className="flex justify-between"><span className="text-gray-500">{t("admin.orders.detail.discount")}</span><span>-{formatPrice(order.discount_amount)}</span></div>
           )}
-          <div className="flex justify-between"><span className="text-gray-500">Shipping</span><span>{order.shipping_amount === 0 ? "Free" : formatPrice(order.shipping_amount)}</span></div>
-          <div className="flex justify-between"><span className="text-gray-500">Tax</span><span>{formatPrice(order.tax_amount)}</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">{t("admin.orders.detail.shipping")}</span><span>{order.shipping_amount === 0 ? t("admin.orders.detail.free") : formatPrice(order.shipping_amount)}</span></div>
+          <div className="flex justify-between"><span className="text-gray-500">{t("admin.orders.detail.tax")}</span><span>{formatPrice(order.tax_amount)}</span></div>
           <div className="flex justify-between font-bold text-base pt-2 border-t-2 border-gray-200">
-            <span>Total</span><span>{formatPrice(order.total)}</span>
+            <span>{t("admin.orders.detail.total")}</span><span>{formatPrice(order.total)}</span>
           </div>
         </div>
       </div>
@@ -691,15 +695,15 @@ function InvoicePrint({
       {order.tracking_number && (
         <div className="mt-8 pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-500">
-            Tracking: {order.tracking_number} ({order.carrier?.toUpperCase()})
+            {t("admin.orders.detail.invoiceTracking", { number: order.tracking_number, carrier: order.carrier?.toUpperCase() ?? "" })}
           </p>
         </div>
       )}
 
       {/* Footer */}
       <div className="mt-12 pt-4 border-t border-gray-200 text-center text-xs text-gray-400">
-        <p>Thank you for shopping with PETLIBRO!</p>
-        <p className="mt-1">Questions? Contact support@petlibro.com</p>
+        <p>{t("admin.orders.detail.invoiceThankYou")}</p>
+        <p className="mt-1">{t("admin.orders.detail.invoiceContact")}</p>
       </div>
     </div>
   );

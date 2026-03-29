@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Minus, Plus, ShoppingCart, Check, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import { MAX_ITEM_QUANTITY } from "@/lib/constants";
@@ -17,6 +18,7 @@ export default function AddToCartButton({
   product,
   selectedVariant,
 }: AddToCartButtonProps) {
+  const { t } = useTranslation();
   const addItem = useCartStore((s) => s.addItem);
   const [quantity, setQuantity] = useState(1);
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
@@ -59,7 +61,7 @@ export default function AddToCartButton({
         <button
           onClick={() => setQuantity((q) => Math.max(1, q - 1))}
           className="px-3 py-3 hover:bg-surface transition-colors rounded-l-lg"
-          aria-label="Decrease quantity"
+          aria-label={t("addToCart.decreaseQuantity")}
         >
           <Minus className="w-4 h-4" />
         </button>
@@ -69,7 +71,7 @@ export default function AddToCartButton({
         <button
           onClick={() => setQuantity((q) => Math.min(MAX_ITEM_QUANTITY, stockQuantity, q + 1))}
           className="px-3 py-3 hover:bg-surface transition-colors rounded-r-lg"
-          aria-label="Increase quantity"
+          aria-label={t("addToCart.increaseQuantity")}
         >
           <Plus className="w-4 h-4" />
         </button>
@@ -109,7 +111,7 @@ export default function AddToCartButton({
               className="flex items-center gap-2"
             >
               <Check className="w-5 h-5" />
-              Added to Cart
+              {t("addToCart.addedToCart")}
             </motion.span>
           )}
           {status === "idle" && (
@@ -121,11 +123,11 @@ export default function AddToCartButton({
               className="flex items-center gap-2"
             >
               {isOutOfStock ? (
-                "Out of Stock"
+                t("addToCart.outOfStock")
               ) : (
                 <>
                   <ShoppingCart className="w-5 h-5" />
-                  Add to Cart
+                  {t("addToCart.addToCart")}
                 </>
               )}
             </motion.span>

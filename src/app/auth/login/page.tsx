@@ -7,8 +7,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 function LoginForm() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -50,9 +52,9 @@ function LoginForm() {
       <div className="w-full max-w-md">
         <div className="bg-background rounded-md shadow-sm p-8">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold text-foreground">Welcome Back</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t("auth.welcomeBack")}</h1>
             <p className="text-sm text-muted mt-1">
-              Sign in to your PETLIBRO account
+              {t("auth.signInSubtitle")}
             </p>
           </div>
 
@@ -78,7 +80,7 @@ function LoginForm() {
                 fill="#EA4335"
               />
             </svg>
-            Continue with Google
+            {t("auth.continueWithGoogle")}
           </button>
 
           <div className="relative my-6">
@@ -86,7 +88,7 @@ function LoginForm() {
               <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-3 text-muted">or</span>
+              <span className="bg-background px-3 text-muted">{t("auth.or")}</span>
             </div>
           </div>
 
@@ -98,18 +100,18 @@ function LoginForm() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
-              label="Email"
+              label={t("auth.emailLabel")}
               type="email"
-              placeholder="your@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
             <div className="relative">
               <Input
-                label="Password"
+                label={t("auth.passwordLabel")}
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder={t("auth.passwordPlaceholder")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -129,25 +131,25 @@ function LoginForm() {
                 href="/auth/forgot-password"
                 className="text-sm text-muted hover:text-foreground transition-colors"
               >
-                Forgot Password?
+                {t("auth.forgotPassword")}
               </Link>
             </div>
 
             <Button type="submit" fullWidth size="lg" loading={loading}>
-              Sign In
+              {t("auth.signIn")}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted mt-6">
-            Don&apos;t have an account?{" "}
+            {t("auth.noAccount")}{" "}
             <Link
               href="/auth/signup"
               className="font-medium text-foreground hover:underline"
             >
-              Sign Up
+              {t("auth.signUp")}
             </Link>
           </p>
-          <p className="text-xs text-muted text-center mt-2">Free shipping on orders $75+ &middot; 30-day returns</p>
+          <p className="text-xs text-muted text-center mt-2">{t("auth.freeShippingNote")}</p>
         </div>
       </div>
     </div>

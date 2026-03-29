@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { DollarSign, ShoppingBag, TrendingUp, Package, Shield, Users, Repeat, UserPlus, Crown } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { StatsCard } from "@/components/admin/StatsCard";
@@ -31,6 +32,7 @@ interface CustomerStat {
 }
 
 export default function AdminAnalyticsPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [orders, setOrders] = useState<Order[]>([]);
   const [items, setItems] = useState<OrderItem[]>([]);
@@ -192,8 +194,8 @@ export default function AdminAnalyticsPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view analytics.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.analytics.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.analytics.noPermission")}</p>
       </div>
     );
   }
@@ -202,8 +204,8 @@ export default function AdminAnalyticsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Analytics</h1>
-          <p className="text-sm text-muted mt-1">Store performance overview</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.analytics.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.analytics.subtitle")}</p>
         </div>
         <div className="flex gap-1 bg-surface rounded-md p-0.5">
           {(["7d", "30d", "90d", "all"] as Period[]).map((p) => (
@@ -214,7 +216,7 @@ export default function AdminAnalyticsPage() {
                 period === p ? "bg-white text-foreground shadow-sm" : "text-muted hover:text-foreground"
               }`}
             >
-              {p === "all" ? "All" : p}
+              {p === "all" ? t("admin.analytics.all") : p}
             </button>
           ))}
         </div>
@@ -222,18 +224,18 @@ export default function AdminAnalyticsPage() {
 
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatsCard icon={DollarSign} label="Revenue" value={formatPrice(stats.revenue)} loading={loading} />
-        <StatsCard icon={ShoppingBag} label="Orders" value={stats.totalOrders} loading={loading} />
-        <StatsCard icon={TrendingUp} label="Avg Order" value={formatPrice(stats.avgOrder)} loading={loading} />
-        <StatsCard icon={Package} label="Cancel Rate" value={`${stats.cancelRate}%`} loading={loading} />
+        <StatsCard icon={DollarSign} label={t("admin.analytics.revenue")} value={formatPrice(stats.revenue)} loading={loading} />
+        <StatsCard icon={ShoppingBag} label={t("admin.analytics.orders")} value={stats.totalOrders} loading={loading} />
+        <StatsCard icon={TrendingUp} label={t("admin.analytics.avgOrder")} value={formatPrice(stats.avgOrder)} loading={loading} />
+        <StatsCard icon={Package} label={t("admin.analytics.cancelRate")} value={`${stats.cancelRate}%`} loading={loading} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Revenue Chart (CSS bars) */}
         <div className="bg-white border border-border rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Daily Revenue</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">{t("admin.analytics.dailyRevenue")}</h2>
           {dailyRevenue.entries.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">No revenue data for this period</div>
+            <div className="py-8 text-center text-sm text-muted">{t("admin.analytics.noRevenueData")}</div>
           ) : (
             <div className="flex items-end gap-1 h-48">
               {dailyRevenue.entries.map(([day, val]) => (
@@ -255,7 +257,7 @@ export default function AdminAnalyticsPage() {
         {/* Top Products */}
         <div className="bg-white border border-border rounded-lg">
           <div className="px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Top Products by Revenue</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("admin.analytics.topProductsByRevenue")}</h2>
           </div>
           <div className="divide-y divide-border/50">
             {loading ? (
@@ -263,7 +265,7 @@ export default function AdminAnalyticsPage() {
                 <div key={i} className="px-5 py-3"><div className="h-4 bg-surface rounded animate-pulse w-3/4" /></div>
               ))
             ) : topProducts.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted">No product data</div>
+              <div className="py-8 text-center text-sm text-muted">{t("admin.analytics.noProductData")}</div>
             ) : (
               topProducts.map(([name, data], i) => (
                 <div key={name} className="flex items-center justify-between px-5 py-3">
@@ -271,7 +273,7 @@ export default function AdminAnalyticsPage() {
                     <span className="text-xs font-bold text-muted w-5">{i + 1}</span>
                     <div>
                       <p className="text-sm font-medium text-foreground">{name}</p>
-                      <p className="text-xs text-muted">{data.qty} sold</p>
+                      <p className="text-xs text-muted">{t("admin.analytics.sold", { qty: data.qty })}</p>
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-foreground">{formatPrice(data.revenue)}</span>
@@ -284,19 +286,19 @@ export default function AdminAnalyticsPage() {
 
       {/* Customer Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mt-8 mb-8">
-        <StatsCard icon={Users} label="Total Customers" value={customerStats.total} loading={loading} />
-        <StatsCard icon={UserPlus} label={`New (${period === "all" ? "All" : period})`} value={customerStats.newThisPeriod} loading={loading} />
-        <StatsCard icon={Repeat} label="Returning (2+)" value={customerStats.returning} loading={loading} />
-        <StatsCard icon={Crown} label="VIP (10+)" value={customerStats.vip} loading={loading} />
-        <StatsCard icon={DollarSign} label="Avg LTV" value={formatPrice(customerStats.avgLifetimeValue)} loading={loading} />
+        <StatsCard icon={Users} label={t("admin.analytics.totalCustomers")} value={customerStats.total} loading={loading} />
+        <StatsCard icon={UserPlus} label={t("admin.analytics.new", { period: period === "all" ? t("admin.analytics.all") : period })} value={customerStats.newThisPeriod} loading={loading} />
+        <StatsCard icon={Repeat} label={t("admin.analytics.returning")} value={customerStats.returning} loading={loading} />
+        <StatsCard icon={Crown} label={t("admin.analytics.vip")} value={customerStats.vip} loading={loading} />
+        <StatsCard icon={DollarSign} label={t("admin.analytics.avgLtv")} value={formatPrice(customerStats.avgLifetimeValue)} loading={loading} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6 mt-6">
         {/* Order Status Breakdown */}
         <div className="bg-white border border-border rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Order Status Breakdown</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">{t("admin.analytics.orderStatusBreakdown")}</h2>
           {statusBreakdown.length === 0 ? (
-            <div className="py-8 text-center text-sm text-muted">No orders</div>
+            <div className="py-8 text-center text-sm text-muted">{t("admin.analytics.noOrders")}</div>
           ) : (
             <>
               {/* Stacked bar */}
@@ -330,7 +332,7 @@ export default function AdminAnalyticsPage() {
 
         {/* Day of Week Distribution */}
         <div className="bg-white border border-border rounded-lg p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Orders by Day of Week</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">{t("admin.analytics.ordersByDayOfWeek")}</h2>
           <div className="space-y-2">
             {weeklyDist.map((d) => (
               <div key={d.day} className="flex items-center gap-3">
@@ -351,7 +353,7 @@ export default function AdminAnalyticsPage() {
 
       {/* Hourly Heatmap */}
       <div className="bg-white border border-border rounded-lg p-5 mt-6">
-        <h2 className="text-sm font-semibold text-foreground mb-4">Orders by Hour of Day</h2>
+        <h2 className="text-sm font-semibold text-foreground mb-4">{t("admin.analytics.ordersByHourOfDay")}</h2>
         <div className="flex items-end gap-0.5 h-32">
           {hourlyDist.hours.map((h) => (
             <div key={h.hour} className="flex-1 flex flex-col items-center gap-1">
@@ -366,7 +368,7 @@ export default function AdminAnalyticsPage() {
                       : h.count / hourlyDist.max > 0.3 ? "rgba(var(--accent), 0.6)"
                       : "rgba(var(--accent), 0.3)",
                   }}
-                  title={`${h.hour}:00 — ${h.count} orders`}
+                  title={t("admin.analytics.hourlyTooltip", { hour: h.hour, count: h.count })}
                 />
               </div>
               <span className="text-[8px] text-muted">{h.hour % 6 === 0 ? `${h.hour}:00` : ""}</span>
@@ -374,11 +376,11 @@ export default function AdminAnalyticsPage() {
           ))}
         </div>
         <div className="flex justify-between text-[10px] text-muted mt-1">
-          <span>12 AM</span>
-          <span>6 AM</span>
-          <span>12 PM</span>
-          <span>6 PM</span>
-          <span>12 AM</span>
+          <span>{t("admin.analytics.twelveAm")}</span>
+          <span>{t("admin.analytics.sixAm")}</span>
+          <span>{t("admin.analytics.twelvePm")}</span>
+          <span>{t("admin.analytics.sixPm")}</span>
+          <span>{t("admin.analytics.twelveAm")}</span>
         </div>
       </div>
     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
 import { StarRating } from "@/components/ui/StarRating";
 import { Badge } from "@/components/ui/Badge";
 import type { Review } from "@/types/product";
@@ -13,6 +14,7 @@ export default function ReviewSection({
   reviews,
   productId,
 }: ReviewSectionProps) {
+  const { t } = useTranslation();
   const totalReviews = reviews.length;
   const avgRating =
     totalReviews > 0
@@ -37,7 +39,7 @@ export default function ReviewSection({
           </div>
           <StarRating rating={avgRating} className="mt-2 justify-center md:justify-start" />
           <p className="text-sm text-muted mt-1">
-            {totalReviews} {totalReviews === 1 ? "review" : "reviews"}
+            {t("reviewSection.reviewCount", { count: totalReviews })}
           </p>
         </div>
 
@@ -45,7 +47,7 @@ export default function ReviewSection({
         <div className="flex-1 space-y-2">
           {breakdown.map(({ star, count, percentage }) => (
             <div key={star} className="flex items-center gap-3 text-sm">
-              <span className="w-12 text-muted shrink-0">{star} stars</span>
+              <span className="w-12 text-muted shrink-0">{t("reviewSection.stars", { count: star })}</span>
               <div className="flex-1 h-2.5 bg-surface rounded-full overflow-hidden">
                 <div
                   className="h-full bg-amber-400 rounded-full transition-all"
@@ -64,7 +66,7 @@ export default function ReviewSection({
           href={`/auth/login?redirect=/products/${productId}#reviews`}
           className="inline-flex items-center px-6 py-2.5 border border-accent text-accent text-sm font-semibold rounded-lg hover:bg-accent hover:text-white transition-colors"
         >
-          Write a Review
+          {t("reviewSection.writeReview")}
         </a>
       </div>
 
@@ -77,7 +79,7 @@ export default function ReviewSection({
                 <StarRating rating={review.rating} size={14} />
                 {review.is_verified_purchase && (
                   <Badge variant="new" className="text-[10px] px-2 py-0.5">
-                    Verified Purchase
+                    {t("reviewSection.verifiedPurchase")}
                   </Badge>
                 )}
               </div>
@@ -109,7 +111,7 @@ export default function ReviewSection({
         </div>
       ) : (
         <p className="text-sm text-muted border-t border-border pt-6">
-          No reviews yet. Be the first to share your experience!
+          {t("reviewSection.noReviews")}
         </p>
       )}
     </div>

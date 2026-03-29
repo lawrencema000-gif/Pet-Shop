@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { slugify } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
@@ -9,6 +10,7 @@ import { Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
 export default function NewProductPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
@@ -72,7 +74,7 @@ export default function NewProductPage() {
       .single();
 
     if (error) {
-      alert("Error creating product: " + error.message);
+      alert(t("admin.products.new.errorCreating", { error: error.message }));
       setSaving(false);
       return;
     }
@@ -96,8 +98,8 @@ export default function NewProductPage() {
           <ArrowLeft size={18} />
         </Link>
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">New Product</h1>
-          <p className="text-sm text-muted mt-1">Add a new product to your store</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.products.new.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.products.new.subtitle")}</p>
         </div>
       </div>
 
@@ -105,62 +107,62 @@ export default function NewProductPage() {
         <div className="bg-white border border-border rounded-lg p-6 space-y-5">
           {/* Name */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Product Name *</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelProductName")}</label>
             <input
               type="text"
               value={form.name}
               onChange={(e) => updateField("name", e.target.value)}
               required
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-              placeholder="e.g. Granary Smart Camera Feeder"
+              placeholder={t("admin.products.new.productNamePlaceholder")}
             />
           </div>
 
           {/* Slug */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Slug</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelSlug")}</label>
             <input
               type="text"
               value={form.slug}
               onChange={(e) => updateField("slug", e.target.value)}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-              placeholder="auto-generated-from-name"
+              placeholder={t("admin.products.new.slugPlaceholder")}
             />
           </div>
 
           {/* Subtitle */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Subtitle</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelSubtitle")}</label>
             <input
               type="text"
               value={form.subtitle}
               onChange={(e) => updateField("subtitle", e.target.value)}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-              placeholder="Brief product subtitle"
+              placeholder={t("admin.products.new.subtitlePlaceholder")}
             />
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Description</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelDescription")}</label>
             <textarea
               value={form.description}
               onChange={(e) => updateField("description", e.target.value)}
               rows={4}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors resize-y"
-              placeholder="Product description..."
+              placeholder={t("admin.products.new.descriptionPlaceholder")}
             />
           </div>
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Category</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelCategory")}</label>
             <select
               value={form.category_id}
               onChange={(e) => updateField("category_id", e.target.value)}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
             >
-              <option value="">Select category...</option>
+              <option value="">{t("admin.products.new.categoryPlaceholder")}</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
@@ -170,7 +172,7 @@ export default function NewProductPage() {
           {/* Pricing */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Price *</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelPrice")}</label>
               <input
                 type="number"
                 step="0.01"
@@ -179,11 +181,11 @@ export default function NewProductPage() {
                 onChange={(e) => updateField("base_price", e.target.value)}
                 required
                 className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-                placeholder="0.00"
+                placeholder={t("admin.products.new.pricePlaceholder")}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Compare at Price</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelCompareAtPrice")}</label>
               <input
                 type="number"
                 step="0.01"
@@ -191,31 +193,31 @@ export default function NewProductPage() {
                 value={form.compare_at_price}
                 onChange={(e) => updateField("compare_at_price", e.target.value)}
                 className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-                placeholder="0.00"
+                placeholder={t("admin.products.new.pricePlaceholder")}
               />
             </div>
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Status</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelStatus")}</label>
             <select
               value={form.status}
               onChange={(e) => updateField("status", e.target.value)}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
             >
-              <option value="draft">Draft</option>
-              <option value="active">Active</option>
-              <option value="archived">Archived</option>
+              <option value="draft">{t("admin.products.new.statusDraft")}</option>
+              <option value="active">{t("admin.products.new.statusActive")}</option>
+              <option value="archived">{t("admin.products.new.statusArchived")}</option>
             </select>
           </div>
 
           {/* Flags */}
           <div className="flex flex-wrap gap-6">
             {[
-              { key: "is_featured", label: "Featured" },
-              { key: "is_best_seller", label: "Best Seller" },
-              { key: "is_new", label: "New Arrival" },
+              { key: "is_featured", label: t("admin.products.new.flagFeatured") },
+              { key: "is_best_seller", label: t("admin.products.new.flagBestSeller") },
+              { key: "is_new", label: t("admin.products.new.flagNewArrival") },
             ].map(({ key, label }) => (
               <label key={key} className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
                 <input
@@ -232,44 +234,44 @@ export default function NewProductPage() {
 
         {/* SEO */}
         <div className="bg-white border border-border rounded-lg p-6 space-y-5 mt-5">
-          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Search Engine Optimization</h3>
+          <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t("admin.products.new.seoTitle")}</h3>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Meta Title</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelMetaTitle")}</label>
             <input
               type="text"
               maxLength={70}
               value={form.meta_title}
               onChange={(e) => updateField("meta_title", e.target.value)}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors"
-              placeholder="Leave blank to use product name"
+              placeholder={t("admin.products.new.metaTitlePlaceholder")}
             />
-            <p className="text-xs text-muted mt-1">{form.meta_title.length}/70 characters</p>
+            <p className="text-xs text-muted mt-1">{t("admin.products.new.metaTitleHint", { count: form.meta_title.length })}</p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
+            <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelMetaDescription")}</label>
             <textarea
               maxLength={160}
               value={form.meta_description}
               onChange={(e) => updateField("meta_description", e.target.value)}
               rows={3}
               className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors resize-none"
-              placeholder="Brief description for search engine results..."
+              placeholder={t("admin.products.new.metaDescriptionPlaceholder")}
             />
-            <p className="text-xs text-muted mt-1">{form.meta_description.length}/160 characters</p>
+            <p className="text-xs text-muted mt-1">{t("admin.products.new.metaDescriptionHint", { count: form.meta_description.length })}</p>
           </div>
           {/* Preview */}
           <div className="bg-surface/50 rounded-md p-4">
-            <p className="text-xs font-semibold text-muted uppercase mb-2">Google Preview</p>
-            <p className="text-[#1a0dab] text-base font-medium truncate">{form.meta_title || form.name || "Product Name"}</p>
-            <p className="text-[#006621] text-xs truncate">petlibro.com/products/{form.slug || "product-slug"}</p>
-            <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{form.meta_description || form.description || "No description"}</p>
+            <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.products.new.googlePreview")}</p>
+            <p className="text-[#1a0dab] text-base font-medium truncate">{form.meta_title || form.name || t("admin.products.new.productNameFallback")}</p>
+            <p className="text-[#006621] text-xs truncate">petlibro.com/products/{form.slug || t("admin.products.new.productSlugFallback")}</p>
+            <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{form.meta_description || form.description || t("admin.products.new.noDescription")}</p>
           </div>
         </div>
 
         {/* Submit */}
         <div className="flex items-center justify-end gap-3 mt-6">
           <Link href="/admin/products" className="px-4 py-2.5 text-sm font-medium text-muted hover:text-foreground border border-border rounded-md hover:bg-surface transition-colors">
-            Cancel
+            {t("admin.products.new.cancelButton")}
           </Link>
           <button
             type="submit"
@@ -277,7 +279,7 @@ export default function NewProductPage() {
             className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-60"
           >
             <Save size={16} />
-            {saving ? "Creating..." : "Create Product"}
+            {saving ? t("admin.products.new.creating") : t("admin.products.new.createButton")}
           </button>
         </div>
       </form>

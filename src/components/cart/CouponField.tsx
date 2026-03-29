@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Tag, X, Check, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,7 @@ interface CouponFieldProps {
 }
 
 export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
+  const { t } = useTranslation();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,33 +36,33 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
         .single();
 
       if (fetchError || !coupon) {
-        setError("Invalid coupon code");
+        setError(t("couponField.invalidCode"));
         setLoading(false);
         return;
       }
 
       if (!coupon.is_active) {
-        setError("This coupon is no longer active");
+        setError(t("couponField.noLongerActive"));
         setLoading(false);
         return;
       }
 
       if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
-        setError("This coupon has expired");
+        setError(t("couponField.expired"));
         setLoading(false);
         return;
       }
 
       if (coupon.min_order_amount && subtotal < coupon.min_order_amount) {
         setError(
-          `Minimum order amount is $${coupon.min_order_amount.toFixed(2)}`
+          t("couponField.minOrderAmount", { amount: coupon.min_order_amount.toFixed(2) })
         );
         setLoading(false);
         return;
       }
 
       if (coupon.max_uses && coupon.current_uses >= coupon.max_uses) {
-        setError("This coupon has reached its usage limit");
+        setError(t("couponField.usageLimit"));
         setLoading(false);
         return;
       }
@@ -76,7 +78,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
       setApplied({ code: coupon.code, discount });
       onApply(discount, coupon.code);
     } catch {
-      setError("Failed to validate coupon");
+      setError(t("couponField.validationFailed"));
     } finally {
       setLoading(false);
     }
@@ -101,7 +103,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
         <button
           onClick={handleRemove}
           className="p-1 text-muted hover:text-foreground transition-colors"
-          aria-label="Remove coupon"
+          aria-label={t("couponField.removeCoupon")}
         >
           <X size={16} />
         </button>
@@ -124,7 +126,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
               setCode(e.target.value.toUpperCase());
               setError(null);
             }}
-            placeholder="Coupon code"
+            placeholder={t("couponField.placeholder")}
             className={cn(
               "w-full border border-border rounded-lg pl-9 pr-3 py-2.5 text-sm text-foreground placeholder:text-muted bg-background transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent",
               error && "border-sale"
@@ -139,7 +141,7 @@ export function CouponField({ subtotal, onApply, onRemove }: CouponFieldProps) {
           disabled={!code.trim() || loading}
           className="px-4"
         >
-          {loading ? <Loader2 size={16} className="animate-spin" /> : "Apply"}
+          {loading ? <Loader2 size={16} className="animate-spin" /> : t("couponField.apply")}
         </Button>
       </div>
       {error && <p className="text-xs text-sale mt-1.5">{error}</p>}

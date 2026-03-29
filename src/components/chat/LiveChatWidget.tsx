@@ -18,6 +18,7 @@ import { ChatMessageList } from "@/components/ui/chat-message-list";
 import { ShadcnButton } from "@/components/ui/shadcn-button";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth-provider";
+import { useTranslation } from "react-i18next";
 
 interface ChatMessage {
   id: string;
@@ -29,6 +30,7 @@ interface ChatMessage {
 }
 
 export function LiveChatWidget() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -173,8 +175,8 @@ export function LiveChatWidget() {
             <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-accent" />
           </div>
           <div>
-            <p className="font-semibold text-sm">PETLIBRO Support</p>
-            <p className="text-xs text-white/70">We typically reply in a few minutes</p>
+            <p className="font-semibold text-sm">{t('liveChat.supportTitle')}</p>
+            <p className="text-xs text-white/70">{t('liveChat.replyTime')}</p>
           </div>
         </div>
       </ExpandableChatHeader>
@@ -188,7 +190,7 @@ export function LiveChatWidget() {
           <ChatBubble variant="received">
             <ChatBubbleAvatar fallback="PL" />
             <ChatBubbleMessage variant="received">
-              Hi! How can we help you today?
+              {t('liveChat.welcomeMessage')}
             </ChatBubbleMessage>
           </ChatBubble>
 
@@ -196,7 +198,7 @@ export function LiveChatWidget() {
             <ChatBubble variant="received">
               <ChatBubbleAvatar fallback="PL" />
               <ChatBubbleMessage variant="received">
-                Please sign in to start a conversation.
+                {t('liveChat.signInPrompt')}
               </ChatBubbleMessage>
             </ChatBubble>
           )}
@@ -240,7 +242,7 @@ export function LiveChatWidget() {
               onFocus={() => {
                 if (!initialized) initConversation();
               }}
-              placeholder="Type a message..."
+              placeholder={t('liveChat.inputPlaceholder')}
               disabled={sending}
             />
             <ShadcnButton
@@ -255,7 +257,7 @@ export function LiveChatWidget() {
           </form>
         ) : (
           <p className="text-sm text-muted text-center py-2">
-            <a href="/auth/login" className="text-accent underline">Sign in</a> to chat with us
+            <a href="/auth/login" className="text-accent underline">{t('liveChat.signIn')}</a> {t('liveChat.toChatWithUs')}
           </p>
         )}
       </ExpandableChatFooter>

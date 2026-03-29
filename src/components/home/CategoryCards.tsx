@@ -5,13 +5,15 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Category } from "@/types/product";
+import { useTranslatedCategories } from "@/hooks/useTranslatedProduct";
 
 interface CategoryCardsProps {
   categories: Category[];
 }
 
-export default function CategoryCards({ categories }: CategoryCardsProps) {
+export default function CategoryCards({ categories: rawCategories }: CategoryCardsProps) {
   const { t } = useTranslation();
+  const categories = useTranslatedCategories(rawCategories);
   if (!categories.length) return null;
 
   const display = categories.slice(0, 3);

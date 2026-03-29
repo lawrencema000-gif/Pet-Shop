@@ -2,17 +2,21 @@
 
 import { useState, useMemo } from "react";
 import { Truck, RotateCcw, Shield, Share2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { StarRating } from "@/components/ui/StarRating";
 import { PriceDisplay } from "@/components/ui/PriceDisplay";
 import VariantSelector from "./VariantSelector";
 import AddToCartButton from "./AddToCartButton";
 import type { Product } from "@/types/product";
+import { useTranslatedProduct } from "@/hooks/useTranslatedProduct";
 
 interface ProductInfoProps {
   product: Product;
 }
 
-export default function ProductInfo({ product }: ProductInfoProps) {
+export default function ProductInfo({ product: rawProduct }: ProductInfoProps) {
+  const product = useTranslatedProduct(rawProduct) ?? rawProduct;
+  const { t } = useTranslation();
   const defaultVariant =
     product.variants?.find((v) => v.is_default) || product.variants?.[0];
   const [selectedVariantId, setSelectedVariantId] = useState(
@@ -106,7 +110,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors"
         >
           <Share2 className="w-4 h-4" />
-          Share
+          {t("productInfo.share")}
         </button>
       </div>
 
@@ -131,10 +135,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           }`}
         >
           {stockStatus === "in"
-            ? "In Stock"
+            ? t("productInfo.inStock")
             : stockStatus === "low"
-            ? `Low Stock — Only ${stockQuantity} left!`
-            : "Out of Stock"}
+            ? t("productInfo.lowStock", { count: stockQuantity })
+            : t("productInfo.outOfStock")}
         </span>
       </div>
 
@@ -189,7 +193,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="flex items-center gap-2 text-sm text-muted">
         <Truck className="w-4 h-4 text-accent" />
         <span>
-          Estimated delivery:{" "}
+          {t("productInfo.estimatedDelivery")}{" "}
           <span className="font-medium text-foreground">
             {formatDeliveryDate(deliveryStart)} - {formatDeliveryDate(deliveryEnd)}
           </span>
@@ -202,22 +206,22 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
             <Truck className="w-5 h-5 text-accent" />
           </div>
-          <span className="text-xs font-medium text-foreground">Free Shipping</span>
-          <span className="text-[10px] text-muted">Orders over $75</span>
+          <span className="text-xs font-medium text-foreground">{t("productInfo.freeShipping")}</span>
+          <span className="text-[10px] text-muted">{t("productInfo.ordersOver")}</span>
         </div>
         <div className="flex flex-col items-center text-center gap-2 py-3">
           <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
             <RotateCcw className="w-5 h-5 text-accent" />
           </div>
-          <span className="text-xs font-medium text-foreground">30-Day Returns</span>
-          <span className="text-[10px] text-muted">Hassle-free</span>
+          <span className="text-xs font-medium text-foreground">{t("productInfo.thirtyDayReturns")}</span>
+          <span className="text-[10px] text-muted">{t("productInfo.hassleFree")}</span>
         </div>
         <div className="flex flex-col items-center text-center gap-2 py-3">
           <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
             <Shield className="w-5 h-5 text-accent" />
           </div>
-          <span className="text-xs font-medium text-foreground">1-Year Warranty</span>
-          <span className="text-[10px] text-muted">Full coverage</span>
+          <span className="text-xs font-medium text-foreground">{t("productInfo.oneYearWarranty")}</span>
+          <span className="text-[10px] text-muted">{t("productInfo.fullCoverage")}</span>
         </div>
       </div>
     </div>

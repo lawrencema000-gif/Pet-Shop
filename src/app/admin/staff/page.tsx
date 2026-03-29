@@ -7,6 +7,7 @@ import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { ALL_PERMISSIONS, type StaffRole } from "@/types/admin";
+import { useTranslation } from "react-i18next";
 
 interface AdminUser {
   id: string;
@@ -19,6 +20,7 @@ interface AdminUser {
 type Tab = "members" | "roles";
 
 export default function AdminStaffPage() {
+  const { t } = useTranslation();
   const { isSuperAdmin } = useStaffPermissions();
   const [tab, setTab] = useState<Tab>("members");
   const [admins, setAdmins] = useState<AdminUser[]>([]);
@@ -96,35 +98,35 @@ export default function AdminStaffPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">Only super admins can manage staff and roles.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.staff.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.staff.noPermission")}</p>
       </div>
     );
   }
 
   const tabs = [
-    { key: "members" as Tab, label: `Staff Members (${admins.length})` },
-    { key: "roles" as Tab, label: `Roles (${roles.length})` },
+    { key: "members" as Tab, label: t("admin.staff.staffMembersTab", { count: admins.length }) },
+    { key: "roles" as Tab, label: t("admin.staff.rolesTab", { count: roles.length }) },
   ];
 
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-2xl font-display font-bold text-foreground">Staff Management</h1>
-        <p className="text-sm text-muted mt-1">Manage admin users and roles</p>
+        <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.staff.title")}</h1>
+        <p className="text-sm text-muted mt-1">{t("admin.staff.subtitle")}</p>
       </div>
 
       {/* Tabs */}
       <div className="flex gap-1 border-b border-border mb-6">
-        {tabs.map((t) => (
+        {tabs.map((tabItem) => (
           <button
-            key={t.key}
-            onClick={() => setTab(t.key)}
+            key={tabItem.key}
+            onClick={() => setTab(tabItem.key)}
             className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-              tab === t.key ? "border-accent text-accent" : "border-transparent text-muted hover:text-foreground"
+              tab === tabItem.key ? "border-accent text-accent" : "border-transparent text-muted hover:text-foreground"
             }`}
           >
-            {t.label}
+            {tabItem.label}
           </button>
         ))}
       </div>
@@ -135,9 +137,9 @@ export default function AdminStaffPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-surface/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Name</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Role</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Joined</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.staff.nameHeader")}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.staff.roleHeader")}</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.staff.joinedHeader")}</th>
                 <th className="px-4 py-3 w-20"></th>
               </tr>
             </thead>
@@ -152,26 +154,26 @@ export default function AdminStaffPage() {
                 ))
               ) : admins.map((admin) => (
                 <tr key={admin.id} className="border-b border-border/50">
-                  <td className="px-4 py-3 font-medium text-foreground">{admin.full_name ?? "—"}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">{admin.full_name ?? "\u2014"}</td>
                   <td className="px-4 py-3">
                     <select
                       value={admin.staff_role_id ?? ""}
                       onChange={(e) => assignRole(admin.id, e.target.value || null)}
                       className="px-2 py-1 text-sm border border-border rounded focus:outline-none focus:border-accent"
                     >
-                      <option value="">No Role</option>
+                      <option value="">{t("admin.staff.noRole")}</option>
                       {roles.map((r) => <option key={r.id} value={r.id}>{r.name}</option>)}
                     </select>
                   </td>
                   <td className="px-4 py-3 text-xs text-muted">{new Date(admin.created_at).toLocaleDateString()}</td>
                   <td className="px-4 py-3">
-                    <button onClick={() => setRevokeId(admin.id)} className="text-xs text-sale hover:underline">Revoke</button>
+                    <button onClick={() => setRevokeId(admin.id)} className="text-xs text-sale hover:underline">{t("admin.staff.revoke")}</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-          {!loading && admins.length === 0 && <div className="py-8 text-center text-sm text-muted">No admin users</div>}
+          {!loading && admins.length === 0 && <div className="py-8 text-center text-sm text-muted">{t("admin.staff.noAdminUsers")}</div>}
         </div>
       )}
 
@@ -180,19 +182,19 @@ export default function AdminStaffPage() {
         <div>
           <div className="flex justify-end mb-4">
             <button onClick={() => setShowNewRole(true)} className="inline-flex items-center gap-2 bg-accent text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-accent-dark">
-              <Plus size={14} /> New Role
+              <Plus size={14} /> {t("admin.staff.newRole")}
             </button>
           </div>
 
           {/* New Role Form */}
           {showNewRole && (
             <div className="bg-white border border-border rounded-lg p-5 mb-4">
-              <h3 className="text-sm font-semibold mb-3">Create Role</h3>
+              <h3 className="text-sm font-semibold mb-3">{t("admin.staff.createRole")}</h3>
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <input type="text" value={newRole.name} onChange={(e) => setNewRole({ ...newRole, name: e.target.value })} placeholder="Role name" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
-                <input type="text" value={newRole.description} onChange={(e) => setNewRole({ ...newRole, description: e.target.value })} placeholder="Description" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                <input type="text" value={newRole.name} onChange={(e) => setNewRole({ ...newRole, name: e.target.value })} placeholder={t("admin.staff.roleNamePlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                <input type="text" value={newRole.description} onChange={(e) => setNewRole({ ...newRole, description: e.target.value })} placeholder={t("admin.staff.descriptionPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
               </div>
-              <p className="text-xs font-semibold text-muted uppercase mb-2">Permissions</p>
+              <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.staff.permissions")}</p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
                 {ALL_PERMISSIONS.map((perm) => (
                   <label key={perm} className="flex items-center gap-2 text-sm cursor-pointer">
@@ -202,8 +204,8 @@ export default function AdminStaffPage() {
                 ))}
               </div>
               <div className="flex gap-2">
-                <button onClick={createRole} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark"><Save size={14} className="inline mr-1" />Create</button>
-                <button onClick={() => setShowNewRole(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">Cancel</button>
+                <button onClick={createRole} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark"><Save size={14} className="inline mr-1" />{t("admin.staff.createButton")}</button>
+                <button onClick={() => setShowNewRole(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">{t("admin.staff.cancel")}</button>
               </div>
             </div>
           )}
@@ -218,7 +220,7 @@ export default function AdminStaffPage() {
                     {role.description && <p className="text-xs text-muted">{role.description}</p>}
                   </div>
                   <div className="flex items-center gap-2">
-                    {role.is_system && <span className="text-[10px] font-semibold bg-accent-light text-accent px-1.5 py-0.5 rounded">System</span>}
+                    {role.is_system && <span className="text-[10px] font-semibold bg-accent-light text-accent px-1.5 py-0.5 rounded">{t("admin.staff.system")}</span>}
                     {!role.is_system && (
                       <button onClick={() => setDeleteRoleId(role.id)} className="p-1.5 hover:bg-sale/10 rounded">
                         <Trash2 size={14} className="text-muted hover:text-sale" />
@@ -228,7 +230,7 @@ export default function AdminStaffPage() {
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {role.permissions.includes("*") ? (
-                    <span className="text-[10px] font-medium bg-gold-light text-gold px-1.5 py-0.5 rounded">All Permissions</span>
+                    <span className="text-[10px] font-medium bg-gold-light text-gold px-1.5 py-0.5 rounded">{t("admin.staff.allPermissions")}</span>
                   ) : (
                     role.permissions.map((p) => (
                       <span key={p} className="text-[10px] font-medium bg-surface text-muted px-1.5 py-0.5 rounded">{p}</span>
@@ -241,8 +243,8 @@ export default function AdminStaffPage() {
         </div>
       )}
 
-      <ConfirmDialog isOpen={!!revokeId} title="Revoke Admin Access" message="This will remove admin access from this user." confirmLabel="Revoke" variant="danger" onConfirm={revokeAdmin} onCancel={() => setRevokeId(null)} />
-      <ConfirmDialog isOpen={!!deleteRoleId} title="Delete Role" message="This will delete this role. Staff members with this role will lose their permissions." confirmLabel="Delete" variant="danger" onConfirm={deleteRole} onCancel={() => setDeleteRoleId(null)} />
+      <ConfirmDialog isOpen={!!revokeId} title={t("admin.staff.revokeAdminAccess")} message={t("admin.staff.revokeAdminMessage")} confirmLabel={t("admin.staff.revoke")} variant="danger" onConfirm={revokeAdmin} onCancel={() => setRevokeId(null)} />
+      <ConfirmDialog isOpen={!!deleteRoleId} title={t("admin.staff.deleteRole")} message={t("admin.staff.deleteRoleMessage")} confirmLabel={t("common.delete")} variant="danger" onConfirm={deleteRole} onCancel={() => setDeleteRoleId(null)} />
     </div>
   );
 }

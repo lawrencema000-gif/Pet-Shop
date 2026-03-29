@@ -3,27 +3,31 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Truck, RotateCcw, Clock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import SpecsTable from "./SpecsTable";
 import ReviewSection from "./ReviewSection";
 import type { Product, Review } from "@/types/product";
+import { useTranslatedProduct } from "@/hooks/useTranslatedProduct";
 
 interface ProductTabsProps {
   product: Product;
   reviews: Review[];
 }
 
-const tabs = [
-  { id: "description", label: "Description" },
-  { id: "specifications", label: "Specifications" },
-  { id: "shipping", label: "Shipping & Returns" },
-  { id: "reviews", label: "Reviews" },
-] as const;
+type TabId = "description" | "specifications" | "shipping" | "reviews";
 
-type TabId = (typeof tabs)[number]["id"];
-
-export default function ProductTabs({ product, reviews }: ProductTabsProps) {
+export default function ProductTabs({ product: rawProduct, reviews }: ProductTabsProps) {
+  const product = useTranslatedProduct(rawProduct) ?? rawProduct;
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabId>("description");
+
+  const tabs: { id: TabId; label: string }[] = [
+    { id: "description", label: t("productTabs.description") },
+    { id: "specifications", label: t("productTabs.specifications") },
+    { id: "shipping", label: t("productTabs.shippingReturns") },
+    { id: "reviews", label: t("productTabs.reviews") },
+  ];
 
   return (
     <div>
@@ -74,7 +78,7 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
               {product.description ? (
                 <p style={{ whiteSpace: "pre-wrap" }}>{product.description}</p>
               ) : (
-                <p className="text-muted">No description available.</p>
+                <p className="text-muted">{t("productTabs.noDescription")}</p>
               )}
             </div>
           )}
@@ -89,20 +93,20 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <Truck className="w-5 h-5 text-accent" />
-                  Shipping Information
+                  {t("productTabs.shippingInformation")}
                 </h3>
                 <div className="space-y-3 text-sm text-muted leading-relaxed">
                   <div className="flex items-start gap-3 p-3 bg-surface rounded-lg">
-                    <span className="font-medium text-foreground min-w-[140px]">Standard Shipping</span>
-                    <span>5-7 business days — Free on orders over $75</span>
+                    <span className="font-medium text-foreground min-w-[140px]">{t("productTabs.standardShipping")}</span>
+                    <span>{t("productTabs.standardShippingDesc")}</span>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-surface rounded-lg">
-                    <span className="font-medium text-foreground min-w-[140px]">Express Shipping</span>
-                    <span>2-3 business days — $12.99</span>
+                    <span className="font-medium text-foreground min-w-[140px]">{t("productTabs.expressShipping")}</span>
+                    <span>{t("productTabs.expressShippingDesc")}</span>
                   </div>
                   <div className="flex items-start gap-3 p-3 bg-surface rounded-lg">
-                    <span className="font-medium text-foreground min-w-[140px]">Overnight</span>
-                    <span>Next business day — $24.99</span>
+                    <span className="font-medium text-foreground min-w-[140px]">{t("productTabs.overnight")}</span>
+                    <span>{t("productTabs.overnightDesc")}</span>
                   </div>
                 </div>
               </div>
@@ -111,24 +115,24 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <RotateCcw className="w-5 h-5 text-accent" />
-                  Return Policy
+                  {t("productTabs.returnPolicy")}
                 </h3>
                 <div className="space-y-3 text-sm text-muted leading-relaxed">
                   <p>
-                    We offer a <span className="font-medium text-foreground">30-day return policy</span> on all products. Items must be in their original packaging and in unused condition.
+                    {t("productTabs.returnPolicyIntro")}<span className="font-medium text-foreground">{t("productTabs.returnPolicyDays")}</span>{t("productTabs.returnPolicyEnd")}
                   </p>
                   <ul className="space-y-2 list-none pl-0">
                     <li className="flex items-start gap-2">
                       <span className="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                      Free return shipping on defective items
+                      {t("productTabs.freeReturnShipping")}
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                      Refund processed within 5-7 business days
+                      {t("productTabs.refundProcessed")}
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="mt-1 w-1.5 h-1.5 rounded-full bg-accent shrink-0" />
-                      Exchange available for different size or color
+                      {t("productTabs.exchangeAvailable")}
                     </li>
                   </ul>
                 </div>
@@ -138,10 +142,10 @@ export default function ProductTabs({ product, reviews }: ProductTabsProps) {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
                   <Clock className="w-5 h-5 text-accent" />
-                  Processing Time
+                  {t("productTabs.processingTime")}
                 </h3>
                 <p className="text-sm text-muted leading-relaxed">
-                  Orders placed before <span className="font-medium text-foreground">2:00 PM EST</span> on business days are typically processed and shipped the same day. Orders placed after this time or on weekends/holidays will be processed the next business day.
+                  {t("productTabs.processingTimeBefore")}<span className="font-medium text-foreground">{t("productTabs.processingTimeCutoff")}</span>{t("productTabs.processingTimeAfter")}
                 </p>
               </div>
             </div>

@@ -7,6 +7,7 @@ import { DataTable, type Column } from "@/components/admin/DataTable";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { logAdminAction } from "@/lib/audit-log";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 interface ReviewRow {
   id: string;
@@ -22,6 +23,7 @@ interface ReviewRow {
 const PAGE_SIZE = 20;
 
 export default function AdminReviewsPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [reviews, setReviews] = useState<ReviewRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export default function AdminReviewsPage() {
   const columns: Column<ReviewRow>[] = [
     {
       key: "rating",
-      label: "Rating",
+      label: t("admin.reviews.ratingLabel"),
       render: (row) => (
         <div className="flex items-center gap-0.5">
           {Array.from({ length: 5 }).map((_, i) => (
@@ -86,24 +88,24 @@ export default function AdminReviewsPage() {
     },
     {
       key: "title",
-      label: "Review",
+      label: t("admin.reviews.reviewLabel"),
       render: (row) => (
         <div>
-          <p className="text-sm font-medium text-foreground">{row.title ?? "No title"}</p>
+          <p className="text-sm font-medium text-foreground">{row.title ?? t("admin.reviews.noTitle")}</p>
           {row.body && <p className="text-xs text-muted truncate max-w-[300px]">{row.body}</p>}
         </div>
       ),
     },
-    { key: "product_name", label: "Product", render: (row) => <span className="text-sm text-muted">{row.product_name}</span> },
-    { key: "user_name", label: "Customer", render: (row) => <span className="text-sm">{row.user_name ?? "Anonymous"}</span> },
+    { key: "product_name", label: t("admin.reviews.productLabel"), render: (row) => <span className="text-sm text-muted">{row.product_name}</span> },
+    { key: "user_name", label: t("admin.reviews.customerLabel"), render: (row) => <span className="text-sm">{row.user_name ?? t("admin.reviews.anonymous")}</span> },
     {
       key: "is_verified_purchase",
-      label: "Verified",
-      render: (row) => row.is_verified_purchase ? <span className="text-xs text-success font-medium">Yes</span> : <span className="text-xs text-muted">No</span>,
+      label: t("admin.reviews.verifiedLabel"),
+      render: (row) => row.is_verified_purchase ? <span className="text-xs text-success font-medium">{t("admin.reviews.verifiedYes")}</span> : <span className="text-xs text-muted">{t("admin.reviews.verifiedNo")}</span>,
     },
     {
       key: "created_at",
-      label: "Date",
+      label: t("admin.reviews.dateLabel"),
       render: (row) => <span className="text-xs text-muted">{new Date(row.created_at).toLocaleDateString()}</span>,
     },
     {
@@ -122,8 +124,8 @@ export default function AdminReviewsPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage reviews.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.reviews.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.reviews.noPermission")}</p>
       </div>
     );
   }
@@ -132,20 +134,20 @@ export default function AdminReviewsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Reviews</h1>
-          <p className="text-sm text-muted mt-1">{total} total reviews</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.reviews.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.reviews.totalReviews", { count: total })}</p>
         </div>
         <select
           value={ratingFilter}
           onChange={(e) => { setRatingFilter(e.target.value); setPage(1); }}
           className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
         >
-          <option value="">All Ratings</option>
-          {[5, 4, 3, 2, 1].map((r) => <option key={r} value={r}>{r} Stars</option>)}
+          <option value="">{t("admin.reviews.allRatings")}</option>
+          {[5, 4, 3, 2, 1].map((r) => <option key={r} value={r}>{t("admin.reviews.stars", { count: r })}</option>)}
         </select>
       </div>
-      <DataTable columns={columns} data={reviews} loading={loading} page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} emptyTitle="No reviews found" />
-      <ConfirmDialog isOpen={!!deleteId} title="Delete Review" message="This will permanently delete this review." confirmLabel="Delete" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
+      <DataTable columns={columns} data={reviews} loading={loading} page={page} pageSize={PAGE_SIZE} total={total} onPageChange={setPage} emptyTitle={t("admin.reviews.noReviewsFound")} />
+      <ConfirmDialog isOpen={!!deleteId} title={t("admin.reviews.deleteReview")} message={t("admin.reviews.deleteReviewMessage")} confirmLabel={t("common.delete")} variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
     </div>
   );
 }

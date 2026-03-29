@@ -6,13 +6,15 @@ import { ProductRevealCard } from "@/components/ui/product-reveal-card";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
 import type { Product } from "@/types/product";
+import { useTranslatedProducts } from "@/hooks/useTranslatedProduct";
 
 interface FeaturedRevealCardsProps {
   products: Product[];
 }
 
-export default function FeaturedRevealCards({ products }: FeaturedRevealCardsProps) {
+export default function FeaturedRevealCards({ products: rawProducts }: FeaturedRevealCardsProps) {
   const { t } = useTranslation();
+  const products = useTranslatedProducts(rawProducts);
   const addItem = useCartStore((s) => s.addItem);
 
   if (!products.length) return null;

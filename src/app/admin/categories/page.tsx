@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Plus, Edit, Trash2, Save, X, GripVertical, Shield } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
@@ -18,6 +19,7 @@ interface Category {
 }
 
 export default function AdminCategoriesPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -76,8 +78,8 @@ export default function AdminCategoriesPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage categories.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.categories.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.categories.accessRestrictedMessage")}</p>
       </div>
     );
   }
@@ -86,30 +88,30 @@ export default function AdminCategoriesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Categories</h1>
-          <p className="text-sm text-muted mt-1">{categories.length} categories</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.categories.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.categories.count", { count: categories.length })}</p>
         </div>
         <button
           onClick={() => setShowNew(true)}
           className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
         >
-          <Plus size={16} /> Add Category
+          <Plus size={16} /> {t("admin.categories.addCategory")}
         </button>
       </div>
 
       {/* New Category Form */}
       {showNew && (
         <div className="bg-white border border-border rounded-lg p-5 mb-4">
-          <h3 className="text-sm font-semibold mb-3">New Category</h3>
+          <h3 className="text-sm font-semibold mb-3">{t("admin.categories.newCategoryTitle")}</h3>
           <div className="grid grid-cols-2 gap-3">
-            <input type="text" value={newForm.name} onChange={(e) => setNewForm({ ...newForm, name: e.target.value })} placeholder="Name" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
-            <input type="text" value={newForm.slug} onChange={(e) => setNewForm({ ...newForm, slug: e.target.value })} placeholder="Slug (auto)" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
-            <input type="text" value={newForm.description} onChange={(e) => setNewForm({ ...newForm, description: e.target.value })} placeholder="Description" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent col-span-2" />
-            <input type="text" value={newForm.image_url} onChange={(e) => setNewForm({ ...newForm, image_url: e.target.value })} placeholder="Image URL" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent col-span-2" />
+            <input type="text" value={newForm.name} onChange={(e) => setNewForm({ ...newForm, name: e.target.value })} placeholder={t("admin.categories.namePlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+            <input type="text" value={newForm.slug} onChange={(e) => setNewForm({ ...newForm, slug: e.target.value })} placeholder={t("admin.categories.slugPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+            <input type="text" value={newForm.description} onChange={(e) => setNewForm({ ...newForm, description: e.target.value })} placeholder={t("admin.categories.descriptionPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent col-span-2" />
+            <input type="text" value={newForm.image_url} onChange={(e) => setNewForm({ ...newForm, image_url: e.target.value })} placeholder={t("admin.categories.imageUrlPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent col-span-2" />
           </div>
           <div className="flex gap-2 mt-3">
-            <button onClick={handleCreate} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark"><Save size={14} className="inline mr-1" />Save</button>
-            <button onClick={() => setShowNew(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">Cancel</button>
+            <button onClick={handleCreate} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark"><Save size={14} className="inline mr-1" />{t("admin.categories.saveButton")}</button>
+            <button onClick={() => setShowNew(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">{t("admin.categories.cancelButton")}</button>
           </div>
         </div>
       )}
@@ -120,10 +122,10 @@ export default function AdminCategoriesPage() {
           <thead>
             <tr className="border-b border-border bg-surface/50">
               <th className="w-8 px-3 py-3"></th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Image</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Name</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Slug</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Description</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.categories.columnImage")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.categories.columnName")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.categories.columnSlug")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.categories.columnDescription")}</th>
               <th className="px-4 py-3 w-20"></th>
             </tr>
           </thead>
@@ -173,11 +175,11 @@ export default function AdminCategoriesPage() {
           </tbody>
         </table>
         {!loading && categories.length === 0 && (
-          <div className="py-8 text-center text-sm text-muted">No categories yet</div>
+          <div className="py-8 text-center text-sm text-muted">{t("admin.categories.emptyState")}</div>
         )}
       </div>
 
-      <ConfirmDialog isOpen={!!deleteId} title="Delete Category" message="This will delete the category. Products in this category will be uncategorized." confirmLabel="Delete" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
+      <ConfirmDialog isOpen={!!deleteId} title={t("admin.categories.deleteTitle")} message={t("admin.categories.deleteMessage")} confirmLabel={t("admin.categories.deleteConfirmLabel")} variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
     </div>
   );
 }

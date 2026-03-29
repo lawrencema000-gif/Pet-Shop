@@ -7,6 +7,7 @@ import { logAdminAction } from "@/lib/audit-log";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { formatPrice } from "@/lib/utils";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 interface Coupon {
   id: string;
@@ -21,6 +22,7 @@ interface Coupon {
 }
 
 export default function AdminCouponsPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,25 +55,25 @@ export default function AdminCouponsPage() {
 
     const discountVal = parseFloat(newForm.discount_value);
     if (isNaN(discountVal) || discountVal <= 0) {
-      alert("Discount value must be greater than 0.");
+      alert(t("admin.coupons.discountGt0"));
       return;
     }
     if (newForm.discount_type === "percentage" && discountVal > 100) {
-      alert("Percentage discount cannot exceed 100%.");
+      alert(t("admin.coupons.percentageMax100"));
       return;
     }
     const minOrder = newForm.min_order_amount ? parseFloat(newForm.min_order_amount) : null;
     if (minOrder !== null && (isNaN(minOrder) || minOrder < 0)) {
-      alert("Minimum order amount must be 0 or greater.");
+      alert(t("admin.coupons.minOrderGte0"));
       return;
     }
     const maxUses = newForm.max_uses ? parseInt(newForm.max_uses) : null;
     if (maxUses !== null && (isNaN(maxUses) || maxUses < 1)) {
-      alert("Max uses must be at least 1.");
+      alert(t("admin.coupons.maxUsesGte1"));
       return;
     }
     if (newForm.expires_at && new Date(newForm.expires_at) < new Date()) {
-      alert("Expiration date must be in the future.");
+      alert(t("admin.coupons.expirationFuture"));
       return;
     }
 
@@ -86,7 +88,7 @@ export default function AdminCouponsPage() {
     }).select().single();
 
     if (error) {
-      alert("Failed to create coupon: " + error.message);
+      alert(t("admin.coupons.createFailed", { error: error.message }));
       return;
     }
     if (data) {
@@ -145,8 +147,8 @@ export default function AdminCouponsPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage coupons.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.coupons.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.coupons.noPermission")}</p>
       </div>
     );
   }
@@ -155,31 +157,31 @@ export default function AdminCouponsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Coupons</h1>
-          <p className="text-sm text-muted mt-1">{coupons.length} coupons</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.coupons.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.coupons.couponCount", { count: coupons.length })}</p>
         </div>
         <button onClick={() => setShowNew(true)} className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark">
-          <Plus size={16} /> Add Coupon
+          <Plus size={16} /> {t("admin.coupons.addCoupon")}
         </button>
       </div>
 
       {showNew && (
         <div className="bg-white border border-border rounded-lg p-5 mb-4">
-          <h3 className="text-sm font-semibold mb-3">New Coupon</h3>
+          <h3 className="text-sm font-semibold mb-3">{t("admin.coupons.newCoupon")}</h3>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <input type="text" value={newForm.code} onChange={(e) => setNewForm({ ...newForm, code: e.target.value })} placeholder="Code (e.g. SAVE20)" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent uppercase" />
+            <input type="text" value={newForm.code} onChange={(e) => setNewForm({ ...newForm, code: e.target.value })} placeholder={t("admin.coupons.codePlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent uppercase" />
             <select value={newForm.discount_type} onChange={(e) => setNewForm({ ...newForm, discount_type: e.target.value })} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent">
-              <option value="percentage">Percentage</option>
-              <option value="fixed">Fixed Amount</option>
+              <option value="percentage">{t("admin.coupons.percentage")}</option>
+              <option value="fixed">{t("admin.coupons.fixedAmount")}</option>
             </select>
-            <input type="number" value={newForm.discount_value} onChange={(e) => setNewForm({ ...newForm, discount_value: e.target.value })} placeholder="Value" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
-            <input type="number" value={newForm.min_order_amount} onChange={(e) => setNewForm({ ...newForm, min_order_amount: e.target.value })} placeholder="Min order (optional)" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
-            <input type="number" value={newForm.max_uses} onChange={(e) => setNewForm({ ...newForm, max_uses: e.target.value })} placeholder="Max uses (optional)" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+            <input type="number" value={newForm.discount_value} onChange={(e) => setNewForm({ ...newForm, discount_value: e.target.value })} placeholder={t("admin.coupons.valuePlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+            <input type="number" value={newForm.min_order_amount} onChange={(e) => setNewForm({ ...newForm, min_order_amount: e.target.value })} placeholder={t("admin.coupons.minOrderPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+            <input type="number" value={newForm.max_uses} onChange={(e) => setNewForm({ ...newForm, max_uses: e.target.value })} placeholder={t("admin.coupons.maxUsesPlaceholder")} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
             <input type="date" value={newForm.expires_at} onChange={(e) => setNewForm({ ...newForm, expires_at: e.target.value })} className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
           </div>
           <div className="flex gap-2 mt-3">
-            <button onClick={handleCreate} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">Create</button>
-            <button onClick={() => setShowNew(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">Cancel</button>
+            <button onClick={handleCreate} className="px-3 py-1.5 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">{t("admin.coupons.create")}</button>
+            <button onClick={() => setShowNew(false)} className="px-3 py-1.5 text-sm font-medium text-muted border border-border rounded-md hover:bg-surface">{t("admin.coupons.cancel")}</button>
           </div>
         </div>
       )}
@@ -188,12 +190,12 @@ export default function AdminCouponsPage() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-surface/50">
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Code</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Discount</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Min Order</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Uses</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Expires</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">Status</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.codeHeader")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.discountHeader")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.minOrderHeader")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.usesHeader")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.expiresHeader")}</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase">{t("admin.coupons.statusHeader")}</th>
               <th className="px-4 py-3 w-20"></th>
             </tr>
           </thead>
@@ -211,17 +213,17 @@ export default function AdminCouponsPage() {
                 <tr className="border-b border-border/50 hover:bg-surface/30">
                   <td className="px-4 py-3 font-mono font-semibold text-foreground">{c.code}</td>
                   <td className="px-4 py-3">{c.discount_type === "percentage" ? `${c.discount_value}%` : formatPrice(c.discount_value)}</td>
-                  <td className="px-4 py-3 text-muted">{c.min_order_amount ? formatPrice(c.min_order_amount) : "—"}</td>
+                  <td className="px-4 py-3 text-muted">{c.min_order_amount ? formatPrice(c.min_order_amount) : "\u2014"}</td>
                   <td className="px-4 py-3">{c.current_uses}{c.max_uses ? ` / ${c.max_uses}` : ""}</td>
-                  <td className="px-4 py-3 text-xs text-muted">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : "Never"}</td>
+                  <td className="px-4 py-3 text-xs text-muted">{c.expires_at ? new Date(c.expires_at).toLocaleDateString() : t("admin.coupons.never")}</td>
                   <td className="px-4 py-3">
                     <button onClick={() => toggleActive(c.id, !c.is_active)} className={`text-xs font-medium px-2 py-0.5 rounded-full ${c.is_active ? "bg-success/10 text-success" : "bg-muted/10 text-muted"}`}>
-                      {c.is_active ? "Active" : "Inactive"}
+                      {c.is_active ? t("admin.coupons.active") : t("admin.coupons.inactive")}
                     </button>
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-1">
-                      <button onClick={() => loadAnalytics(c.code, c.id)} className="p-1.5 hover:bg-surface rounded" title="Analytics">
+                      <button onClick={() => loadAnalytics(c.code, c.id)} className="p-1.5 hover:bg-surface rounded" title={t("admin.coupons.analytics")}>
                         {analyticsId === c.id ? <ChevronUp size={14} className="text-accent" /> : <BarChart3 size={14} className="text-muted" />}
                       </button>
                       <button onClick={() => setDeleteId(c.id)} className="p-1.5 hover:bg-sale/10 rounded"><Trash2 size={14} className="text-muted hover:text-sale" /></button>
@@ -237,25 +239,25 @@ export default function AdminCouponsPage() {
                         <div className="space-y-4">
                           <div className="grid grid-cols-4 gap-3">
                             <div className="bg-white rounded-md p-3 border border-border">
-                              <p className="text-xs text-muted">Orders</p>
+                              <p className="text-xs text-muted">{t("admin.coupons.orders")}</p>
                               <p className="text-lg font-semibold text-foreground">{analytics.totalOrders}</p>
                             </div>
                             <div className="bg-white rounded-md p-3 border border-border">
-                              <p className="text-xs text-muted">Revenue Generated</p>
+                              <p className="text-xs text-muted">{t("admin.coupons.revenueGenerated")}</p>
                               <p className="text-lg font-semibold text-success">{formatPrice(analytics.totalRevenue)}</p>
                             </div>
                             <div className="bg-white rounded-md p-3 border border-border">
-                              <p className="text-xs text-muted">Total Discounted</p>
+                              <p className="text-xs text-muted">{t("admin.coupons.totalDiscounted")}</p>
                               <p className="text-lg font-semibold text-sale">{formatPrice(analytics.totalDiscount)}</p>
                             </div>
                             <div className="bg-white rounded-md p-3 border border-border">
-                              <p className="text-xs text-muted">Avg Order Value</p>
+                              <p className="text-xs text-muted">{t("admin.coupons.avgOrderValue")}</p>
                               <p className="text-lg font-semibold text-foreground">{formatPrice(analytics.avgOrderValue)}</p>
                             </div>
                           </div>
                           {analytics.recentOrders.length > 0 && (
                             <div>
-                              <p className="text-xs font-semibold text-muted uppercase mb-2">Recent Orders with this Coupon</p>
+                              <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.coupons.recentOrdersWithCoupon")}</p>
                               <div className="bg-white rounded-md border border-border divide-y divide-border/50">
                                 {analytics.recentOrders.map((o) => (
                                   <div key={o.id} className="flex items-center justify-between px-3 py-2 text-sm">
@@ -269,7 +271,7 @@ export default function AdminCouponsPage() {
                             </div>
                           )}
                           {analytics.totalOrders === 0 && (
-                            <p className="text-sm text-muted text-center py-2">No orders have used this coupon yet.</p>
+                            <p className="text-sm text-muted text-center py-2">{t("admin.coupons.noOrdersUsedCoupon")}</p>
                           )}
                         </div>
                       ) : null}
@@ -280,10 +282,10 @@ export default function AdminCouponsPage() {
             ))}
           </tbody>
         </table>
-        {!loading && coupons.length === 0 && <div className="py-8 text-center text-sm text-muted">No coupons yet</div>}
+        {!loading && coupons.length === 0 && <div className="py-8 text-center text-sm text-muted">{t("admin.coupons.noCouponsYet")}</div>}
       </div>
 
-      <ConfirmDialog isOpen={!!deleteId} title="Delete Coupon" message="This will permanently delete this coupon." confirmLabel="Delete" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
+      <ConfirmDialog isOpen={!!deleteId} title={t("admin.coupons.deleteCoupon")} message={t("admin.coupons.deleteCouponMessage")} confirmLabel={t("common.delete")} variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
     </div>
   );
 }

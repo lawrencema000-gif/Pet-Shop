@@ -27,42 +27,44 @@ import {
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
 import { useAuth } from "@/lib/supabase/auth-provider";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface NavItem {
   href: string;
   icon: LucideIcon;
-  label: string;
+  labelKey: string;
   perm?: string;
   superOnly?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/admin/products", icon: Package, label: "Products", perm: "products:read" },
-  { href: "/admin/inventory", icon: Warehouse, label: "Inventory", perm: "products:read" },
-  { href: "/admin/collections", icon: Layers, label: "Collections", perm: "products:read" },
-  { href: "/admin/categories", icon: FolderOpen, label: "Categories", perm: "categories:read" },
-  { href: "/admin/orders", icon: ShoppingBag, label: "Orders", perm: "orders:read" },
-  { href: "/admin/returns", icon: RotateCcw, label: "Returns", perm: "orders:read" },
-  { href: "/admin/customers", icon: Users, label: "Customers", perm: "customers:read" },
-  { href: "/admin/reviews", icon: MessageSquare, label: "Reviews", perm: "reviews:read" },
-  { href: "/admin/chat", icon: MessageCircle, label: "Chat" },
-  { href: "/admin/coupons", icon: Ticket, label: "Coupons", perm: "coupons:read" },
-  { href: "/admin/newsletter", icon: Mail, label: "Newsletter", perm: "newsletter:read" },
-  { href: "/admin/analytics", icon: BarChart3, label: "Analytics", perm: "analytics:read" },
-  { href: "/admin/content", icon: FileText, label: "Content", perm: "content:read" },
-  { href: "/admin/staff", icon: UserCog, label: "Staff", superOnly: true },
-  { href: "/admin/settings", icon: Settings, label: "Settings", perm: "settings:read" },
+const NAV_ITEMS: NavItem[] = [
+  { href: "/admin", icon: LayoutDashboard, labelKey: "dashboard" },
+  { href: "/admin/products", icon: Package, labelKey: "products", perm: "products:read" },
+  { href: "/admin/inventory", icon: Warehouse, labelKey: "inventory", perm: "products:read" },
+  { href: "/admin/collections", icon: Layers, labelKey: "collections", perm: "products:read" },
+  { href: "/admin/categories", icon: FolderOpen, labelKey: "categories", perm: "categories:read" },
+  { href: "/admin/orders", icon: ShoppingBag, labelKey: "orders", perm: "orders:read" },
+  { href: "/admin/returns", icon: RotateCcw, labelKey: "returns", perm: "orders:read" },
+  { href: "/admin/customers", icon: Users, labelKey: "customers", perm: "customers:read" },
+  { href: "/admin/reviews", icon: MessageSquare, labelKey: "reviews", perm: "reviews:read" },
+  { href: "/admin/chat", icon: MessageCircle, labelKey: "chat" },
+  { href: "/admin/coupons", icon: Ticket, labelKey: "coupons", perm: "coupons:read" },
+  { href: "/admin/newsletter", icon: Mail, labelKey: "newsletter", perm: "newsletter:read" },
+  { href: "/admin/analytics", icon: BarChart3, labelKey: "analytics", perm: "analytics:read" },
+  { href: "/admin/content", icon: FileText, labelKey: "content", perm: "content:read" },
+  { href: "/admin/staff", icon: UserCog, labelKey: "staff", superOnly: true },
+  { href: "/admin/settings", icon: Settings, labelKey: "settings", perm: "settings:read" },
 ];
 
 export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const { isSuperAdmin, hasPermission, roleName } = useStaffPermissions();
   const { profile, signOut } = useAuth();
+  const { t } = useTranslation();
 
   const filteredNav = useMemo(() => {
-    if (isSuperAdmin) return navItems;
-    return navItems.filter((item) => {
+    if (isSuperAdmin) return NAV_ITEMS;
+    return NAV_ITEMS.filter((item) => {
       if (item.superOnly) return false;
       if (item.perm) return hasPermission(item.perm);
       return true;
@@ -82,7 +84,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
           PETLIBRO
         </Link>
         <span className="ml-2 text-[10px] font-semibold text-accent bg-accent-light px-1.5 py-0.5 rounded">
-          Admin
+          {t("admin.sidebar.admin")}
         </span>
       </div>
 
@@ -105,7 +107,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
                   )}
                 >
                   <Icon size={18} className={active ? "text-white" : ""} />
-                  {item.label}
+                  {t(`admin.sidebar.${item.labelKey}`)}
                 </Link>
               </li>
             );
@@ -132,14 +134,14 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-accent hover:bg-accent-light rounded-md transition-colors"
         >
           <Store size={16} />
-          Back to Store
+          {t("admin.sidebar.backToStore")}
         </Link>
         <button
           onClick={signOut}
           className="flex items-center gap-2 w-full px-3 py-2 text-sm text-muted hover:text-sale hover:bg-sale/5 rounded-md transition-colors"
         >
           <LogOut size={16} />
-          Sign Out
+          {t("admin.sidebar.signOut")}
         </button>
       </div>
     </aside>

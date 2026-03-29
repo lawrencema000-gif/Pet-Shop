@@ -14,6 +14,7 @@ import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth-provider";
 import { cn } from "@/lib/utils";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 interface Conversation {
   id: string;
@@ -34,6 +35,7 @@ interface ChatMessage {
 }
 
 export default function AdminChatPage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -232,7 +234,7 @@ export default function AdminChatPage() {
   if (!isSuperAdmin && !hasPermission("chat:read")) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-muted">You don&apos;t have permission to access chat.</p>
+        <p className="text-muted">{t("admin.chat.noPermission")}</p>
       </div>
     );
   }
@@ -242,15 +244,15 @@ export default function AdminChatPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-display font-bold text-foreground">
-            Customer Chat
+            {t("admin.chat.title")}
           </h1>
           <p className="text-sm text-muted mt-1">
-            Manage and reply to customer support conversations
+            {t("admin.chat.subtitle")}
           </p>
         </div>
         <ShadcnButton variant="outline" size="sm" onClick={fetchConversations}>
           <RefreshCw className="h-4 w-4 mr-2" />
-          Refresh
+          {t("admin.chat.refresh")}
         </ShadcnButton>
       </div>
 
@@ -259,14 +261,14 @@ export default function AdminChatPage() {
         <div className="w-80 border-r border-border flex flex-col shrink-0">
           <div className="p-3 border-b border-border">
             <h2 className="text-sm font-semibold text-foreground">
-              Conversations ({conversations.length})
+              {t("admin.chat.conversationsCount", { count: conversations.length })}
             </h2>
           </div>
           <div className="flex-1 overflow-y-auto">
             {conversations.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-muted px-4">
                 <MessageCircle className="h-10 w-10 mb-3 opacity-30" />
-                <p className="text-sm text-center">No conversations yet</p>
+                <p className="text-sm text-center">{t("admin.chat.noConversationsYet")}</p>
               </div>
             ) : (
               conversations.map((convo) => (
@@ -280,7 +282,7 @@ export default function AdminChatPage() {
                 >
                   <div className="flex items-center justify-between mb-1">
                     <span className="text-sm font-medium text-foreground truncate">
-                      {convo.customer_email || "Anonymous"}
+                      {convo.customer_email || t("admin.chat.anonymous")}
                     </span>
                     <span
                       className={cn(
@@ -294,7 +296,7 @@ export default function AdminChatPage() {
                     </span>
                   </div>
                   <p className="text-xs text-muted truncate">
-                    {previews[convo.id] || "No messages yet"}
+                    {previews[convo.id] || t("admin.chat.noMessagesPreview")}
                   </p>
                   <p className="text-[10px] text-muted/70 mt-1">
                     {new Date(convo.updated_at).toLocaleString()}
@@ -313,10 +315,10 @@ export default function AdminChatPage() {
               <div className="flex items-center justify-between p-4 border-b border-border">
                 <div>
                   <p className="text-sm font-semibold text-foreground">
-                    {selectedConvo.customer_email || "Anonymous"}
+                    {selectedConvo.customer_email || t("admin.chat.anonymous")}
                   </p>
                   <p className="text-xs text-muted">
-                    Started {new Date(selectedConvo.created_at).toLocaleString()}
+                    {t("admin.chat.started", { date: new Date(selectedConvo.created_at).toLocaleString() })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -327,7 +329,7 @@ export default function AdminChatPage() {
                       onClick={() => closeConversation(selectedConvo.id)}
                     >
                       <X className="h-3 w-3 mr-1" />
-                      Close
+                      {t("admin.chat.close")}
                     </ShadcnButton>
                   ) : (
                     <ShadcnButton
@@ -336,7 +338,7 @@ export default function AdminChatPage() {
                       onClick={() => reopenConversation(selectedConvo.id)}
                     >
                       <RefreshCw className="h-3 w-3 mr-1" />
-                      Reopen
+                      {t("admin.chat.reopen")}
                     </ShadcnButton>
                   )}
                 </div>
@@ -365,7 +367,7 @@ export default function AdminChatPage() {
                   ))}
                   {messages.length === 0 && (
                     <p className="text-sm text-muted text-center py-8">
-                      No messages in this conversation yet.
+                      {t("admin.chat.noMessagesYet")}
                     </p>
                   )}
                 </ChatMessageList>
@@ -386,7 +388,7 @@ export default function AdminChatPage() {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKeyDown}
-                      placeholder="Type a reply..."
+                      placeholder={t("admin.chat.typeReply")}
                       disabled={sending}
                     />
                     <ShadcnButton
@@ -405,12 +407,12 @@ export default function AdminChatPage() {
               {selectedConvo.status === "closed" && (
                 <div className="border-t border-border p-4 text-center">
                   <p className="text-sm text-muted">
-                    This conversation is closed.{" "}
+                    {t("admin.chat.conversationClosed")}{" "}
                     <button
                       className="text-accent underline"
                       onClick={() => reopenConversation(selectedConvo.id)}
                     >
-                      Reopen it
+                      {t("admin.chat.reopenIt")}
                     </button>
                   </p>
                 </div>
@@ -419,7 +421,7 @@ export default function AdminChatPage() {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-muted">
               <MessageCircle className="h-12 w-12 mb-4 opacity-20" />
-              <p className="text-sm">Select a conversation to view messages</p>
+              <p className="text-sm">{t("admin.chat.selectConversation")}</p>
             </div>
           )}
         </div>

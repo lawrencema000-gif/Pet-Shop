@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Minus, Plus, Trash2, ShoppingBag, Lock, Bookmark } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Drawer } from "@/components/ui/Drawer";
 import { Button } from "@/components/ui/Button";
 import FocusTrap from "@/components/ui/FocusTrap";
@@ -13,6 +14,7 @@ import { formatPrice } from "@/lib/utils";
 import { SHIPPING_COST, FREE_SHIPPING_THRESHOLD, TAX_RATE } from "@/lib/constants";
 
 export function CartDrawer() {
+  const { t } = useTranslation();
   const router = useRouter();
   const items = useCartStore((s) => s.items);
   const isOpen = useCartStore((s) => s.isOpen);
@@ -34,28 +36,35 @@ export function CartDrawer() {
   const estimatedTax = subtotal * TAX_RATE;
   const estimatedTotal = subtotal + estimatedShipping + estimatedTax;
 
+  const paymentMethods = [
+    t("cartDrawer.visa"),
+    t("cartDrawer.mastercard"),
+    t("cartDrawer.amex"),
+    t("cartDrawer.paypal"),
+  ];
+
   return (
     <Drawer
       isOpen={isOpen}
       onClose={closeDrawer}
-      title={`Cart (${totalItems})`}
+      title={t("cartDrawer.cartTitle", { count: totalItems })}
       side="right"
       role="dialog"
       aria-modal={true}
-      aria-label="Shopping cart"
+      aria-label={t("cartDrawer.shoppingCart")}
     >
       <FocusTrap active={isOpen} onEscape={closeDrawer}>
       {items.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-full px-6 py-16 text-center">
           <ShoppingBag size={48} className="text-border mb-4" />
           <p className="text-lg font-medium text-foreground mb-1">
-            Your cart is empty
+            {t("cartDrawer.emptyTitle")}
           </p>
           <p className="text-sm text-muted mb-6">
-            Add some products to get started.
+            {t("cartDrawer.emptyDesc")}
           </p>
           <Button variant="primary" onClick={closeDrawer}>
-            Continue Shopping
+            {t("cartDrawer.continueShopping")}
           </Button>
         </div>
       ) : (
@@ -64,15 +73,11 @@ export function CartDrawer() {
           <div className="px-6 py-3 bg-surface/50 border-b border-border">
             {hasFreeShipping ? (
               <p className="text-sm text-success font-medium text-center">
-                You&apos;ve earned free shipping!
+                {t("cartDrawer.freeShippingEarned")}
               </p>
             ) : (
               <p className="text-sm text-muted text-center">
-                You&apos;re{" "}
-                <span className="font-semibold text-foreground">
-                  {formatPrice(amountToFreeShipping)}
-                </span>{" "}
-                away from free shipping!
+                {t("cartDrawer.awayFromFreeShipping", { amount: formatPrice(amountToFreeShipping) })}
               </p>
             )}
             <div className="mt-2 h-2 bg-border/50 rounded-full overflow-hidden">
@@ -135,7 +140,7 @@ export function CartDrawer() {
                             updateQuantity(item.id, item.quantity - 1)
                           }
                           className="p-1.5 hover:bg-surface-light transition-colors rounded-l-lg"
-                          aria-label="Decrease quantity"
+                          aria-label={t("cartDrawer.decreaseQuantity")}
                         >
                           <Minus size={14} />
                         </button>
@@ -147,7 +152,7 @@ export function CartDrawer() {
                             updateQuantity(item.id, item.quantity + 1)
                           }
                           className="p-1.5 hover:bg-surface-light transition-colors rounded-r-lg"
-                          aria-label="Increase quantity"
+                          aria-label={t("cartDrawer.increaseQuantity")}
                         >
                           <Plus size={14} />
                         </button>
@@ -155,15 +160,15 @@ export function CartDrawer() {
                       <button
                         onClick={() => saveForLater(item.id)}
                         className="p-1.5 text-muted hover:text-accent transition-colors"
-                        aria-label="Save for later"
-                        title="Save for Later"
+                        aria-label={t("cartDrawer.saveForLater")}
+                        title={t("cartDrawer.saveForLater")}
                       >
                         <Bookmark size={14} />
                       </button>
                       <button
                         onClick={() => removeItem(item.id)}
                         className="p-1.5 text-muted hover:text-sale transition-colors"
-                        aria-label="Remove item"
+                        aria-label={t("cartDrawer.removeItem")}
                       >
                         <Trash2 size={14} />
                       </button>
@@ -185,7 +190,7 @@ export function CartDrawer() {
                 onClick={closeDrawer}
                 className="text-sm font-medium text-accent hover:underline"
               >
-                Browse more products
+                {t("cartDrawer.browseMore")}
               </Link>
             </div>
           </div>
@@ -195,30 +200,30 @@ export function CartDrawer() {
             {/* Order Summary Lines */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Subtotal</span>
+                <span className="text-muted">{t("cartDrawer.subtotal")}</span>
                 <span className="font-medium text-foreground">
                   {formatPrice(subtotal)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Shipping</span>
+                <span className="text-muted">{t("cartDrawer.shipping")}</span>
                 <span
                   className={`font-medium ${
                     hasFreeShipping ? "text-success" : "text-foreground"
                   }`}
                 >
-                  {hasFreeShipping ? "FREE" : formatPrice(estimatedShipping)}
+                  {hasFreeShipping ? t("cartDrawer.free") : formatPrice(estimatedShipping)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted">Est. Tax</span>
+                <span className="text-muted">{t("cartDrawer.estTax")}</span>
                 <span className="font-medium text-foreground">
                   {formatPrice(estimatedTax)}
                 </span>
               </div>
               <div className="flex items-center justify-between pt-2 border-t border-border">
                 <span className="text-sm font-semibold text-foreground">
-                  Estimated Total
+                  {t("cartDrawer.estimatedTotal")}
                 </span>
                 <span className="text-lg font-bold text-foreground">
                   {formatPrice(estimatedTotal)}
@@ -229,7 +234,7 @@ export function CartDrawer() {
             {/* Secure Checkout */}
             <div className="flex items-center justify-center gap-1.5 text-xs text-muted">
               <Lock className="w-3.5 h-3.5" />
-              <span>Secure Checkout — SSL Encrypted</span>
+              <span>{t("cartDrawer.secureCheckout")}</span>
             </div>
 
             <Button
@@ -240,12 +245,12 @@ export function CartDrawer() {
                 router.push("/checkout");
               }}
             >
-              Checkout
+              {t("cartDrawer.checkout")}
             </Button>
 
             {/* Payment Method Icons */}
             <div className="flex items-center justify-center gap-2">
-              {["Visa", "Mastercard", "Amex", "PayPal"].map((method) => (
+              {paymentMethods.map((method) => (
                 <span
                   key={method}
                   className="text-[10px] font-medium text-muted bg-surface px-2 py-1 rounded border border-border"
@@ -259,7 +264,7 @@ export function CartDrawer() {
               onClick={closeDrawer}
               className="w-full text-center text-sm text-muted hover:text-foreground underline transition-colors"
             >
-              Continue Shopping
+              {t("cartDrawer.continueShopping")}
             </button>
           </div>
         </div>

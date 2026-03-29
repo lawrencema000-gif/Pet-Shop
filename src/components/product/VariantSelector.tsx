@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import type { ProductVariant } from "@/types/product";
 
@@ -35,6 +36,8 @@ export default function VariantSelector({
   onSelect,
   type,
 }: VariantSelectorProps) {
+  const { t } = useTranslation();
+
   if (type === "color") {
     return (
       <div className="flex flex-wrap gap-3">
@@ -45,7 +48,7 @@ export default function VariantSelector({
               key={v.id}
               onClick={() => !outOfStock && onSelect(v.id)}
               disabled={outOfStock}
-              title={outOfStock ? `${v.name} - Out of Stock` : v.name}
+              title={outOfStock ? t("variantSelector.outOfStockTitle", { name: v.name }) : v.name}
               className={cn(
                 "relative w-8 h-8 rounded-full border-2 transition-all",
                 outOfStock && "opacity-40 cursor-not-allowed",
@@ -100,7 +103,7 @@ export default function VariantSelector({
             {v.name}
             {outOfStock && (
               <span className="block text-[10px] text-muted no-underline">
-                Out of Stock
+                {t("variantSelector.outOfStock")}
               </span>
             )}
           </button>

@@ -9,6 +9,7 @@ import { DataTable, type Column } from "@/components/admin/DataTable";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { logAdminAction } from "@/lib/audit-log";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 interface Subscriber {
   id: string;
@@ -20,6 +21,7 @@ interface Subscriber {
 type Tab = "subscribers" | "compose";
 
 export default function AdminNewsletterPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [tab, setTab] = useState<Tab>("subscribers");
 
@@ -92,7 +94,7 @@ export default function AdminNewsletterPage() {
     const emails = allSubs?.map((s) => s.email) ?? [];
     if (emails.length === 0) {
       setSending(false);
-      alert("No subscribers to send to.");
+      alert(t("admin.newsletter.noSubscribersToSend"));
       return;
     }
 
@@ -135,11 +137,11 @@ export default function AdminNewsletterPage() {
   }
 
   const columns: Column<Subscriber>[] = [
-    { key: "email", label: "Email", sortable: true, render: (row) => <span className="text-sm font-medium">{row.email}</span> },
-    { key: "source", label: "Source", render: (row) => <span className="text-xs text-muted capitalize">{row.source?.replace("_", " ") ?? "—"}</span> },
+    { key: "email", label: t("admin.newsletter.emailLabel"), sortable: true, render: (row) => <span className="text-sm font-medium">{row.email}</span> },
+    { key: "source", label: t("admin.newsletter.sourceLabel"), render: (row) => <span className="text-xs text-muted capitalize">{row.source?.replace("_", " ") ?? "\u2014"}</span> },
     {
       key: "subscribed_at",
-      label: "Date",
+      label: t("admin.newsletter.dateLabel"),
       sortable: true,
       render: (row) => <span className="text-xs text-muted">{new Date(row.subscribed_at).toLocaleDateString()}</span>,
     },
@@ -159,8 +161,8 @@ export default function AdminNewsletterPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to view newsletter subscribers.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.newsletter.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.newsletter.noPermission")}</p>
       </div>
     );
   }
@@ -169,12 +171,12 @@ export default function AdminNewsletterPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Newsletter</h1>
-          <p className="text-sm text-muted mt-1">{total} subscribers</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.newsletter.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.newsletter.subscriberCount", { count: total })}</p>
         </div>
         {tab === "subscribers" && (
           <button onClick={exportCSV} disabled={subscribers.length === 0} className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark disabled:opacity-60">
-            <Download size={16} /> Export CSV
+            <Download size={16} /> {t("admin.newsletter.exportCSV")}
           </button>
         )}
       </div>
@@ -187,7 +189,7 @@ export default function AdminNewsletterPage() {
             tab === "subscribers" ? "border-accent text-accent" : "border-transparent text-muted hover:text-foreground"
           }`}
         >
-          <Users size={14} /> Subscribers
+          <Users size={14} /> {t("admin.newsletter.subscribersTab")}
         </button>
         <button
           onClick={() => setTab("compose")}
@@ -195,18 +197,18 @@ export default function AdminNewsletterPage() {
             tab === "compose" ? "border-accent text-accent" : "border-transparent text-muted hover:text-foreground"
           }`}
         >
-          <Mail size={14} /> Compose Campaign
+          <Mail size={14} /> {t("admin.newsletter.composeTab")}
         </button>
       </div>
 
       {/* Subscribers Tab */}
       {tab === "subscribers" && (
         <>
-          <DataTable columns={columns} data={subscribers} loading={loading} emptyTitle="No subscribers yet" />
+          <DataTable columns={columns} data={subscribers} loading={loading} emptyTitle={t("admin.newsletter.noSubscribersYet")} />
           {total > PAGE_SIZE && (
             <div className="flex items-center justify-between mt-4 text-sm">
               <span className="text-muted">
-                Showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, total)} of {total}
+                {t("admin.newsletter.showingRange", { from: page * PAGE_SIZE + 1, to: Math.min((page + 1) * PAGE_SIZE, total), total })}
               </span>
               <div className="flex gap-2">
                 <button
@@ -214,14 +216,14 @@ export default function AdminNewsletterPage() {
                   disabled={page === 0}
                   className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-surface disabled:opacity-40"
                 >
-                  Previous
+                  {t("admin.newsletter.previous")}
                 </button>
                 <button
                   onClick={() => setPage((p) => p + 1)}
                   disabled={(page + 1) * PAGE_SIZE >= total}
                   className="px-3 py-1.5 text-sm border border-border rounded-md hover:bg-surface disabled:opacity-40"
                 >
-                  Next
+                  {t("admin.newsletter.next")}
                 </button>
               </div>
             </div>
@@ -235,18 +237,18 @@ export default function AdminNewsletterPage() {
           {sendResult ? (
             <div className="bg-white border border-border rounded-lg p-8 text-center">
               <CheckCircle size={40} className="mx-auto text-success mb-3" />
-              <h2 className="text-lg font-semibold text-foreground mb-2">Campaign Sent!</h2>
+              <h2 className="text-lg font-semibold text-foreground mb-2">{t("admin.newsletter.campaignSent")}</h2>
               <p className="text-sm text-muted">
-                Successfully sent to <span className="font-semibold text-success">{sendResult.sent}</span> subscriber{sendResult.sent !== 1 ? "s" : ""}.
+                {t("admin.newsletter.sentSuccess")} <span className="font-semibold text-success">{sendResult.sent}</span> {sendResult.sent !== 1 ? t("admin.newsletter.subscribers") : t("admin.newsletter.subscriber")}.
                 {sendResult.failed > 0 && (
-                  <> <span className="font-semibold text-sale">{sendResult.failed}</span> failed.</>
+                  <> <span className="font-semibold text-sale">{t("admin.newsletter.failedCount", { count: sendResult.failed })}</span></>
                 )}
               </p>
               <button
                 onClick={() => { setSendResult(null); setSubject(""); setBody(""); setPreheader(""); }}
                 className="mt-4 inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark"
               >
-                Compose Another
+                {t("admin.newsletter.composeAnother")}
               </button>
             </div>
           ) : (
@@ -254,41 +256,41 @@ export default function AdminNewsletterPage() {
               <div className="bg-white border border-border rounded-lg p-6 space-y-5">
                 {/* Subject */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Subject Line *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.newsletter.subjectLine")}</label>
                   <input
                     type="text"
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
-                    placeholder="e.g. New arrivals for your furry friend!"
+                    placeholder={t("admin.newsletter.subjectPlaceholder")}
                   />
                 </div>
 
                 {/* Preheader */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Preheader Text</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.newsletter.preheaderText")}</label>
                   <input
                     type="text"
                     maxLength={120}
                     value={preheader}
                     onChange={(e) => setPreheader(e.target.value)}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
-                    placeholder="Preview text shown in inbox (optional)"
+                    placeholder={t("admin.newsletter.preheaderPlaceholder")}
                   />
-                  <p className="text-xs text-muted mt-1">{preheader.length}/120 characters</p>
+                  <p className="text-xs text-muted mt-1">{t("admin.newsletter.preheaderCharCount", { count: preheader.length })}</p>
                 </div>
 
                 {/* Body */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Email Body *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.newsletter.emailBody")}</label>
                   <textarea
                     value={body}
                     onChange={(e) => setBody(e.target.value)}
                     rows={12}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y font-mono"
-                    placeholder={"Write your email here...\n\nSeparate paragraphs with blank lines.\nLine breaks within a paragraph are preserved."}
+                    placeholder={t("admin.newsletter.bodyPlaceholder")}
                   />
-                  <p className="text-xs text-muted mt-1">Plain text — paragraphs separated by blank lines. Will be wrapped in a branded PETLIBRO email template with a &quot;Shop Now&quot; button.</p>
+                  <p className="text-xs text-muted mt-1">{t("admin.newsletter.bodyHelpText")}</p>
                 </div>
               </div>
 
@@ -296,15 +298,15 @@ export default function AdminNewsletterPage() {
               {previewing && body && (
                 <div className="bg-white border border-border rounded-lg overflow-hidden">
                   <div className="px-5 py-3 border-b border-border bg-surface/50 flex items-center justify-between">
-                    <p className="text-xs font-semibold text-muted uppercase">Email Preview</p>
-                    <button onClick={() => setPreviewing(false)} className="text-xs text-muted hover:text-foreground">Close</button>
+                    <p className="text-xs font-semibold text-muted uppercase">{t("admin.newsletter.emailPreview")}</p>
+                    <button onClick={() => setPreviewing(false)} className="text-xs text-muted hover:text-foreground">{t("admin.newsletter.closePreview")}</button>
                   </div>
                   <div className="p-6">
                     <div className="max-w-md mx-auto">
                       <div className="text-center mb-4">
                         <p className="text-lg font-display font-bold text-foreground">PETLIBRO</p>
                       </div>
-                      <p className="text-xs text-muted mb-4">Subject: <span className="font-medium text-foreground">{subject || "(no subject)"}</span></p>
+                      <p className="text-xs text-muted mb-4">Subject: <span className="font-medium text-foreground">{subject || t("admin.newsletter.noSubject")}</span></p>
                       <div className="text-sm text-foreground leading-relaxed">
                         {body.split("\n\n").map((para, i) => (
                           <p key={i} className="mb-3">{para.split("\n").map((line, j) => (
@@ -313,9 +315,9 @@ export default function AdminNewsletterPage() {
                         ))}
                       </div>
                       <div className="text-center mt-6">
-                        <span className="inline-block bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-semibold">Shop Now</span>
+                        <span className="inline-block bg-accent text-white px-6 py-2.5 rounded-lg text-sm font-semibold">{t("common.shopNow")}</span>
                       </div>
-                      <p className="text-[10px] text-muted text-center mt-6">You&apos;re receiving this because you subscribed to the PETLIBRO newsletter.</p>
+                      <p className="text-[10px] text-muted text-center mt-6">{t("admin.newsletter.subscriptionNotice")}</p>
                     </div>
                   </div>
                 </div>
@@ -325,7 +327,7 @@ export default function AdminNewsletterPage() {
               <div className="bg-surface/50 border border-border rounded-lg p-4 flex items-center gap-3">
                 <Users size={16} className="text-muted shrink-0" />
                 <p className="text-sm text-foreground">
-                  This campaign will be sent to <span className="font-semibold">{total}</span> subscriber{total !== 1 ? "s" : ""}.
+                  {t("admin.newsletter.recipientInfo")} <span className="font-semibold">{total}</span> {total !== 1 ? t("admin.newsletter.subscribers") : t("admin.newsletter.subscriber")}.
                 </p>
               </div>
 
@@ -336,14 +338,14 @@ export default function AdminNewsletterPage() {
                   disabled={!body}
                   className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors disabled:opacity-40"
                 >
-                  <Eye size={14} /> {previewing ? "Hide Preview" : "Preview"}
+                  <Eye size={14} /> {previewing ? t("admin.newsletter.hidePreview") : t("admin.newsletter.preview")}
                 </button>
                 <button
                   onClick={() => setConfirmSend(true)}
                   disabled={!subject || !body || sending || total === 0}
                   className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-60"
                 >
-                  <Send size={14} /> {sending ? "Sending..." : `Send to ${total} Subscriber${total !== 1 ? "s" : ""}`}
+                  <Send size={14} /> {sending ? t("admin.newsletter.sending") : t("admin.newsletter.sendTo", { count: total })}
                 </button>
               </div>
             </div>
@@ -351,12 +353,12 @@ export default function AdminNewsletterPage() {
         </div>
       )}
 
-      <ConfirmDialog isOpen={!!deleteId} title="Remove Subscriber" message="This will remove this email from the subscriber list." confirmLabel="Remove" variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
+      <ConfirmDialog isOpen={!!deleteId} title={t("admin.newsletter.removeSubscriber")} message={t("admin.newsletter.removeSubscriberMessage")} confirmLabel={t("common.delete")} variant="danger" onConfirm={handleDelete} onCancel={() => setDeleteId(null)} />
       <ConfirmDialog
         isOpen={confirmSend}
-        title="Send Campaign"
-        message={`This will send "${subject}" to ${total} subscribers. This action cannot be undone.`}
-        confirmLabel="Send Now"
+        title={t("admin.newsletter.sendCampaign")}
+        message={t("admin.newsletter.sendCampaignMessage", { subject, count: total })}
+        confirmLabel={t("admin.newsletter.sendNow")}
         variant="danger"
         onConfirm={handleSendCampaign}
         onCancel={() => setConfirmSend(false)}

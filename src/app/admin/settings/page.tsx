@@ -5,6 +5,7 @@ import { Save, Check, Shield, Truck } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
+import { useTranslation } from "react-i18next";
 
 interface ShippingRule {
   name: string;
@@ -31,6 +32,7 @@ interface SettingsState {
 }
 
 export default function AdminSettingsPage() {
+  const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [settings, setSettings] = useState<SettingsState>({
     store_name: "PETLIBRO",
@@ -125,8 +127,8 @@ export default function AdminSettingsPage() {
     return (
       <div className="text-center py-20">
         <Shield size={40} className="text-muted mx-auto mb-3" />
-        <h2 className="text-lg font-semibold text-foreground">Access Restricted</h2>
-        <p className="text-sm text-muted mt-1">You don&apos;t have permission to manage settings.</p>
+        <h2 className="text-lg font-semibold text-foreground">{t("admin.settings.accessRestricted")}</h2>
+        <p className="text-sm text-muted mt-1">{t("admin.settings.noPermission")}</p>
       </div>
     );
   }
@@ -139,25 +141,25 @@ export default function AdminSettingsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Settings</h1>
-          <p className="text-sm text-muted mt-1">Store configuration</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.settings.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.settings.subtitle")}</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
           className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-60"
         >
-          {saved ? <><Check size={16} /> Saved</> : <><Save size={16} /> {saving ? "Saving..." : "Save All"}</>}
+          {saved ? <><Check size={16} /> {t("admin.settings.saved")}</> : <><Save size={16} /> {saving ? t("admin.settings.saving") : t("admin.settings.saveAll")}</>}
         </button>
       </div>
 
       <div className="max-w-3xl space-y-6">
         {/* Store Info */}
         <div className="bg-white border border-border rounded-lg p-6">
-          <h2 className="text-sm font-semibold text-foreground mb-4">Store Information</h2>
+          <h2 className="text-sm font-semibold text-foreground mb-4">{t("admin.settings.storeInformation")}</h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Store Name</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.settings.storeName")}</label>
               <input
                 type="text"
                 value={settings.store_name}
@@ -166,15 +168,15 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">Currency</label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.settings.currency")}</label>
               <select
                 value={settings.store_currency}
                 onChange={(e) => setSettings({ ...settings, store_currency: e.target.value })}
                 className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
               >
                 <option value="USD">USD ($)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="GBP">GBP (£)</option>
+                <option value="EUR">EUR (&euro;)</option>
+                <option value="GBP">GBP (&pound;)</option>
               </select>
             </div>
           </div>
@@ -184,13 +186,13 @@ export default function AdminSettingsPage() {
         <div className="bg-white border border-border rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
             <Truck size={16} className="text-accent" />
-            <h2 className="text-sm font-semibold text-foreground">Shipping & Tax</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("admin.settings.shippingAndTax")}</h2>
           </div>
           <div className="space-y-5">
             {/* Default Flat Rate */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Default Shipping Rate</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.settings.defaultShippingRate")}</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">$</span>
                   <input
@@ -202,10 +204,10 @@ export default function AdminSettingsPage() {
                     className="w-full pl-7 pr-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
                   />
                 </div>
-                <p className="text-xs text-muted mt-1">Flat rate applied to all orders</p>
+                <p className="text-xs text-muted mt-1">{t("admin.settings.defaultShippingHelp")}</p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-foreground mb-1.5">Free Shipping Over</label>
+                <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.settings.freeShippingOver")}</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted">$</span>
                   <input
@@ -214,23 +216,23 @@ export default function AdminSettingsPage() {
                     min="0"
                     value={settings.shipping.free_shipping_threshold ?? ""}
                     onChange={(e) => setSettings({ ...settings, shipping: { ...settings.shipping, free_shipping_threshold: e.target.value ? parseFloat(e.target.value) : null } })}
-                    placeholder="Disabled"
+                    placeholder={t("admin.settings.disabled")}
                     className="w-full pl-7 pr-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
                   />
                 </div>
-                <p className="text-xs text-muted mt-1">Leave empty to disable free shipping</p>
+                <p className="text-xs text-muted mt-1">{t("admin.settings.freeShippingHelp")}</p>
               </div>
             </div>
 
             {/* Shipping preview */}
             <div className="bg-surface/50 rounded-md p-4">
-              <p className="text-xs font-semibold text-muted uppercase mb-2">Customer sees</p>
+              <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.settings.customerSees")}</p>
               <div className="space-y-1 text-sm text-foreground">
-                <p>Standard Shipping: <span className="font-medium">${settings.shipping.default_rate.toFixed(2)}</span></p>
+                <p>{t("admin.settings.standardShipping")} <span className="font-medium">${settings.shipping.default_rate.toFixed(2)}</span></p>
                 {settings.shipping.free_shipping_threshold ? (
-                  <p className="text-success">Free shipping on orders over <span className="font-medium">${settings.shipping.free_shipping_threshold.toFixed(2)}</span></p>
+                  <p className="text-success">{t("admin.settings.freeShippingOnOrders")} <span className="font-medium">${settings.shipping.free_shipping_threshold.toFixed(2)}</span></p>
                 ) : (
-                  <p className="text-muted">Free shipping: disabled</p>
+                  <p className="text-muted">{t("admin.settings.freeShippingDisabled")}</p>
                 )}
               </div>
             </div>
@@ -238,7 +240,7 @@ export default function AdminSettingsPage() {
             {/* Custom shipping rules */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label className="block text-sm font-medium text-foreground">Custom Shipping Rules</label>
+                <label className="block text-sm font-medium text-foreground">{t("admin.settings.customShippingRules")}</label>
                 <button
                   onClick={() => setSettings({
                     ...settings,
@@ -249,11 +251,11 @@ export default function AdminSettingsPage() {
                   })}
                   className="text-xs text-accent hover:underline"
                 >
-                  + Add Rule
+                  {t("admin.settings.addRule")}
                 </button>
               </div>
               {settings.shipping.rules.length === 0 ? (
-                <p className="text-xs text-muted">No custom rules. Only the default flat rate applies.</p>
+                <p className="text-xs text-muted">{t("admin.settings.noCustomRules")}</p>
               ) : (
                 <div className="space-y-2">
                   {settings.shipping.rules.map((rule, idx) => (
@@ -277,7 +279,7 @@ export default function AdminSettingsPage() {
                           setSettings({ ...settings, shipping: { ...settings.shipping, rules } });
                         }}
                         className="flex-1 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent"
-                        placeholder="Rule name"
+                        placeholder={t("admin.settings.ruleNamePlaceholder")}
                       />
                       <div className="flex items-center gap-1">
                         <span className="text-xs text-muted">$</span>
@@ -306,7 +308,7 @@ export default function AdminSettingsPage() {
                             rules[idx] = { ...rules[idx], min_order: e.target.value ? parseFloat(e.target.value) : null };
                             setSettings({ ...settings, shipping: { ...settings.shipping, rules } });
                           }}
-                          placeholder="Any"
+                          placeholder={t("admin.settings.minPlaceholder")}
                           className="w-20 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent"
                         />
                       </div>
@@ -317,7 +319,7 @@ export default function AdminSettingsPage() {
                         }}
                         className="text-xs text-sale hover:underline shrink-0"
                       >
-                        Remove
+                        {t("admin.settings.remove")}
                       </button>
                     </div>
                   ))}
@@ -337,11 +339,11 @@ export default function AdminSettingsPage() {
                   onChange={(e) => setSettings({ ...settings, shipping: { ...settings.shipping, tax_enabled: e.target.checked } })}
                   className="rounded border-border"
                 />
-                <span className="font-medium text-foreground">Enable Tax</span>
+                <span className="font-medium text-foreground">{t("admin.settings.enableTax")}</span>
               </label>
               {settings.shipping.tax_enabled && (
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Tax Rate (%)</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.settings.taxRate")}</label>
                   <div className="relative w-40">
                     <input
                       type="number"
@@ -354,7 +356,7 @@ export default function AdminSettingsPage() {
                     />
                     <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted">%</span>
                   </div>
-                  <p className="text-xs text-muted mt-1">Applied to order subtotal at checkout</p>
+                  <p className="text-xs text-muted mt-1">{t("admin.settings.taxRateHelp")}</p>
                 </div>
               )}
             </div>
@@ -363,13 +365,13 @@ export default function AdminSettingsPage() {
 
         {/* Super Admin Emails */}
         <div className="bg-white border border-border rounded-lg p-6">
-          <h2 className="text-sm font-semibold text-foreground mb-2">Super Admin Emails</h2>
-          <p className="text-xs text-muted mb-4">Users with these emails have full admin access regardless of assigned role.</p>
+          <h2 className="text-sm font-semibold text-foreground mb-2">{t("admin.settings.superAdminEmails")}</h2>
+          <p className="text-xs text-muted mb-4">{t("admin.settings.superAdminHelp")}</p>
           <div className="space-y-2 mb-3">
             {settings.super_admin_emails.map((email) => (
               <div key={email} className="flex items-center justify-between bg-surface px-3 py-2 rounded-md">
                 <span className="text-sm">{email}</span>
-                <button onClick={() => removeAdminEmail(email)} className="text-xs text-sale hover:underline">Remove</button>
+                <button onClick={() => removeAdminEmail(email)} className="text-xs text-sale hover:underline">{t("admin.settings.remove")}</button>
               </div>
             ))}
           </div>
@@ -378,18 +380,18 @@ export default function AdminSettingsPage() {
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
-              placeholder="admin@example.com"
+              placeholder={t("admin.settings.emailPlaceholder")}
               className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addAdminEmail())}
             />
-            <button onClick={addAdminEmail} className="px-3 py-2 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">Add</button>
+            <button onClick={addAdminEmail} className="px-3 py-2 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">{t("admin.settings.add")}</button>
           </div>
         </div>
 
         {/* Custom Admin Nav (Extensibility) */}
         <div className="bg-white border border-border rounded-lg p-6">
-          <h2 className="text-sm font-semibold text-foreground mb-2">Custom Admin Pages</h2>
-          <p className="text-xs text-muted mb-4">Add custom navigation items to the admin sidebar. These will appear at the bottom of the nav.</p>
+          <h2 className="text-sm font-semibold text-foreground mb-2">{t("admin.settings.customAdminPages")}</h2>
+          <p className="text-xs text-muted mb-4">{t("admin.settings.customAdminHelp")}</p>
           {settings.custom_admin_nav.length > 0 && (
             <div className="space-y-2 mb-3">
               {settings.custom_admin_nav.map((item, idx) => (
@@ -398,7 +400,7 @@ export default function AdminSettingsPage() {
                     <span className="text-sm font-medium">{item.label}</span>
                     <span className="text-xs text-muted ml-2">{item.href}</span>
                   </div>
-                  <button onClick={() => removeNavItem(idx)} className="text-xs text-sale hover:underline">Remove</button>
+                  <button onClick={() => removeNavItem(idx)} className="text-xs text-sale hover:underline">{t("admin.settings.remove")}</button>
                 </div>
               ))}
             </div>
@@ -408,17 +410,17 @@ export default function AdminSettingsPage() {
               type="text"
               value={newNavLabel}
               onChange={(e) => setNewNavLabel(e.target.value)}
-              placeholder="Label"
+              placeholder={t("admin.settings.labelPlaceholder")}
               className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
             />
             <input
               type="text"
               value={newNavHref}
               onChange={(e) => setNewNavHref(e.target.value)}
-              placeholder="/admin/custom-page"
+              placeholder={t("admin.settings.hrefPlaceholder")}
               className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
             />
-            <button onClick={addNavItem} className="px-3 py-2 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">Add</button>
+            <button onClick={addNavItem} className="px-3 py-2 text-sm font-medium bg-accent text-white rounded-md hover:bg-accent-dark">{t("admin.settings.add")}</button>
           </div>
         </div>
       </div>

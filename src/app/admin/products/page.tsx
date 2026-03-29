@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Plus, Edit, Trash2, Download, Upload, Filter, X, ChevronDown, AlertTriangle, GripVertical, ArrowUpDown, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { exportCsv } from "@/lib/csv-export";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -43,6 +44,7 @@ interface ProductRow {
 }
 
 function SortableRow({ product }: { product: ProductRow }) {
+  const { t } = useTranslation();
   const {
     attributes,
     listeners,
@@ -69,7 +71,7 @@ function SortableRow({ product }: { product: ProductRow }) {
           {...attributes}
           {...listeners}
           className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-surface transition-colors text-muted hover:text-foreground"
-          title="Drag to reorder"
+          title={t("admin.products.dragToReorder")}
         >
           <GripVertical size={16} />
         </button>
@@ -79,7 +81,7 @@ function SortableRow({ product }: { product: ProductRow }) {
           {product.image_url ? (
             <img src={product.image_url} alt="" className="w-full h-full object-cover" />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted text-xs">N/A</div>
+            <div className="w-full h-full flex items-center justify-center text-muted text-xs">{t("admin.products.na")}</div>
           )}
         </div>
       </td>
@@ -100,6 +102,7 @@ function SortableRow({ product }: { product: ProductRow }) {
 const PAGE_SIZE = 20;
 
 export default function AdminProductsPage() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<ProductRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -226,13 +229,13 @@ export default function AdminProductsPage() {
     if (!deleteId) return;
     const { error } = await supabase.from("products").delete().eq("id", deleteId);
     if (error) {
-      toast("Failed to delete product: " + error.message, "error");
+      toast(t("admin.products.deleteFailed", { error: error.message }), "error");
       return;
     }
     await logAdminAction("delete_product", "product", deleteId);
     setDeleteId(null);
     setSelectedIds([]);
-    toast("Product deleted", "success");
+    toast(t("admin.products.deletedSuccess"), "success");
     fetchProducts();
   }
 
@@ -252,9 +255,9 @@ export default function AdminProductsPage() {
     setBulkDeleteIds(null);
     setSelectedIds([]);
     if (failed > 0) {
-      toast(`Deleted ${deleted} products, ${failed} failed`, "error");
+      toast(t("admin.products.bulkDeletedPartial", { deleted, failed }), "error");
     } else {
-      toast(`${deleted} product${deleted !== 1 ? "s" : ""} deleted`, "success");
+      toast(t("admin.products.bulkDeletedSuccess", { count: deleted }), "success");
     }
     fetchProducts();
   }
@@ -269,9 +272,9 @@ export default function AdminProductsPage() {
     }
     setSelectedIds([]);
     if (failed > 0) {
-      toast(`Updated ${updated} products, ${failed} failed`, "error");
+      toast(t("admin.products.bulkStatusPartial", { updated, failed }), "error");
     } else {
-      toast(`${updated} product${updated !== 1 ? "s" : ""} set to ${newStatus}`, "success");
+      toast(t("admin.products.bulkStatusUpdated", { count: updated, status: newStatus }), "success");
     }
     fetchProducts();
   }
@@ -280,11 +283,11 @@ export default function AdminProductsPage() {
     setUpdatingStatus(id);
     const { error } = await supabase.from("products").update({ status: newStatus }).eq("id", id);
     if (error) {
-      toast("Failed to update status: " + error.message, "error");
+      toast(t("admin.products.statusUpdateFailed", { error: error.message }), "error");
     } else {
       // Update local state immediately for instant feedback
       setProducts((prev) => prev.map((p) => p.id === id ? { ...p, status: newStatus } : p));
-      toast(`Product set to ${newStatus}`, "success");
+      toast(t("admin.products.statusUpdated", { status: newStatus }), "success");
       await logAdminAction("update_product_status", "product", id, { status: newStatus });
     }
     setUpdatingStatus(null);
@@ -350,9 +353,9 @@ export default function AdminProductsPage() {
     }
     setSavingOrder(false);
     if (failed > 0) {
-      toast(`Order saved with ${failed} errors`, "error");
+      toast(t("admin.products.orderSavedWithErrors", { count: failed }), "error");
     } else {
-      toast("Product order saved", "success");
+      toast(t("admin.products.orderSaved"), "success");
     }
     setReorderMode(false);
     fetchProducts();
@@ -369,7 +372,7 @@ export default function AdminProductsPage() {
             {row.image_url ? (
               <img src={row.image_url} alt="" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-muted text-xs">N/A</div>
+              <div className="w-full h-full flex items-center justify-center text-muted text-xs">{t("admin.products.na")}</div>
             )}
           </div>
           {row.image_url && (
@@ -384,7 +387,7 @@ export default function AdminProductsPage() {
     },
     {
       key: "name",
-      label: "Product",
+      label: t("admin.products.columnProduct"),
       sortable: true,
       render: (row) => (
         <div>
@@ -397,7 +400,7 @@ export default function AdminProductsPage() {
     },
     {
       key: "base_price",
-      label: "Price",
+      label: t("admin.products.columnPrice"),
       sortable: true,
       render: (row) => (
         <div>
@@ -410,19 +413,19 @@ export default function AdminProductsPage() {
     },
     {
       key: "stock_total",
-      label: "Stock",
+      label: t("admin.products.columnStock"),
       sortable: true,
       render: (row) => (
         <div className="flex items-center gap-1.5">
           {row.stock_total === 0 ? (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-sale/10 text-sale">
               <AlertTriangle size={10} />
-              Out of stock
+              {t("admin.products.outOfStock")}
             </span>
           ) : row.stock_total <= 10 ? (
             <span className="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-warning/10 text-warning">
               <AlertTriangle size={10} />
-              {row.stock_total} left
+              {t("admin.products.leftInStock", { count: row.stock_total })}
             </span>
           ) : (
             <span className="text-sm text-foreground">{row.stock_total}</span>
@@ -432,7 +435,7 @@ export default function AdminProductsPage() {
     },
     {
       key: "status",
-      label: "Status",
+      label: t("admin.products.columnStatus"),
       render: (row) => (
         <div className="relative">
           <select
@@ -445,9 +448,9 @@ export default function AdminProductsPage() {
               "bg-muted/10 text-muted"
             } ${updatingStatus === row.id ? "opacity-50" : ""}`}
           >
-            <option value="active">Active</option>
-            <option value="draft">Draft</option>
-            <option value="archived">Archived</option>
+            <option value="active">{t("admin.products.statusActive")}</option>
+            <option value="draft">{t("admin.products.statusDraft")}</option>
+            <option value="archived">{t("admin.products.statusArchived")}</option>
           </select>
           <ChevronDown size={10} className="absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none text-current opacity-50" />
         </div>
@@ -459,10 +462,10 @@ export default function AdminProductsPage() {
       className: "w-20",
       render: (row) => (
         <div className="flex items-center gap-1">
-          <Link href={`/admin/products/${row.id}`} className="p-1.5 hover:bg-surface rounded transition-colors" title="Edit">
+          <Link href={`/admin/products/${row.id}`} className="p-1.5 hover:bg-surface rounded transition-colors" title={t("admin.products.editAction")}>
             <Edit size={14} className="text-muted" />
           </Link>
-          <button onClick={() => setDeleteId(row.id)} className="p-1.5 hover:bg-sale/10 rounded transition-colors" title="Delete">
+          <button onClick={() => setDeleteId(row.id)} className="p-1.5 hover:bg-sale/10 rounded transition-colors" title={t("admin.products.deleteAction")}>
             <Trash2 size={14} className="text-muted hover:text-sale" />
           </button>
         </div>
@@ -474,8 +477,8 @@ export default function AdminProductsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Products</h1>
-          <p className="text-sm text-muted mt-1">{total} total products</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.products.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.products.totalProducts", { count: total })}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -484,23 +487,23 @@ export default function AdminProductsPage() {
               reorderMode ? "border-accent text-accent bg-accent-light" : "border-border hover:bg-surface"
             }`}
           >
-            <ArrowUpDown size={14} /> {reorderMode ? "Exit Reorder" : "Reorder"}
+            <ArrowUpDown size={14} /> {reorderMode ? t("admin.products.exitReorder") : t("admin.products.reorder")}
           </button>
           <button onClick={handleExport} className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors">
-            <Download size={14} /> Export CSV
+            <Download size={14} /> {t("admin.products.exportCsv")}
           </button>
           <Link
             href="/admin/products/import"
             className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium border border-border rounded-md hover:bg-surface transition-colors"
           >
-            <Upload size={14} /> Import CSV
+            <Upload size={14} /> {t("admin.products.importCsv")}
           </Link>
           <Link
             href="/admin/products/new"
             className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
           >
             <Plus size={16} />
-            Add Product
+            {t("admin.products.addProduct")}
           </Link>
         </div>
       </div>
@@ -509,7 +512,7 @@ export default function AdminProductsPage() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <p className="text-sm text-muted">
-              Drag products to set their display order on the storefront. Only active products are shown.
+              {t("admin.products.reorderDescription")}
             </p>
             <button
               onClick={saveOrder}
@@ -517,7 +520,7 @@ export default function AdminProductsPage() {
               className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-50"
             >
               <Save size={14} />
-              {savingOrder ? "Saving..." : "Save Order"}
+              {savingOrder ? t("admin.products.savingOrder") : t("admin.products.saveOrder")}
             </button>
           </div>
           <div className="bg-white border border-border rounded-lg overflow-hidden">
@@ -526,9 +529,9 @@ export default function AdminProductsPage() {
                 <tr className="border-b border-border bg-surface/50">
                   <th className="w-10 px-2 py-3" />
                   <th className="w-12 px-4 py-3" />
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Product</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Price</th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">Order</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">{t("admin.products.columnProduct")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">{t("admin.products.columnPrice")}</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-muted uppercase tracking-wider">{t("admin.products.columnOrder")}</th>
                 </tr>
               </thead>
               <DndContext
@@ -556,24 +559,24 @@ export default function AdminProductsPage() {
       <div className="flex flex-wrap items-center gap-3 mb-4">
         <div className="flex items-center gap-1.5 text-sm text-muted">
           <Filter size={14} />
-          <span className="font-medium">Filters:</span>
+          <span className="font-medium">{t("admin.products.filtersLabel")}</span>
         </div>
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); setSelectedIds([]); }}
           className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
         >
-          <option value="all">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="draft">Draft</option>
-          <option value="archived">Archived</option>
+          <option value="all">{t("admin.products.allStatuses")}</option>
+          <option value="active">{t("admin.products.statusActive")}</option>
+          <option value="draft">{t("admin.products.statusDraft")}</option>
+          <option value="archived">{t("admin.products.statusArchived")}</option>
         </select>
         <select
           value={categoryFilter}
           onChange={(e) => { setCategoryFilter(e.target.value); setPage(1); setSelectedIds([]); }}
           className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
         >
-          <option value="all">All Categories</option>
+          <option value="all">{t("admin.products.allCategories")}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>{c.name}</option>
           ))}
@@ -583,9 +586,9 @@ export default function AdminProductsPage() {
           onChange={(e) => { setStockFilter(e.target.value); setPage(1); setSelectedIds([]); }}
           className="px-3 py-1.5 text-sm border border-border rounded-md bg-white focus:outline-none focus:border-accent transition-colors"
         >
-          <option value="all">All Stock Levels</option>
-          <option value="low">Low Stock (1-10)</option>
-          <option value="out">Out of Stock</option>
+          <option value="all">{t("admin.products.allStockLevels")}</option>
+          <option value="low">{t("admin.products.lowStock")}</option>
+          <option value="out">{t("admin.products.outOfStockFilter")}</option>
         </select>
         {(statusFilter !== "all" || categoryFilter !== "all" || stockFilter !== "all") && (
           <button
@@ -593,7 +596,7 @@ export default function AdminProductsPage() {
             className="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-muted hover:text-foreground transition-colors"
           >
             <X size={12} />
-            Clear filters
+            {t("admin.products.clearFilters")}
           </button>
         )}
       </div>
@@ -603,7 +606,7 @@ export default function AdminProductsPage() {
         data={products}
         loading={loading}
         searchable
-        searchPlaceholder="Search products..."
+        searchPlaceholder={t("admin.products.searchPlaceholder")}
         onSearch={(q) => { setSearch(q); setPage(1); }}
         page={page}
         pageSize={PAGE_SIZE}
@@ -613,20 +616,20 @@ export default function AdminProductsPage() {
         selectedIds={selectedIds}
         onSelectionChange={setSelectedIds}
         bulkActions={[
-          { label: "Set Active", onClick: (ids) => handleBulkStatusChange(ids, "active") },
-          { label: "Set Draft", onClick: (ids) => handleBulkStatusChange(ids, "draft") },
-          { label: "Archive", onClick: (ids) => handleBulkStatusChange(ids, "archived") },
-          { label: "Delete Selected", onClick: (ids) => setBulkDeleteIds(ids), variant: "danger" },
+          { label: t("admin.products.bulkSetActive"), onClick: (ids) => handleBulkStatusChange(ids, "active") },
+          { label: t("admin.products.bulkSetDraft"), onClick: (ids) => handleBulkStatusChange(ids, "draft") },
+          { label: t("admin.products.bulkArchive"), onClick: (ids) => handleBulkStatusChange(ids, "archived") },
+          { label: t("admin.products.bulkDeleteSelected"), onClick: (ids) => setBulkDeleteIds(ids), variant: "danger" },
         ]}
-        emptyTitle="No products found"
-        emptyDescription="Create your first product to get started"
+        emptyTitle={t("admin.products.emptyTitle")}
+        emptyDescription={t("admin.products.emptyDescription")}
       />
 
       <ConfirmDialog
         isOpen={!!deleteId}
-        title="Delete Product"
-        message="This will permanently delete this product and all its variants and images. This cannot be undone."
-        confirmLabel="Delete"
+        title={t("admin.products.deleteProductTitle")}
+        message={t("admin.products.deleteProductMessage")}
+        confirmLabel={t("admin.products.deleteConfirmLabel")}
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteId(null)}
@@ -634,13 +637,13 @@ export default function AdminProductsPage() {
 
       <ConfirmDialog
         isOpen={!!bulkDeleteIds}
-        title={`Delete ${bulkDeleteIds?.length ?? 0} Products`}
+        title={t("admin.products.bulkDeleteTitle", { count: bulkDeleteIds?.length ?? 0 })}
         message={
           bulkDeleting
-            ? `Deleting... ${bulkDeleteProgress}% complete`
-            : `This will permanently delete ${bulkDeleteIds?.length ?? 0} product${(bulkDeleteIds?.length ?? 0) !== 1 ? "s" : ""} and all their variants and images. This cannot be undone.`
+            ? t("admin.products.bulkDeletingMessage", { progress: bulkDeleteProgress })
+            : t("admin.products.bulkDeleteMessage", { count: bulkDeleteIds?.length ?? 0 })
         }
-        confirmLabel={bulkDeleting ? `Deleting... ${bulkDeleteProgress}%` : "Delete All"}
+        confirmLabel={bulkDeleting ? t("admin.products.bulkDeletingLabel", { progress: bulkDeleteProgress }) : t("admin.products.bulkDeleteAllLabel")}
         variant="danger"
         loading={bulkDeleting}
         onConfirm={handleBulkDelete}

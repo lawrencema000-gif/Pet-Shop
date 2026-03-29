@@ -5,6 +5,7 @@ import {
   Plus, Trash2, GripVertical, Eye, EyeOff,
   X, Search, Package, Save,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
 import { slugify } from "@/lib/utils";
@@ -38,6 +39,7 @@ interface CollectionProduct {
 }
 
 export default function AdminCollectionsPage() {
+  const { t } = useTranslation();
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Collection | null>(null);
@@ -213,11 +215,11 @@ export default function AdminCollectionsPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Collections</h1>
-          <p className="text-sm text-muted mt-1">Curated product groupings for your store</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.collections.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.collections.subtitle")}</p>
         </div>
         <button onClick={startNew} className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors">
-          <Plus size={16} /> New Collection
+          <Plus size={16} /> {t("admin.collections.newCollection")}
         </button>
       </div>
 
@@ -235,7 +237,7 @@ export default function AdminCollectionsPage() {
           ) : collections.length === 0 ? (
             <div className="bg-white border border-border rounded-lg p-8 text-center">
               <Package size={32} className="mx-auto text-muted mb-3" />
-              <p className="text-sm text-muted">No collections yet.</p>
+              <p className="text-sm text-muted">{t("admin.collections.noCollections")}</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -255,10 +257,10 @@ export default function AdminCollectionsPage() {
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-foreground truncate">{coll.title}</p>
                         {!coll.is_active && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-surface text-muted">Hidden</span>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-surface text-muted">{t("admin.collections.hidden")}</span>
                         )}
                       </div>
-                      <p className="text-xs text-muted">{coll.product_count ?? 0} products · /{coll.slug}</p>
+                      <p className="text-xs text-muted">{t("admin.collections.productsCount", { count: coll.product_count ?? 0 })} · /{coll.slug}</p>
                     </div>
                   </div>
                 </button>
@@ -273,15 +275,15 @@ export default function AdminCollectionsPage() {
             <div className="bg-white border border-border rounded-lg">
               <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-foreground">
-                  {isNew ? "New Collection" : "Edit Collection"}
+                  {isNew ? t("admin.collections.newCollectionTitle") : t("admin.collections.editCollectionTitle")}
                 </h2>
                 <div className="flex items-center gap-2">
                   {!isNew && (
                     <>
-                      <button onClick={() => toggleActive(editing)} className="p-2 hover:bg-surface rounded-md" title={editing.is_active ? "Hide" : "Show"}>
+                      <button onClick={() => toggleActive(editing)} className="p-2 hover:bg-surface rounded-md" title={editing.is_active ? t("admin.collections.hideAction") : t("admin.collections.showAction")}>
                         {editing.is_active ? <EyeOff size={14} className="text-muted" /> : <Eye size={14} className="text-muted" />}
                       </button>
-                      <button onClick={() => setDeleteTarget(editing)} className="p-2 hover:bg-sale/10 rounded-md" title="Delete">
+                      <button onClick={() => setDeleteTarget(editing)} className="p-2 hover:bg-sale/10 rounded-md" title={t("admin.collections.deleteAction")}>
                         <Trash2 size={14} className="text-muted hover:text-sale" />
                       </button>
                     </>
@@ -295,68 +297,68 @@ export default function AdminCollectionsPage() {
               <div className="p-6 space-y-5">
                 {/* Title */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Title *</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelTitle")}</label>
                   <input
                     type="text"
                     value={editing.title}
                     onChange={(e) => setEditing({ ...editing, title: e.target.value, slug: editing.slug || slugify(e.target.value) })}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
-                    placeholder="e.g. Summer Essentials"
+                    placeholder={t("admin.collections.titlePlaceholder")}
                   />
                 </div>
 
                 {/* Slug */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Slug</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelSlug")}</label>
                   <input
                     type="text"
                     value={editing.slug}
                     onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
-                    placeholder="auto-generated"
+                    placeholder={t("admin.collections.slugPlaceholder")}
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Short Description</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelShortDescription")}</label>
                   <textarea
                     value={editing.description ?? ""}
                     onChange={(e) => setEditing({ ...editing, description: e.target.value })}
                     rows={2}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-none"
-                    placeholder="Brief description for listings..."
+                    placeholder={t("admin.collections.shortDescriptionPlaceholder")}
                   />
                 </div>
 
                 {/* Long Description */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Long Description</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelLongDescription")}</label>
                   <textarea
                     value={editing.long_description ?? ""}
                     onChange={(e) => setEditing({ ...editing, long_description: e.target.value })}
                     rows={4}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y"
-                    placeholder="Detailed description for the collection page..."
+                    placeholder={t("admin.collections.longDescriptionPlaceholder")}
                   />
                 </div>
 
                 {/* Image URL */}
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1.5">Cover Image URL</label>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelCoverImageUrl")}</label>
                   <input
                     type="url"
                     value={editing.image_url ?? ""}
                     onChange={(e) => setEditing({ ...editing, image_url: e.target.value })}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
-                    placeholder="https://..."
+                    placeholder={t("admin.collections.coverImagePlaceholder")}
                   />
                 </div>
 
                 {/* Display Order */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Display Order</label>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelDisplayOrder")}</label>
                     <input
                       type="number"
                       min="0"
@@ -373,7 +375,7 @@ export default function AdminCollectionsPage() {
                         onChange={(e) => setEditing({ ...editing, is_active: e.target.checked })}
                         className="rounded border-border"
                       />
-                      Active (visible to customers)
+                      {t("admin.collections.activeLabel")}
                     </label>
                   </div>
                 </div>
@@ -381,7 +383,7 @@ export default function AdminCollectionsPage() {
                 {/* Products (only for existing collections) */}
                 {!isNew && (
                   <div>
-                    <label className="block text-sm font-medium text-foreground mb-1.5">Products</label>
+                    <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.collections.labelProducts")}</label>
 
                     {/* Search to add */}
                     <div className="relative mb-3">
@@ -390,7 +392,7 @@ export default function AdminCollectionsPage() {
                         type="text"
                         value={productSearch}
                         onChange={(e) => searchProducts(e.target.value)}
-                        placeholder="Search products to add..."
+                        placeholder={t("admin.collections.searchProductsPlaceholder")}
                         className="w-full pl-9 pr-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
                       />
                       {productResults.length > 0 && (
@@ -409,7 +411,7 @@ export default function AdminCollectionsPage() {
                               )}
                               <span>{p.name}</span>
                               {collProducts.some((cp) => cp.product_id === p.id) && (
-                                <span className="ml-auto text-xs text-muted">Added</span>
+                                <span className="ml-auto text-xs text-muted">{t("admin.collections.productAdded")}</span>
                               )}
                             </button>
                           ))}
@@ -420,7 +422,7 @@ export default function AdminCollectionsPage() {
 
                     {/* Current products */}
                     {collProducts.length === 0 ? (
-                      <p className="text-xs text-muted">No products assigned. Search above to add.</p>
+                      <p className="text-xs text-muted">{t("admin.collections.noProductsAssigned")}</p>
                     ) : (
                       <div className="space-y-1">
                         {collProducts.map((cp) => (
@@ -453,7 +455,7 @@ export default function AdminCollectionsPage() {
                     disabled={saving || !editing.title}
                     className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors disabled:opacity-60"
                   >
-                    <Save size={16} /> {saving ? "Saving..." : isNew ? "Create Collection" : "Save Changes"}
+                    <Save size={16} /> {saving ? t("admin.collections.savingButton") : isNew ? t("admin.collections.createCollection") : t("admin.collections.saveChanges")}
                   </button>
                 </div>
               </div>
@@ -461,7 +463,7 @@ export default function AdminCollectionsPage() {
           ) : (
             <div className="bg-white border border-border rounded-lg p-12 text-center">
               <Package size={32} className="mx-auto text-muted mb-3" />
-              <p className="text-sm text-muted">Select a collection to edit, or create a new one.</p>
+              <p className="text-sm text-muted">{t("admin.collections.selectOrCreate")}</p>
             </div>
           )}
         </div>
@@ -469,9 +471,9 @@ export default function AdminCollectionsPage() {
 
       <ConfirmDialog
         isOpen={!!deleteTarget}
-        title="Delete Collection"
-        message={`This will permanently delete "${deleteTarget?.title}" and remove all product assignments.`}
-        confirmLabel="Delete"
+        title={t("admin.collections.deleteTitle")}
+        message={t("admin.collections.deleteMessage", { title: deleteTarget?.title ?? "" })}
+        confirmLabel={t("admin.collections.deleteConfirmLabel")}
         variant="danger"
         onConfirm={handleDelete}
         onCancel={() => setDeleteTarget(null)}

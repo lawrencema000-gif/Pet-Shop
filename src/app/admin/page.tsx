@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import Link from "next/link";
 import {
   DollarSign,
@@ -58,6 +59,7 @@ interface Alert {
 }
 
 export default function AdminDashboard() {
+  const { t } = useTranslation();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
   const [lowStock, setLowStock] = useState<LowStockItem[]>([]);
@@ -135,7 +137,7 @@ export default function AdminDashboard() {
           type: "return",
           icon: RotateCcw,
           color: "text-amber-500",
-          title: "Pending Return",
+          title: t("admin.dashboard.pendingReturn"),
           detail: `${r.email} — Order #${r.order_id.slice(0, 8)}`,
           href: "/admin/returns",
           time: new Date(r.created_at).toLocaleDateString(),
@@ -155,8 +157,8 @@ export default function AdminDashboard() {
           type: "review",
           icon: MessageSquare,
           color: "text-blue-500",
-          title: "Review Pending Approval",
-          detail: `${"★".repeat(r.rating)} ${r.title ?? "No title"}`,
+          title: t("admin.dashboard.reviewPendingApproval"),
+          detail: `${"★".repeat(r.rating)} ${r.title ?? t("admin.dashboard.noTitle")}`,
           href: "/admin/reviews",
           time: new Date(r.created_at).toLocaleDateString(),
         });
@@ -179,7 +181,7 @@ export default function AdminDashboard() {
           type: "coupon",
           icon: Ticket,
           color: "text-purple-500",
-          title: "Coupon Expiring Soon",
+          title: t("admin.dashboard.couponExpiringSoon"),
           detail: `${c.code} expires ${new Date(c.expires_at!).toLocaleDateString()}`,
           href: "/admin/coupons",
           time: new Date(c.expires_at!).toLocaleDateString(),
@@ -202,7 +204,7 @@ export default function AdminDashboard() {
           type: "cancelled",
           icon: XCircle,
           color: "text-sale",
-          title: "Order Cancelled",
+          title: t("admin.dashboard.orderCancelled"),
           detail: `#${o.id.slice(0, 8)} — ${formatPrice(o.total)}`,
           href: `/admin/orders/${o.id}`,
           time: new Date(o.created_at).toLocaleDateString(),
@@ -219,35 +221,35 @@ export default function AdminDashboard() {
     <div>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-display font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted mt-1">Welcome back to your store admin</p>
+          <h1 className="text-2xl font-display font-bold text-foreground">{t("admin.dashboard.title")}</h1>
+          <p className="text-sm text-muted mt-1">{t("admin.dashboard.subtitle")}</p>
         </div>
         <Link
           href="/admin/products/new"
           className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors"
         >
           <Plus size={16} />
-          Add Product
+          {t("admin.dashboard.addProduct")}
         </Link>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        <StatsCard icon={DollarSign} label="Total Revenue" value={formatPrice(stats?.totalRevenue ?? 0)} loading={loading} />
-        <StatsCard icon={ShoppingBag} label="Orders Today" value={stats?.ordersToday ?? 0} loading={loading} />
-        <StatsCard icon={Package} label="Products" value={stats?.totalProducts ?? 0} loading={loading} />
-        <StatsCard icon={Users} label="Customers" value={stats?.totalCustomers ?? 0} loading={loading} />
-        <StatsCard icon={Clock} label="Pending Orders" value={stats?.pendingOrders ?? 0} loading={loading} />
-        <StatsCard icon={AlertTriangle} label="Low Stock" value={stats?.lowStockCount ?? 0} loading={loading} />
+        <StatsCard icon={DollarSign} label={t("admin.dashboard.totalRevenue")} value={formatPrice(stats?.totalRevenue ?? 0)} loading={loading} />
+        <StatsCard icon={ShoppingBag} label={t("admin.dashboard.ordersToday")} value={stats?.ordersToday ?? 0} loading={loading} />
+        <StatsCard icon={Package} label={t("admin.dashboard.products")} value={stats?.totalProducts ?? 0} loading={loading} />
+        <StatsCard icon={Users} label={t("admin.dashboard.customers")} value={stats?.totalCustomers ?? 0} loading={loading} />
+        <StatsCard icon={Clock} label={t("admin.dashboard.pendingOrders")} value={stats?.pendingOrders ?? 0} loading={loading} />
+        <StatsCard icon={AlertTriangle} label={t("admin.dashboard.lowStock")} value={stats?.lowStockCount ?? 0} loading={loading} />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
         <div className="bg-white border border-border rounded-lg">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Recent Orders</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("admin.dashboard.recentOrders")}</h2>
             <Link href="/admin/orders" className="text-xs text-accent hover:underline flex items-center gap-1">
-              View All <ArrowRight size={12} />
+              {t("admin.dashboard.viewAll")} <ArrowRight size={12} />
             </Link>
           </div>
           <div className="divide-y divide-border/50">
@@ -276,7 +278,7 @@ export default function AdminDashboard() {
                   </Link>
                 ))}
             {!loading && recentOrders.length === 0 && (
-              <div className="px-5 py-8 text-center text-sm text-muted">No orders yet</div>
+              <div className="px-5 py-8 text-center text-sm text-muted">{t("admin.dashboard.noOrdersYet")}</div>
             )}
           </div>
         </div>
@@ -284,9 +286,9 @@ export default function AdminDashboard() {
         {/* Low Stock Alerts */}
         <div className="bg-white border border-border rounded-lg">
           <div className="flex items-center justify-between px-5 py-4 border-b border-border">
-            <h2 className="text-sm font-semibold text-foreground">Low Stock Alerts</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("admin.dashboard.lowStockAlerts")}</h2>
             <Link href="/admin/inventory" className="text-xs text-accent hover:underline flex items-center gap-1">
-              View All <ArrowRight size={12} />
+              {t("admin.dashboard.viewAll")} <ArrowRight size={12} />
             </Link>
           </div>
           <div className="divide-y divide-border/50">
@@ -309,12 +311,12 @@ export default function AdminDashboard() {
                           : "bg-warning/10 text-warning"
                       }`}
                     >
-                      {item.stock_quantity === 0 ? "Out of stock" : `${item.stock_quantity} left`}
+                      {item.stock_quantity === 0 ? t("admin.dashboard.outOfStock") : t("admin.dashboard.left", { count: item.stock_quantity })}
                     </span>
                   </div>
                 ))}
             {!loading && lowStock.length === 0 && (
-              <div className="px-5 py-8 text-center text-sm text-muted">All stock levels healthy</div>
+              <div className="px-5 py-8 text-center text-sm text-muted">{t("admin.dashboard.allStockHealthy")}</div>
             )}
           </div>
         </div>
@@ -325,7 +327,7 @@ export default function AdminDashboard() {
         <div className="mt-6 bg-white border border-border rounded-lg">
           <div className="flex items-center gap-2 px-5 py-4 border-b border-border">
             <Bell size={16} className="text-amber-500" />
-            <h2 className="text-sm font-semibold text-foreground">Alerts</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("admin.dashboard.alerts")}</h2>
             <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">{alerts.length}</span>
           </div>
           <div className="divide-y divide-border/50">
@@ -353,10 +355,10 @@ export default function AdminDashboard() {
       {/* Quick Actions */}
       <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Add Product", href: "/admin/products/new", icon: Plus },
-          { label: "Manage Orders", href: "/admin/orders", icon: ShoppingBag },
-          { label: "View Analytics", href: "/admin/analytics", icon: DollarSign },
-          { label: "Store Settings", href: "/admin/settings", icon: Package },
+          { label: t("admin.dashboard.addProduct"), href: "/admin/products/new", icon: Plus },
+          { label: t("admin.dashboard.manageOrders"), href: "/admin/orders", icon: ShoppingBag },
+          { label: t("admin.dashboard.viewAnalytics"), href: "/admin/analytics", icon: DollarSign },
+          { label: t("admin.dashboard.storeSettings"), href: "/admin/settings", icon: Package },
         ].map((action) => (
           <Link
             key={action.label}

@@ -16,6 +16,7 @@ import {
 import { createClient } from "@supabase/supabase-js";
 import { formatPrice } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
+import { useTranslation } from "react-i18next";
 import type { Product } from "@/types/product";
 
 const supabase = createClient(
@@ -26,6 +27,7 @@ const supabase = createClient(
 const MAX_COMPARE = 4;
 
 export default function CompareClient() {
+  const { t } = useTranslation();
   const addItem = useCartStore((s) => s.addItem);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -131,7 +133,7 @@ export default function CompareClient() {
     return (
       <div className="max-w-7xl mx-auto px-4 py-20 text-center">
         <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-accent border-r-transparent" />
-        <p className="mt-4 text-muted">Loading products...</p>
+        <p className="mt-4 text-muted">{t('compare.loadingProducts')}</p>
       </div>
     );
   }
@@ -142,21 +144,20 @@ export default function CompareClient() {
       <div className="border-b border-border bg-surface-light">
         <nav className="container-main flex items-center gap-2 py-3 text-sm text-muted">
           <Link href="/" className="transition-colors hover:text-foreground">
-            Home
+            {t('compare.home')}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground">Compare Products</span>
+          <span className="text-foreground">{t('compare.heading')}</span>
         </nav>
       </div>
 
       <section className="container-main py-10 md:py-14">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-bold text-foreground md:text-4xl">
-            Compare Products
+            {t('compare.heading')}
           </h1>
           <p className="mt-2 text-muted max-w-xl mx-auto">
-            Add up to {MAX_COMPARE} products to compare features, prices, and
-            specs side by side.
+            {t('compare.subtitle', { max: MAX_COMPARE })}
           </p>
         </div>
 
@@ -167,7 +168,7 @@ export default function CompareClient() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted" />
               <input
                 type="text"
-                placeholder="Search products to compare..."
+                placeholder={t('compare.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => {
                   handleSearch(e.target.value);
@@ -222,11 +223,10 @@ export default function CompareClient() {
           <div className="text-center py-16 border border-dashed border-border rounded-xl">
             <Search className="h-12 w-12 text-muted mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-foreground">
-              Add products to compare
+              {t('compare.emptyTitle')}
             </h2>
             <p className="mt-2 text-muted max-w-sm mx-auto">
-              Use the search bar above to find and add products. You can compare
-              up to {MAX_COMPARE} products at once.
+              {t('compare.emptyDesc', { max: MAX_COMPARE })}
             </p>
           </div>
         )}
@@ -255,7 +255,7 @@ export default function CompareClient() {
                     <button
                       onClick={() => removeProduct(product.id)}
                       className="absolute top-2 right-2 p-1 rounded-full bg-surface hover:bg-red-50 hover:text-red-500 transition-colors"
-                      aria-label="Remove"
+                      aria-label={t('compare.remove')}
                     >
                       <X className="h-4 w-4" />
                     </button>
@@ -281,7 +281,7 @@ export default function CompareClient() {
 
               {/* Price Row */}
               <div className="sticky left-0 z-10 bg-surface-light px-4 py-3 flex items-center font-semibold text-sm text-foreground border-b border-border">
-                Price
+                {t('compare.price')}
               </div>
               {products.map((p) => (
                 <div
@@ -301,7 +301,7 @@ export default function CompareClient() {
 
               {/* Rating Row */}
               <div className="sticky left-0 z-10 bg-background px-4 py-3 flex items-center font-semibold text-sm text-foreground border-b border-border">
-                Rating
+                {t('compare.rating')}
               </div>
               {products.map((p) => (
                 <div
@@ -327,14 +327,14 @@ export default function CompareClient() {
                       </span>
                     </div>
                   ) : (
-                    <span className="text-sm text-muted">No reviews</span>
+                    <span className="text-sm text-muted">{t('compare.noReviews')}</span>
                   )}
                 </div>
               ))}
 
               {/* Category Row */}
               <div className="sticky left-0 z-10 bg-surface-light px-4 py-3 flex items-center font-semibold text-sm text-foreground border-b border-border">
-                Category
+                {t('compare.category')}
               </div>
               {products.map((p) => (
                 <div
@@ -347,7 +347,7 @@ export default function CompareClient() {
 
               {/* Features Row */}
               <div className="sticky left-0 z-10 bg-background px-4 py-3 flex items-start font-semibold text-sm text-foreground border-b border-border">
-                Features
+                {t('compare.features')}
               </div>
               {products.map((p) => (
                 <div
@@ -374,7 +374,7 @@ export default function CompareClient() {
 
               {/* In Stock Row */}
               <div className="sticky left-0 z-10 bg-surface-light px-4 py-3 flex items-center font-semibold text-sm text-foreground border-b border-border">
-                In Stock
+                {t('compare.inStock')}
               </div>
               {products.map((p) => {
                 const inStock = p.variants?.some(
@@ -387,11 +387,11 @@ export default function CompareClient() {
                   >
                     {inStock !== false ? (
                       <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
-                        <Check className="h-4 w-4" /> Yes
+                        <Check className="h-4 w-4" /> {t('compare.yes')}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-sm font-medium text-muted">
-                        <Minus className="h-4 w-4" /> Out of stock
+                        <Minus className="h-4 w-4" /> {t('compare.outOfStock')}
                       </span>
                     )}
                   </div>
@@ -400,7 +400,7 @@ export default function CompareClient() {
 
               {/* Free Shipping Row */}
               <div className="sticky left-0 z-10 bg-background px-4 py-3 flex items-center font-semibold text-sm text-foreground border-b border-border">
-                Free Shipping
+                {t('compare.freeShipping')}
               </div>
               {products.map((p) => (
                 <div
@@ -409,10 +409,10 @@ export default function CompareClient() {
                 >
                   {p.base_price >= 75 ? (
                     <span className="inline-flex items-center gap-1 text-sm font-medium text-success">
-                      <Truck className="h-4 w-4" /> Yes
+                      <Truck className="h-4 w-4" /> {t('compare.yes')}
                     </span>
                   ) : (
-                    <span className="text-sm text-muted">No</span>
+                    <span className="text-sm text-muted">{t('compare.no')}</span>
                   )}
                 </div>
               ))}
@@ -428,7 +428,7 @@ export default function CompareClient() {
                     onClick={() => handleAddToCart(p)}
                     className="w-full rounded bg-accent px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-accent-dark"
                   >
-                    Add to Cart
+                    {t('compare.addToCart')}
                   </button>
                 </div>
               ))}
@@ -451,7 +451,7 @@ export default function CompareClient() {
               className="inline-flex items-center gap-2 rounded-lg border border-dashed border-border px-5 py-3 text-sm font-medium text-muted hover:border-accent hover:text-accent transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Add another product ({products.length}/{MAX_COMPARE})
+              {t('compare.addAnother', { current: products.length, max: MAX_COMPARE })}
             </button>
           </div>
         )}

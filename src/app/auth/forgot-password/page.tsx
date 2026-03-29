@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
 import { CheckCircle2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function ForgotPasswordPage() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -42,16 +44,14 @@ export default function ForgotPasswordPage() {
           <div className="bg-background rounded-md shadow-card p-8">
             <CheckCircle2 size={48} className="text-success mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-foreground mb-2">
-              Check Your Email
+              {t("auth.checkEmail")}
             </h1>
             <p className="text-muted mb-6">
-              We&apos;ve sent password reset instructions to{" "}
-              <span className="font-medium text-foreground">{email}</span>.
-              Check your inbox and follow the link to reset your password.
+              {t("auth.resetInstructions")}
             </p>
             <Link href="/auth/login">
               <Button variant="outline" fullWidth>
-                Back to Sign In
+                {t("auth.backToSignIn")}
               </Button>
             </Link>
           </div>
@@ -66,11 +66,10 @@ export default function ForgotPasswordPage() {
         <div className="bg-background rounded-md shadow-card p-8">
           <div className="text-center mb-8">
             <h1 className="text-2xl font-bold text-foreground">
-              Reset Password
+              {t("auth.resetPassword")}
             </h1>
             <p className="text-sm text-muted mt-1">
-              Enter your email and we&apos;ll send you instructions to reset
-              your password.
+              {t("auth.resetSubtitle")}
             </p>
           </div>
 
@@ -82,26 +81,26 @@ export default function ForgotPasswordPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              label="Email"
+              label={t("auth.emailLabel")}
               type="email"
-              placeholder="your@email.com"
+              placeholder={t("auth.emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
 
             <Button type="submit" fullWidth size="lg" loading={loading}>
-              Send Reset Instructions
+              {t("auth.sendResetInstructions")}
             </Button>
           </form>
 
           <p className="text-center text-sm text-muted mt-6">
-            Remember your password?{" "}
+            {t("auth.rememberPassword")}{" "}
             <Link
               href="/auth/login"
               className="font-medium text-foreground hover:underline"
             >
-              Sign In
+              {t("auth.signIn")}
             </Link>
           </p>
         </div>

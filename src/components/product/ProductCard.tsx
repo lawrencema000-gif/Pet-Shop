@@ -4,13 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { formatPrice, getDiscountPercentage } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
+import { useTranslation } from "react-i18next";
 import type { Product } from "@/types/product";
+import { useTranslatedProduct } from "@/hooks/useTranslatedProduct";
 
 interface ProductCardProps {
   product: Product;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product: rawProduct }: ProductCardProps) {
+  const product = useTranslatedProduct(rawProduct) ?? rawProduct;
+  const { t } = useTranslation();
   const addItem = useCartStore((s) => s.addItem);
 
   const primaryImage = product.images?.find((img) => img.is_primary) || product.images?.[0];
@@ -50,7 +54,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             />
           ) : (
             <div className="flex items-center justify-center h-full text-muted text-sm">
-              No image
+              {t("common.noImage")}
             </div>
           )}
 
@@ -66,7 +70,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             onClick={handleAddToCart}
             className="absolute bottom-0 left-0 right-0 bg-foreground text-white text-sm font-medium py-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
           >
-            Add to Cart
+            {t("addToCart.addToCart")}
           </button>
         </div>
 

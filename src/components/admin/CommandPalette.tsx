@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Search, Package, ShoppingBag, Users, FileText, X } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface SearchResult {
   id: string;
@@ -14,19 +15,26 @@ interface SearchResult {
   type: "page" | "product" | "order" | "customer";
 }
 
-const ADMIN_PAGES: SearchResult[] = [
-  { id: "dash", label: "Dashboard", href: "/admin", type: "page" },
-  { id: "prods", label: "Products", href: "/admin/products", type: "page" },
-  { id: "cats", label: "Categories", href: "/admin/categories", type: "page" },
-  { id: "ords", label: "Orders", href: "/admin/orders", type: "page" },
-  { id: "custs", label: "Customers", href: "/admin/customers", type: "page" },
-  { id: "revs", label: "Reviews", href: "/admin/reviews", type: "page" },
-  { id: "coups", label: "Coupons", href: "/admin/coupons", type: "page" },
-  { id: "news", label: "Newsletter", href: "/admin/newsletter", type: "page" },
-  { id: "anal", label: "Analytics", href: "/admin/analytics", type: "page" },
-  { id: "cont", label: "Content", href: "/admin/content", type: "page" },
-  { id: "staff", label: "Staff", href: "/admin/staff", type: "page" },
-  { id: "sett", label: "Settings", href: "/admin/settings", type: "page" },
+interface AdminPageDef {
+  id: string;
+  labelKey: string;
+  href: string;
+  type: "page";
+}
+
+const ADMIN_PAGE_DEFS: AdminPageDef[] = [
+  { id: "dash", labelKey: "admin.sidebar.dashboard", href: "/admin", type: "page" },
+  { id: "prods", labelKey: "admin.sidebar.products", href: "/admin/products", type: "page" },
+  { id: "cats", labelKey: "admin.sidebar.categories", href: "/admin/categories", type: "page" },
+  { id: "ords", labelKey: "admin.sidebar.orders", href: "/admin/orders", type: "page" },
+  { id: "custs", labelKey: "admin.sidebar.customers", href: "/admin/customers", type: "page" },
+  { id: "revs", labelKey: "admin.sidebar.reviews", href: "/admin/reviews", type: "page" },
+  { id: "coups", labelKey: "admin.sidebar.coupons", href: "/admin/coupons", type: "page" },
+  { id: "news", labelKey: "admin.sidebar.newsletter", href: "/admin/newsletter", type: "page" },
+  { id: "anal", labelKey: "admin.sidebar.analytics", href: "/admin/analytics", type: "page" },
+  { id: "cont", labelKey: "admin.sidebar.content", href: "/admin/content", type: "page" },
+  { id: "staff", labelKey: "admin.sidebar.staff", href: "/admin/staff", type: "page" },
+  { id: "sett", labelKey: "admin.sidebar.settings", href: "/admin/settings", type: "page" },
 ];
 
 const TYPE_ICONS = {
@@ -49,6 +57,18 @@ export function CommandPalette({
   const [loading, setLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const { t } = useTranslation();
+
+  const ADMIN_PAGES: SearchResult[] = useMemo(
+    () =>
+      ADMIN_PAGE_DEFS.map((p) => ({
+        id: p.id,
+        label: t(p.labelKey),
+        href: p.href,
+        type: p.type,
+      })),
+    [t]
+  );
 
   const search = useCallback(
     async (q: string) => {
@@ -75,7 +95,7 @@ export function CommandPalette({
       const productResults: SearchResult[] = (products ?? []).map((p) => ({
         id: p.id,
         label: p.name,
-        description: `Product · ${p.slug}`,
+        description: `${t("admin.commandPalette.product")} · ${p.slug}`,
         href: `/admin/products/${p.id}`,
         type: "product",
       }));
@@ -106,7 +126,7 @@ export function CommandPalette({
       const customerResults: SearchResult[] = (profiles ?? []).map((p) => ({
         id: p.id,
         label: p.full_name ?? "Unknown",
-        description: "Customer",
+        description: t("admin.commandPalette.customer"),
         href: `/admin/customers/${p.id}`,
         type: "customer",
       }));
@@ -115,7 +135,7 @@ export function CommandPalette({
       setActiveIndex(0);
       setLoading(false);
     },
-    []
+    [ADMIN_PAGES, t]
   );
 
   useEffect(() => {
@@ -166,7 +186,7 @@ export function CommandPalette({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Search pages, products, orders..."
+            placeholder={t("admin.commandPalette.searchPlaceholder")}
             className="flex-1 h-12 text-sm text-foreground placeholder:text-muted bg-transparent outline-none"
           />
           {query && (
@@ -179,11 +199,11 @@ export function CommandPalette({
         {/* Results */}
         <div className="max-h-80 overflow-y-auto py-2">
           {loading && (
-            <div className="px-4 py-3 text-sm text-muted">Searching...</div>
+            <div className="px-4 py-3 text-sm text-muted">{t("admin.commandPalette.searching")}</div>
           )}
           {!loading && results.length === 0 && (
             <div className="px-4 py-8 text-center text-sm text-muted">
-              No results found
+              {t("admin.commandPalette.noResults")}
             </div>
           )}
           {!loading &&
@@ -216,9 +236,9 @@ export function CommandPalette({
 
         {/* Footer */}
         <div className="border-t border-border px-4 py-2 flex items-center gap-4 text-[10px] text-muted">
-          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">↑↓</kbd> Navigate</span>
-          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">↵</kbd> Open</span>
-          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">esc</kbd> Close</span>
+          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">↑↓</kbd> {t("admin.commandPalette.navigate")}</span>
+          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">↵</kbd> {t("admin.commandPalette.open")}</span>
+          <span><kbd className="font-mono bg-surface px-1 py-0.5 rounded">esc</kbd> {t("admin.commandPalette.close")}</span>
         </div>
       </div>
     </div>

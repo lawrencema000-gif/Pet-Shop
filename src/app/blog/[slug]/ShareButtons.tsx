@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { SITE_CONFIG } from "@/lib/constants";
+import { useTranslation } from "react-i18next";
 
 interface ShareButtonsProps {
   title: string;
@@ -9,6 +10,7 @@ interface ShareButtonsProps {
 }
 
 export default function ShareButtons({ title, slug }: ShareButtonsProps) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const postUrl = `${SITE_CONFIG.url}/blog/${slug}`;
 
@@ -32,13 +34,13 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
 
   return (
     <div className="mt-8 flex items-center gap-4 border-t border-border pt-6">
-      <span className="text-sm font-medium text-foreground">Share:</span>
+      <span className="text-sm font-medium text-foreground">{t('shareButtons.share')}</span>
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(postUrl)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="rounded-full border border-border p-2 text-muted transition-colors hover:border-accent hover:text-foreground"
-        aria-label="Share on Twitter"
+        aria-label={t('shareButtons.shareOnTwitter')}
       >
         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -49,7 +51,7 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
         target="_blank"
         rel="noopener noreferrer"
         className="rounded-full border border-border p-2 text-muted transition-colors hover:border-accent hover:text-foreground"
-        aria-label="Share on Facebook"
+        aria-label={t('shareButtons.shareOnFacebook')}
       >
         <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
           <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 1.09.07 1.373.14v3.34c-.149-.016-.408-.024-.601-.024-1.7 0-2.36.645-2.36 2.325v1.777h3.32l-.57 3.667h-2.75v8.353C19.396 23.187 24 18.134 24 12.011 24 5.384 18.627 0 12 0S0 5.384 0 12.011c0 5.234 3.406 9.717 8.131 11.28.349.077.727.119 .97.4z" />
@@ -58,8 +60,8 @@ export default function ShareButtons({ title, slug }: ShareButtonsProps) {
       <button
         onClick={handleCopyLink}
         className="rounded-full border border-border p-2 text-muted transition-colors hover:border-accent hover:text-foreground"
-        aria-label="Copy link"
-        title={copied ? "Link copied!" : "Copy link to clipboard"}
+        aria-label={t('shareButtons.copyLink')}
+        title={copied ? t('shareButtons.linkCopied') : t('shareButtons.copyLinkToClipboard')}
       >
         {copied ? (
           <svg
