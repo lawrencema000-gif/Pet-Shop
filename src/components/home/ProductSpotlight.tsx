@@ -1,60 +1,60 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
-const spotlightProducts = [
-  {
-    id: "feeders",
-    tab: "Smart Feeders",
-    label: "Best Seller",
-    title: "Granary Smart Camera Feeder",
-    subtitle: "Wi-Fi · HD Camera · App Control",
-    description:
-      "Schedule meals, monitor portions, and watch your pet eat from anywhere with the built-in HD camera and two-way audio. Compatible with iOS and Android.",
-    price: "$139.99",
-    comparePrice: "$179.99",
-    features: ["HD Camera", "App Control", "Voice Recording", "Portion Control"],
-    image:
-      "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=800&h=800&fit=crop",
-    href: "/categories/pet-feeders",
-  },
-  {
-    id: "fountains",
-    tab: "Water Fountains",
-    label: "New Arrival",
-    title: "Dockstream 2 Smart Fountain",
-    subtitle: "5-Stage Filtration · Ultra-Quiet",
-    description:
-      "5-stage filtration, ultra-quiet pump, and real-time water level monitoring keep your pet hydrated and healthy. Dishwasher-safe components.",
-    price: "$79.99",
-    comparePrice: "$99.99",
-    features: ["5-Stage Filter", "Ultra-Quiet", "LED Indicator", "Easy Clean"],
-    image:
-      "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=800&fit=crop",
-    href: "/categories/water-fountains",
-  },
-  {
-    id: "litter",
-    tab: "Litter Boxes",
-    label: "Premium",
-    title: "Luma Smart Litter Box",
-    subtitle: "Self-Cleaning · AI Health Monitor",
-    description:
-      "Automatic self-cleaning with Video Cloud AI health monitoring. Whisper-quiet operation supports up to 3 cats. Odor-lock sealed waste drawer.",
-    price: "$399.99",
-    comparePrice: "$499.99",
-    features: ["Self-Cleaning", "AI Health", "Multi-Cat", "Odor Lock"],
-    image:
-      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=800&fit=crop",
-    href: "/categories/litter-boxes",
-  },
-];
-
 export default function ProductSpotlight() {
+  const { t } = useTranslation();
   const [activeIndex, setActiveIndex] = useState(0);
+
+  const spotlightProducts = [
+    {
+      id: "feeders",
+      tab: t('spotlight.tabFeeders'),
+      label: t('spotlight.bestSeller'),
+      title: t('spotlight.feederName'),
+      subtitle: t('spotlight.feederSpec'),
+      description: t('spotlight.feederDesc'),
+      price: "$139.99",
+      comparePrice: "$179.99",
+      features: [t('spotlight.feederFeature1'), t('spotlight.feederFeature2'), t('spotlight.feederFeature3'), t('spotlight.feederFeature4')],
+      image:
+        "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=800&h=800&fit=crop",
+      href: "/categories/pet-feeders",
+    },
+    {
+      id: "fountains",
+      tab: t('spotlight.tabFountains'),
+      label: t('spotlight.newArrival'),
+      title: t('spotlight.fountainName'),
+      subtitle: t('spotlight.fountainSpec'),
+      description: t('spotlight.fountainDesc'),
+      price: "$79.99",
+      comparePrice: "$99.99",
+      features: [t('spotlight.fountainFeature1'), t('spotlight.fountainFeature2'), t('spotlight.fountainFeature3'), t('spotlight.fountainFeature4')],
+      image:
+        "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=800&fit=crop",
+      href: "/categories/water-fountains",
+    },
+    {
+      id: "litter",
+      tab: t('spotlight.tabLitterBoxes'),
+      label: t('spotlight.premium'),
+      title: t('spotlight.litterName'),
+      subtitle: t('spotlight.litterSpec'),
+      description: t('spotlight.litterDesc'),
+      price: "$399.99",
+      comparePrice: "$499.99",
+      features: [t('spotlight.litterFeature1'), t('spotlight.litterFeature2'), t('spotlight.litterFeature3'), t('spotlight.litterFeature4')],
+      image:
+        "https://images.unsplash.com/photo-1573865526739-10659fec78a5?w=800&h=800&fit=crop",
+      href: "/categories/litter-boxes",
+    },
+  ];
+
   const active = spotlightProducts[activeIndex];
 
   return (
@@ -62,14 +62,13 @@ export default function ProductSpotlight() {
       <div className="container-main">
         <div className="text-center mb-14">
           <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
-            Featured Collection
+            {t('spotlight.overline')}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Smart Solutions for Every Pet
+            {t('spotlight.heading')}
           </h2>
           <p className="text-muted mt-4 max-w-lg mx-auto text-sm">
-            Technology-driven products designed to simplify pet care and keep
-            your companions happy and healthy.
+            {t('spotlight.description')}
           </p>
         </div>
 
@@ -148,14 +147,14 @@ export default function ProductSpotlight() {
             </div>
 
             <div className="text-xs text-success font-medium mt-2">
-              Free shipping included
+              {t('spotlight.freeShipping')}
             </div>
 
             <Link
               href={active.href}
               className="group inline-flex items-center gap-2 bg-accent text-white px-10 py-4 text-sm font-semibold mt-8 hover:bg-accent-dark transition-colors duration-300"
             >
-              Shop Now
+              {t('common.shopNow')}
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"

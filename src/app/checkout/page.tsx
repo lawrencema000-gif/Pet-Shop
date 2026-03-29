@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { ShieldCheck, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -14,6 +15,7 @@ import { CouponField } from "@/components/cart/CouponField";
 import type { ShippingAddress } from "@/types/order";
 
 export default function CheckoutPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const items = useCartStore((s) => s.items);
   const subtotal = useCartStore((s) => s.subtotal());
@@ -47,12 +49,12 @@ export default function CheckoutPage() {
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      newErrors.email = "Valid email is required";
+      newErrors.email = t('checkout.errorEmail');
     }
-    if (!address.line1.trim()) newErrors.line1 = "Address is required";
-    if (!address.city.trim()) newErrors.city = "City is required";
-    if (!address.state.trim()) newErrors.state = "State is required";
-    if (!address.zip.trim()) newErrors.zip = "ZIP code is required";
+    if (!address.line1.trim()) newErrors.line1 = t('checkout.errorAddress');
+    if (!address.city.trim()) newErrors.city = t('checkout.errorCity');
+    if (!address.state.trim()) newErrors.state = t('checkout.errorState');
+    if (!address.zip.trim()) newErrors.zip = t('checkout.errorZip');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -82,7 +84,7 @@ export default function CheckoutPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrors({ form: data.error || "Something went wrong. Please try again." });
+        setErrors({ form: data.error || t('checkout.errorGeneric') });
         return;
       }
 
@@ -93,7 +95,7 @@ export default function CheckoutPage() {
       }
     } catch (err) {
       console.error("Checkout error:", err);
-      setErrors({ form: "Something went wrong. Please try again." });
+      setErrors({ form: t('checkout.errorGeneric') });
     } finally {
       setLoading(false);
     }
@@ -108,11 +110,11 @@ export default function CheckoutPage() {
         className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground mb-8 transition-colors"
       >
         <ArrowLeft size={16} />
-        Back to Cart
+        {t('checkout.backToCart')}
       </Link>
 
       <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-        Checkout
+        {t('checkout.heading')}
       </h1>
 
       {errors.form && (
@@ -130,12 +132,12 @@ export default function CheckoutPage() {
           {/* Contact */}
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-4">
-              Contact
+              {t('checkout.contact')}
             </h2>
             <Input
-              label="Email"
+              label={t('checkout.email')}
               type="email"
-              placeholder="your@email.com"
+              placeholder={t('checkout.emailPlaceholder')}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               error={errors.email}
@@ -145,12 +147,12 @@ export default function CheckoutPage() {
           {/* Shipping */}
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-4">
-              Shipping Address
+              {t('checkout.shippingAddress')}
             </h2>
             <div className="space-y-4">
               <Input
-                label="Address Line 1"
-                placeholder="123 Main St"
+                label={t('checkout.addressLine1')}
+                placeholder={t('checkout.addressLine1Placeholder')}
                 value={address.line1}
                 onChange={(e) =>
                   setAddress({ ...address, line1: e.target.value })
@@ -158,8 +160,8 @@ export default function CheckoutPage() {
                 error={errors.line1}
               />
               <Input
-                label="Address Line 2 (Optional)"
-                placeholder="Apt, suite, etc."
+                label={t('checkout.addressLine2')}
+                placeholder={t('checkout.addressLine2Placeholder')}
                 value={address.line2}
                 onChange={(e) =>
                   setAddress({ ...address, line2: e.target.value })
@@ -167,8 +169,8 @@ export default function CheckoutPage() {
               />
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  label="City"
-                  placeholder="New York"
+                  label={t('checkout.city')}
+                  placeholder={t('checkout.cityPlaceholder')}
                   value={address.city}
                   onChange={(e) =>
                     setAddress({ ...address, city: e.target.value })
@@ -176,8 +178,8 @@ export default function CheckoutPage() {
                   error={errors.city}
                 />
                 <Input
-                  label="State"
-                  placeholder="NY"
+                  label={t('checkout.state')}
+                  placeholder={t('checkout.statePlaceholder')}
                   value={address.state}
                   onChange={(e) =>
                     setAddress({ ...address, state: e.target.value })
@@ -187,8 +189,8 @@ export default function CheckoutPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  label="ZIP Code"
-                  placeholder="10001"
+                  label={t('checkout.zip')}
+                  placeholder={t('checkout.zipPlaceholder')}
                   value={address.zip}
                   onChange={(e) =>
                     setAddress({ ...address, zip: e.target.value })
@@ -196,7 +198,7 @@ export default function CheckoutPage() {
                   error={errors.zip}
                 />
                 <Input
-                  label="Country"
+                  label={t('checkout.country')}
                   value={address.country}
                   onChange={(e) =>
                     setAddress({ ...address, country: e.target.value })
@@ -210,15 +212,15 @@ export default function CheckoutPage() {
           {/* Payment */}
           <section>
             <h2 className="text-lg font-semibold text-foreground mb-4">
-              Payment
+              {t('checkout.payment')}
             </h2>
             <div className="border border-border rounded-xl p-4 space-y-3">
               <div className="flex items-center gap-2 text-sm text-foreground">
                 <ShieldCheck size={16} className="text-success" />
-                <span>Secure Payment via Stripe</span>
+                <span>{t('checkout.securePayment')}</span>
               </div>
               <p className="text-sm text-muted leading-relaxed">
-                You&apos;ll be redirected to Stripe&apos;s secure checkout to complete your payment. Your card details are never stored on our servers.
+                {t('checkout.stripeRedirectNote')}
               </p>
             </div>
           </section>
@@ -230,7 +232,7 @@ export default function CheckoutPage() {
             loading={loading}
             className="lg:hidden"
           >
-            Continue to Payment &mdash; {formatPrice(total)}
+            {t('checkout.continueToPayment')} &mdash; {formatPrice(total)}
           </Button>
         </div>
 
@@ -238,7 +240,7 @@ export default function CheckoutPage() {
         <div className="lg:w-96">
           <div className="bg-surface-light rounded-xl p-6 lg:sticky lg:top-8">
             <h2 className="text-lg font-bold text-foreground mb-4">
-              Order Summary
+              {t('checkout.orderSummary')}
             </h2>
 
             <div className="space-y-4 max-h-64 overflow-y-auto mb-4">
@@ -273,17 +275,17 @@ export default function CheckoutPage() {
 
             <div className="border-t border-border pt-4 space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted">Subtotal</span>
+                <span className="text-muted">{t('checkout.subtotal')}</span>
                 <span className="font-medium">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted">Shipping</span>
+                <span className="text-muted">{t('checkout.shipping')}</span>
                 <span className={freeShipping ? "text-success font-medium" : "font-medium"}>
-                  {freeShipping ? "Free" : formatPrice(SHIPPING_COST)}
+                  {freeShipping ? t('common.free') : formatPrice(SHIPPING_COST)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted">Tax</span>
+                <span className="text-muted">{t('checkout.tax')}</span>
                 <span className="font-medium">{formatPrice(tax)}</span>
               </div>
               {discount > 0 && couponCode && (
@@ -310,7 +312,7 @@ export default function CheckoutPage() {
 
             <div className="border-t border-border mt-4 pt-4">
               <div className="flex justify-between items-center mb-6">
-                <span className="font-bold text-foreground">Total</span>
+                <span className="font-bold text-foreground">{t('checkout.total')}</span>
                 <span className="text-xl font-bold text-foreground">
                   {formatPrice(total)}
                 </span>
@@ -323,7 +325,7 @@ export default function CheckoutPage() {
                 loading={loading}
                 className="hidden lg:flex"
               >
-                Continue to Payment
+                {t('checkout.continueToPayment')}
               </Button>
             </div>
           </div>

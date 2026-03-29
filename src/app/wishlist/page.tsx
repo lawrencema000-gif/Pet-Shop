@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Heart, ShoppingBag, ArrowRight, LogIn } from "lucide-react";
 import { useAuth } from "@/lib/supabase/auth-provider";
 
 export default function WishlistPage() {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
 
   return (
@@ -36,17 +38,16 @@ export default function WishlistPage() {
                 </div>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                Your Wishlist
+                {t('wishlist.heading')}
               </h1>
               <p className="text-muted leading-relaxed mb-8 max-w-sm mx-auto">
-                Sign in to save your favorite products, track price drops, and
-                build your perfect pet care collection.
+                {t('wishlist.signInDesc')}
               </p>
               <Link
                 href="/auth/login"
                 className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
               >
-                Sign In to Get Started
+                {t('wishlist.signInCta')}
                 <ArrowRight size={14} />
               </Link>
             </div>
@@ -67,17 +68,16 @@ export default function WishlistPage() {
                 </div>
               </div>
               <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                Your Wishlist Is Empty
+                {t('wishlist.emptyTitle')}
               </h1>
               <p className="text-muted leading-relaxed mb-8 max-w-sm mx-auto">
-                Start adding favorites! Browse our collection of smart pet care
-                products and tap the heart icon to save items here.
+                {t('wishlist.emptyDesc')}
               </p>
               <Link
                 href="/products"
                 className="inline-flex items-center gap-2 bg-accent text-white px-8 py-3 rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors"
               >
-                Browse Products
+                {t('common.browseProducts')}
                 <ArrowRight size={14} />
               </Link>
             </div>

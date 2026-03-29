@@ -1,35 +1,33 @@
-import type { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ChevronRight } from "lucide-react";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { useTranslation } from "react-i18next";
+import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "New Arrivals | PETLIBRO",
-  description:
-    "Discover the latest smart pet products. New feeders, water fountains, litter boxes, and accessories just landed at PETLIBRO.",
-  keywords: [
-    "new pet products",
-    "latest pet tech",
-    "new arrivals",
-    "smart pet devices",
-  ],
-};
+export default function NewArrivalsPage() {
+  const { t } = useTranslation();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [newProducts, setNewProducts] = useState<any[]>([]);
 
-export default async function NewArrivalsPage() {
-  const supabase = createServerSupabaseClient();
+  useEffect(() => {
+    async function fetchData() {
+      const { data: products } = await supabase
+        .from("products")
+        .select(
+          "*, images:product_images(*), variants:product_variants(*), category:categories(*)"
+        )
+        .eq("status", "active")
+        .eq("is_new", true)
+        .order("created_at", { ascending: false });
 
-  const { data: products } = await supabase
-    .from("products")
-    .select(
-      "*, images:product_images(*), variants:product_variants(*), category:categories(*)"
-    )
-    .eq("status", "active")
-    .eq("is_new", true)
-    .order("created_at", { ascending: false });
-
-  const newProducts = products || [];
+      setNewProducts(products || []);
+    }
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -37,10 +35,10 @@ export default async function NewArrivalsPage() {
       <div className="border-b border-border bg-surface-light">
         <nav className="container-main flex items-center gap-2 py-3 text-sm text-muted">
           <Link href="/" className="transition-colors hover:text-foreground">
-            Home
+            {t('common.home')}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground">New Arrivals</span>
+          <span className="text-foreground">{t('newArrivals.heading')}</span>
         </nav>
       </div>
 
@@ -48,15 +46,13 @@ export default async function NewArrivalsPage() {
       <section className="bg-surface py-14 md:py-20">
         <div className="container-main text-center">
           <span className="inline-block rounded-full bg-accent/10 px-4 py-1.5 text-sm font-semibold text-accent">
-            Just Dropped
+            {t('newArrivals.overline')}
           </span>
           <h1 className="mt-4 text-4xl font-bold text-foreground md:text-6xl">
-            New Arrivals
+            {t('newArrivals.heading')}
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-muted md:text-lg">
-            The latest in smart pet care technology. Be the first to discover
-            our newest products, designed to make life better for you and your
-            furry friends.
+            {t('newArrivals.description')}
           </p>
         </div>
       </section>
@@ -64,10 +60,10 @@ export default async function NewArrivalsPage() {
       {/* Products Grid */}
       <section className="container-main py-12 md:py-16">
         <h2 className="mb-8 text-2xl font-bold text-foreground">
-          Latest Products
+          {t('newArrivals.latestProducts')}
           {newProducts.length > 0 && (
             <span className="ml-2 text-base font-normal text-muted">
-              ({newProducts.length} items)
+              ({t('newArrivals.itemsCount', { count: newProducts.length })})
             </span>
           )}
         </h2>
@@ -97,7 +93,7 @@ export default async function NewArrivalsPage() {
                       />
                     )}
                     <span className="absolute left-2 top-2 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-white">
-                      New
+                      {t('newArrivals.newBadge')}
                     </span>
                   </div>
                   <div className="p-3 md:p-4">
@@ -126,13 +122,13 @@ export default async function NewArrivalsPage() {
         ) : (
           <div className="py-20 text-center">
             <p className="text-lg text-muted">
-              New products are coming soon. Stay tuned!
+              {t('newArrivals.emptyMessage')}
             </p>
             <Link
               href="/products"
               className="mt-4 inline-block rounded-full bg-accent px-6 py-3 text-sm font-medium text-white transition-opacity hover:opacity-90"
             >
-              Shop All Products
+              {t('common.shopAllProducts')}
             </Link>
           </div>
         )}

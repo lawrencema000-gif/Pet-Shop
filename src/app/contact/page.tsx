@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
   Mail,
@@ -14,41 +15,42 @@ import {
   CheckCircle,
 } from "lucide-react";
 
-const subjectOptions = [
-  "Product Question",
-  "Order Status",
-  "Shipping Inquiry",
-  "Return or Exchange",
-  "Warranty Claim",
-  "Technical Support",
-  "Feedback / Suggestion",
-  "Other",
-];
-
-const quickHelpLinks = [
-  {
-    icon: HelpCircle,
-    title: "FAQ",
-    description: "Find answers to common questions",
-    href: "/faq",
-  },
-  {
-    icon: Truck,
-    title: "Shipping Info",
-    description: "Delivery times and tracking",
-    href: "/shipping",
-  },
-  {
-    icon: RotateCcw,
-    title: "Returns",
-    description: "Start a return or exchange",
-    href: "/returns",
-  },
-];
-
 export default function ContactPage() {
+  const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+
+  const subjectOptions = [
+    { value: "Product Question", label: t('contact.subjectProductQuestion') },
+    { value: "Order Status", label: t('contact.subjectOrderStatus') },
+    { value: "Shipping Inquiry", label: t('contact.subjectShippingInquiry') },
+    { value: "Return or Exchange", label: t('contact.subjectReturnExchange') },
+    { value: "Warranty Claim", label: t('contact.subjectWarrantyClaim') },
+    { value: "Technical Support", label: t('contact.subjectTechnicalSupport') },
+    { value: "Feedback / Suggestion", label: t('contact.subjectFeedback') },
+    { value: "Other", label: t('contact.subjectOther') },
+  ];
+
+  const quickHelpLinks = [
+    {
+      icon: HelpCircle,
+      title: t('contact.quickHelpFaqTitle'),
+      description: t('contact.quickHelpFaqDesc'),
+      href: "/faq",
+    },
+    {
+      icon: Truck,
+      title: t('contact.quickHelpShippingTitle'),
+      description: t('contact.quickHelpShippingDesc'),
+      href: "/shipping",
+    },
+    {
+      icon: RotateCcw,
+      title: t('contact.quickHelpReturnsTitle'),
+      description: t('contact.quickHelpReturnsDesc'),
+      href: "/returns",
+    },
+  ];
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -77,18 +79,17 @@ export default function ContactPage() {
   return (
     <>
       <div className="container-main">
-        <Breadcrumb items={[{ label: "Contact Us" }]} />
+        <Breadcrumb items={[{ label: t('contact.breadcrumb') }]} />
       </div>
 
       <div className="container-main pb-20">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Get in Touch
+              {t('contact.heading')}
             </h1>
             <p className="text-muted text-lg max-w-2xl mx-auto">
-              Have a question about our products or need help with an order?
-              We&apos;re here to help and typically respond within 24 hours.
+              {t('contact.description')}
             </p>
           </div>
 
@@ -97,7 +98,7 @@ export default function ContactPage() {
               <div className="p-3 rounded-full bg-background border border-border mb-3">
                 <Mail size={20} className="text-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground mb-1">Email Us</h3>
+              <h3 className="font-semibold text-foreground mb-1">{t('contact.emailUsTitle')}</h3>
               <a
                 href="mailto:support@petlibro.com"
                 className="text-sm text-muted hover:text-foreground transition-colors"
@@ -109,7 +110,7 @@ export default function ContactPage() {
               <div className="p-3 rounded-full bg-background border border-border mb-3">
                 <Phone size={20} className="text-foreground" />
               </div>
-              <h3 className="font-semibold text-foreground mb-1">Call Us</h3>
+              <h3 className="font-semibold text-foreground mb-1">{t('contact.callUsTitle')}</h3>
               <p className="text-sm text-muted">(888) 555-PETS</p>
             </div>
             <div className="flex flex-col items-center text-center p-6 bg-surface rounded-xl">
@@ -117,12 +118,12 @@ export default function ContactPage() {
                 <Clock size={20} className="text-foreground" />
               </div>
               <h3 className="font-semibold text-foreground mb-1">
-                Business Hours
+                {t('contact.businessHoursTitle')}
               </h3>
               <p className="text-sm text-muted">
-                Mon - Fri: 9 AM - 6 PM EST
+                {t('contact.businessHoursWeekday')}
                 <br />
-                Sat: 10 AM - 4 PM EST
+                {t('contact.businessHoursSaturday')}
               </p>
             </div>
           </div>
@@ -131,7 +132,7 @@ export default function ContactPage() {
             <div className="lg:col-span-3">
               <div className="bg-background rounded-md border border-border p-6 md:p-8">
                 <h2 className="text-xl font-semibold text-foreground mb-6">
-                  Send Us a Message
+                  {t('contact.sendMessageTitle')}
                 </h2>
 
                 {submitted ? (
@@ -140,11 +141,10 @@ export default function ContactPage() {
                       <CheckCircle size={32} className="text-success" />
                     </div>
                     <h3 className="text-lg font-semibold text-foreground mb-2">
-                      Message Sent
+                      {t('contact.messageSentTitle')}
                     </h3>
                     <p className="text-muted text-sm max-w-sm mx-auto">
-                      Thank you for reaching out. Our team will review your
-                      message and get back to you within 24 hours.
+                      {t('contact.messageSentDesc')}
                     </p>
                   </div>
                 ) : (
@@ -155,14 +155,14 @@ export default function ContactPage() {
                           htmlFor="name"
                           className="block text-sm font-medium text-foreground mb-1.5"
                         >
-                          Full Name
+                          {t('contact.fullNameLabel')}
                         </label>
                         <input
                           id="name"
                           name="name"
                           type="text"
                           required
-                          placeholder="Your name"
+                          placeholder={t('contact.fullNamePlaceholder')}
                           className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors"
                         />
                       </div>
@@ -171,17 +171,17 @@ export default function ContactPage() {
                           htmlFor="email"
                           className="block text-sm font-medium text-foreground mb-1.5"
                         >
-                          Email Address
+                          {t('contact.emailLabel')}
                         </label>
                         <input
                           id="email"
                           name="email"
                           type="email"
                           required
-                          placeholder="you@example.com"
+                          placeholder={t('contact.emailPlaceholder')}
                           className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors"
                         />
-                        <p className="text-xs text-muted mt-1">We&apos;ll only use this to respond to your message</p>
+                        <p className="text-xs text-muted mt-1">{t('contact.emailHint')}</p>
                       </div>
                     </div>
 
@@ -190,7 +190,7 @@ export default function ContactPage() {
                         htmlFor="subject"
                         className="block text-sm font-medium text-foreground mb-1.5"
                       >
-                        Subject
+                        {t('contact.subjectLabel')}
                       </label>
                       <select
                         id="subject"
@@ -200,11 +200,11 @@ export default function ContactPage() {
                         className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors appearance-none"
                       >
                         <option value="" disabled>
-                          Select a topic
+                          {t('contact.subjectPlaceholder')}
                         </option>
                         {subjectOptions.map((opt) => (
-                          <option key={opt} value={opt}>
-                            {opt}
+                          <option key={opt.value} value={opt.value}>
+                            {opt.label}
                           </option>
                         ))}
                       </select>
@@ -215,13 +215,13 @@ export default function ContactPage() {
                         htmlFor="message"
                         className="block text-sm font-medium text-foreground mb-1.5"
                       >
-                        Message
+                        {t('contact.messageLabel')}
                       </label>
                       <textarea
                         id="message"
                         name="message"
                         rows={5}
-                        placeholder="Tell us how we can help..."
+                        placeholder={t('contact.messagePlaceholder')}
                         className="w-full px-4 py-2.5 text-sm border border-border rounded bg-background focus:outline-none focus:border-accent transition-colors resize-none"
                       />
                     </div>
@@ -232,9 +232,9 @@ export default function ContactPage() {
                       className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-60"
                     >
                       <Send size={16} />
-                      {sending ? "Sending..." : "Send My Message"}
+                      {sending ? t('contact.sending') : t('contact.sendButton')}
                     </button>
-                    <p className="text-xs text-muted mt-2">We typically respond within 24 hours</p>
+                    <p className="text-xs text-muted mt-2">{t('contact.responseTime')}</p>
                   </form>
                 )}
               </div>
@@ -242,7 +242,7 @@ export default function ContactPage() {
 
             <div className="lg:col-span-2">
               <h2 className="text-xl font-semibold text-foreground mb-4">
-                Quick Help
+                {t('contact.quickHelpTitle')}
               </h2>
               <div className="space-y-3">
                 {quickHelpLinks.map((link) => (

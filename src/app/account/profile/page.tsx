@@ -6,8 +6,10 @@ import { Loader2, Check } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 export default function ProfilePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -64,9 +66,9 @@ export default function ProfilePage() {
     });
 
     if (error) {
-      setMessage({ type: "error", text: "Failed to save profile. Please try again." });
+      setMessage({ type: "error", text: t('profilePage.saveFailed') });
     } else {
-      setMessage({ type: "success", text: "Profile updated successfully!" });
+      setMessage({ type: "success", text: t('profilePage.saveSuccess') });
     }
 
     setSaving(false);
@@ -82,12 +84,12 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-foreground mb-6">Profile</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">{t('profilePage.heading')}</h1>
 
       <div className="bg-background rounded-md border border-border p-6">
         <div className="space-y-4">
           <Input
-            label="Email"
+            label={t('profilePage.email')}
             type="email"
             value={email}
             disabled
@@ -95,17 +97,17 @@ export default function ProfilePage() {
           />
 
           <Input
-            label="Full Name"
+            label={t('profilePage.fullName')}
             type="text"
-            placeholder="Enter your full name"
+            placeholder={t('profilePage.fullNamePlaceholder')}
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
           />
 
           <Input
-            label="Phone"
+            label={t('profilePage.phone')}
             type="tel"
-            placeholder="Enter your phone number"
+            placeholder={t('profilePage.phonePlaceholder')}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
           />
@@ -123,7 +125,7 @@ export default function ProfilePage() {
 
           <div className="pt-2">
             <Button onClick={handleSave} loading={saving}>
-              Save Changes
+              {t('profilePage.saveChanges')}
             </Button>
           </div>
         </div>

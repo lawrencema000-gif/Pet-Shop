@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
 
@@ -11,6 +12,7 @@ interface BestSellersProps {
 }
 
 export default function BestSellers({ products }: BestSellersProps) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
@@ -47,13 +49,13 @@ export default function BestSellers({ products }: BestSellersProps) {
     <div className="relative">
       <div className="text-center mb-12">
         <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
-          Most Loved
+          {t('bestSellers.overline')}
         </span>
         <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-          Best Sellers
+          {t('bestSellers.heading')}
         </h2>
         <p className="text-muted mt-3 max-w-md mx-auto text-sm">
-          Chosen by 50,000+ pet parents — these are the products they come back for.
+          {t('bestSellers.description')}
         </p>
       </div>
       <div className="flex justify-end mb-6">
@@ -61,7 +63,7 @@ export default function BestSellers({ products }: BestSellersProps) {
           href="/products?sort=best-sellers"
           className="text-sm font-medium text-muted hover:text-foreground transition-colors luxury-underline"
         >
-          View All
+          {t('common.viewAll')}
         </Link>
       </div>
 
@@ -70,7 +72,7 @@ export default function BestSellers({ products }: BestSellersProps) {
           <button
             onClick={() => scroll("left")}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-sm border border-border flex items-center justify-center hover:bg-surface-light transition-colors -ml-4"
-            aria-label="Scroll left"
+            aria-label={t('bestSellers.scrollLeft')}
           >
             <ChevronLeft size={20} />
           </button>
@@ -91,7 +93,7 @@ export default function BestSellers({ products }: BestSellersProps) {
           <button
             onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background shadow-sm border border-border flex items-center justify-center hover:bg-surface-light transition-colors -mr-4"
-            aria-label="Scroll right"
+            aria-label={t('bestSellers.scrollRight')}
           >
             <ChevronRight size={20} />
           </button>

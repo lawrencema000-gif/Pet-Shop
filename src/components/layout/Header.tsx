@@ -3,14 +3,17 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, User, ShoppingBag, Menu } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
 import { useCartStore } from "@/lib/store/cart";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
 import { SearchModal } from "./SearchModal";
 import { cn } from "@/lib/utils";
 
 export function Header() {
+  const { t } = useTranslation();
   const [hoveredNav, setHoveredNav] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -44,7 +47,7 @@ export function Header() {
               <button
                 onClick={() => setMobileNavOpen(true)}
                 className="lg:hidden p-1.5 hover:bg-surface-light transition-colors rounded"
-                aria-label="Open menu"
+                aria-label={t('nav.openMenu')}
               >
                 <Menu size={22} />
               </button>
@@ -95,24 +98,25 @@ export function Header() {
 
             {/* Right: Icons */}
             <div className="flex items-center gap-1">
+              <LanguageSwitcher />
               <button
                 onClick={() => setSearchOpen(true)}
                 className="p-2 hover:bg-surface-light transition-colors rounded"
-                aria-label="Search"
+                aria-label={t('nav.search')}
               >
                 <Search size={20} />
               </button>
               <Link
                 href="/auth/login"
                 className="p-2 hover:bg-surface-light transition-colors hidden sm:flex rounded"
-                aria-label="Account"
+                aria-label={t('nav.account')}
               >
                 <User size={20} />
               </Link>
               <button
                 onClick={openCart}
                 className="relative p-2 hover:bg-surface-light transition-colors rounded"
-                aria-label="Cart"
+                aria-label={t('nav.cart')}
               >
                 <ShoppingBag size={20} />
                 {totalItems > 0 && (

@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice, cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import type { Order, OrderItem } from "@/types/order";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -24,6 +25,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function OrdersPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [orderItems, setOrderItems] = useState<Record<string, OrderItem[]>>({});
@@ -89,24 +91,24 @@ export default function OrdersPage() {
         className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground mb-6 transition-colors"
       >
         <ArrowLeft size={16} />
-        Back to Account
+        {t('orderHistory.backToAccount')}
       </Link>
 
       <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-        Order History
+        {t('orderHistory.heading')}
       </h1>
 
       {orders.length === 0 ? (
         <div className="text-center py-16">
           <Package size={56} className="text-border mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-foreground mb-2">
-            No orders yet
+            {t('orderHistory.noOrders')}
           </h2>
           <p className="text-muted mb-6">
-            When you place orders, they&apos;ll appear here.
+            {t('orderHistory.noOrdersDesc')}
           </p>
           <Link href="/products">
-            <Button>Start Shopping</Button>
+            <Button>{t('common.startShopping')}</Button>
           </Link>
         </div>
       ) : (
@@ -181,7 +183,7 @@ export default function OrdersPage() {
                                   {formatPrice(item.total_price)}
                                 </p>
                                 <p className="text-xs text-muted">
-                                  Qty: {item.quantity} &times;{" "}
+                                  {t('orderHistory.qty')}: {item.quantity} &times;{" "}
                                   {formatPrice(item.unit_price)}
                                 </p>
                               </div>
@@ -190,24 +192,24 @@ export default function OrdersPage() {
 
                           <div className="border-t border-border pt-3 mt-3 space-y-1 text-sm">
                             <div className="flex justify-between text-muted">
-                              <span>Subtotal</span>
+                              <span>{t('orderHistory.subtotal')}</span>
                               <span>{formatPrice(order.subtotal)}</span>
                             </div>
                             <div className="flex justify-between text-muted">
-                              <span>Shipping</span>
+                              <span>{t('orderHistory.shipping')}</span>
                               <span>
                                 {order.shipping_amount === 0
-                                  ? "Free"
+                                  ? t('orderHistory.free')
                                   : formatPrice(order.shipping_amount)}
                               </span>
                             </div>
                             <div className="flex justify-between text-muted">
-                              <span>Tax</span>
+                              <span>{t('orderHistory.tax')}</span>
                               <span>{formatPrice(order.tax_amount)}</span>
                             </div>
                             {order.discount_amount > 0 && (
                               <div className="flex justify-between text-success">
-                                <span>Discount</span>
+                                <span>{t('orderHistory.discount')}</span>
                                 <span>
                                   -{formatPrice(order.discount_amount)}
                                 </span>

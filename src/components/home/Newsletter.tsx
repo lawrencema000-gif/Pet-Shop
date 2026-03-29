@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { ArrowRight, Check } from "lucide-react";
 
 export default function Newsletter() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
@@ -33,20 +35,19 @@ export default function Newsletter() {
       <div className="container-main">
         <div className="max-w-3xl mx-auto text-center">
           <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
-            Stay Connected
+            {t('newsletter.overline')}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Get 10% Off Your First Order
+            {t('newsletter.heading')}
           </h2>
           <p className="text-muted mt-4 max-w-md mx-auto leading-relaxed text-sm">
-            Join 15,000+ pet parents for exclusive deals, new product alerts,
-            and smart pet care tips.
+            {t('newsletter.description')}
           </p>
 
           {status === "success" ? (
             <div className="mt-10 inline-flex items-center gap-3 bg-success/10 text-success px-8 py-4 font-medium">
               <Check size={20} />
-              Check your inbox for your 10% off code!
+              {t('newsletter.success')}
             </div>
           ) : (
             <form
@@ -57,7 +58,7 @@ export default function Newsletter() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email address"
+                placeholder={t('newsletter.placeholder')}
                 required
                 className="flex-1 px-5 py-4 text-sm border border-border bg-background text-foreground placeholder:text-muted focus:outline-none focus:border-accent transition-colors"
               />
@@ -67,10 +68,10 @@ export default function Newsletter() {
                 className="group inline-flex items-center justify-center gap-2 bg-accent text-white px-8 py-4 text-sm font-semibold hover:bg-accent-dark transition-colors duration-300 disabled:opacity-60 whitespace-nowrap"
               >
                 {status === "loading" ? (
-                  "Subscribing..."
+                  t('common.subscribing')
                 ) : (
                   <>
-                    Subscribe
+                    {t('common.subscribe')}
                     <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
                   </>
                 )}
@@ -80,7 +81,7 @@ export default function Newsletter() {
 
           {status === "error" && (
             <p className="text-sale text-sm mt-4">
-              Something went wrong. Please try again.
+              {t('newsletter.error')}
             </p>
           )}
 
@@ -89,7 +90,7 @@ export default function Newsletter() {
               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              No spam, ever. Unsubscribe in one click.
+              {t('newsletter.noSpam')}
             </p>
           )}
         </div>

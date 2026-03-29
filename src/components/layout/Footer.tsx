@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { FOOTER_LINKS, SITE_CONFIG } from "@/lib/constants";
 import {
   Facebook,
@@ -15,22 +16,6 @@ import {
   ArrowUp,
 } from "lucide-react";
 
-const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/petlibro", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/petlibro", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com/petlibro", label: "Twitter" },
-  { icon: Youtube, href: "https://youtube.com/@petlibro", label: "YouTube" },
-];
-
-const trustBadges = [
-  { icon: Truck, label: "Free Shipping $75+" },
-  { icon: RotateCcw, label: "30-Day Returns" },
-  { icon: Shield, label: "1-Year Warranty" },
-  { icon: Lock, label: "Secure Checkout" },
-  { icon: Headphones, label: "24/7 Support" },
-];
-
-const paymentMethods = ["Visa", "Mastercard", "Amex", "PayPal", "Apple Pay"];
 
 function FooterLinkColumn({
   title,
@@ -65,6 +50,31 @@ function scrollToTop() {
 }
 
 export function Footer() {
+  const { t } = useTranslation();
+
+  const socialLinks = [
+    { icon: Facebook, href: "https://facebook.com/petlibro", label: t('footer.facebook') },
+    { icon: Instagram, href: "https://instagram.com/petlibro", label: t('footer.instagram') },
+    { icon: Twitter, href: "https://twitter.com/petlibro", label: t('footer.twitter') },
+    { icon: Youtube, href: "https://youtube.com/@petlibro", label: t('footer.youtube') },
+  ];
+
+  const trustBadges = [
+    { icon: Truck, label: t('footer.freeShipping') },
+    { icon: RotateCcw, label: t('footer.thirtyDayReturns') },
+    { icon: Shield, label: t('footer.oneYearWarranty') },
+    { icon: Lock, label: t('footer.secureCheckout') },
+    { icon: Headphones, label: t('footer.twentyFourSevenSupport') },
+  ];
+
+  const paymentMethods = [
+    t('footer.visa'),
+    t('footer.mastercard'),
+    t('footer.amex'),
+    t('footer.paypal'),
+    t('footer.applePay'),
+  ];
+
   return (
     <footer className="bg-surface">
       {/* Main Footer Links */}
@@ -78,9 +88,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted leading-relaxed mb-6">
-              Smart pet care for modern pet parents. We design connected
-              products that keep your pets healthy, happy, and well-fed — even
-              when you&apos;re away.
+              {t('footer.description')}
             </p>
             <div className="flex gap-2.5">
               {socialLinks.map(({ icon: Icon, href, label }) => (
@@ -99,14 +107,14 @@ export function Footer() {
           </div>
 
           {/* Shop Links */}
-          <FooterLinkColumn title="Shop" links={FOOTER_LINKS.shop} />
+          <FooterLinkColumn title={t('footer.shop')} links={FOOTER_LINKS.shop} />
 
           {/* Support Links */}
-          <FooterLinkColumn title="Support" links={FOOTER_LINKS.support} />
+          <FooterLinkColumn title={t('footer.support')} links={FOOTER_LINKS.support} />
 
           {/* Company + Legal Links */}
           <div>
-            <FooterLinkColumn title="Company" links={FOOTER_LINKS.company} />
+            <FooterLinkColumn title={t('footer.company')} links={FOOTER_LINKS.company} />
             <div className="mt-6 pt-6 border-t border-border/60">
               <ul className="flex flex-col gap-3">
                 {FOOTER_LINKS.legal.map((link) => (
@@ -148,8 +156,7 @@ export function Footer() {
       <div className="border-t border-border/60">
         <div className="max-w-7xl mx-auto px-4 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-muted">
-            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. All rights
-            reserved.
+            &copy; {new Date().getFullYear()} {SITE_CONFIG.name}. {t('common.allRightsReserved')}
           </p>
 
           <div className="flex items-center gap-3">
@@ -167,9 +174,9 @@ export function Footer() {
             type="button"
             onClick={scrollToTop}
             className="inline-flex items-center gap-1.5 text-xs font-medium text-muted hover:text-foreground transition-colors duration-200 group"
-            aria-label="Back to top"
+            aria-label={t('common.backToTop')}
           >
-            Back to top
+            {t('common.backToTop')}
             <ArrowUp
               size={14}
               className="transition-transform duration-200 group-hover:-translate-y-0.5"

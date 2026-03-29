@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
@@ -15,6 +16,7 @@ import { supabase } from "@/lib/supabase/client";
 import type { Product } from "@/types/product";
 
 export default function CartPage() {
+  const { t } = useTranslation();
   const items = useCartStore((s) => s.items);
   const removeItem = useCartStore((s) => s.removeItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
@@ -52,14 +54,13 @@ export default function CartPage() {
       <div className="flex flex-col items-center justify-center min-h-[60vh] px-6 py-16 text-center">
         <ShoppingBag size={64} className="text-border mb-6" />
         <h1 className="text-2xl font-bold text-foreground mb-2">
-          Your cart is empty
+          {t('cart.emptyTitle')}
         </h1>
         <p className="text-muted mb-8 max-w-md">
-          Looks like you haven&apos;t added any products yet. Browse our
-          collection and find something for your furry friend.
+          {t('cart.emptyDesc')}
         </p>
         <Link href="/products">
-          <Button size="lg">Continue Shopping</Button>
+          <Button size="lg">{t('common.continueShopping')}</Button>
         </Link>
       </div>
     );
@@ -68,7 +69,7 @@ export default function CartPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
       <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
-        Shopping Cart ({totalItems} {totalItems === 1 ? "item" : "items"})
+        {t('cart.heading', { count: totalItems })}
       </h1>
 
       <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
@@ -120,7 +121,7 @@ export default function CartPage() {
                           updateQuantity(item.id, item.quantity - 1)
                         }
                         className="p-2 hover:bg-surface-light transition-colors rounded-l-lg"
-                        aria-label="Decrease quantity"
+                        aria-label={t('cart.decreaseQty')}
                       >
                         <Minus size={16} />
                       </button>
@@ -132,7 +133,7 @@ export default function CartPage() {
                           updateQuantity(item.id, item.quantity + 1)
                         }
                         className="p-2 hover:bg-surface-light transition-colors rounded-r-lg"
-                        aria-label="Increase quantity"
+                        aria-label={t('cart.increaseQty')}
                       >
                         <Plus size={16} />
                       </button>
@@ -145,8 +146,8 @@ export default function CartPage() {
                       <button
                         onClick={() => saveForLater(item.id)}
                         className="p-2 text-muted hover:text-accent transition-colors"
-                        aria-label="Save for later"
-                        title="Save for Later"
+                        aria-label={t('cart.saveForLater')}
+                        title={t('cart.saveForLater')}
                       >
                         <Bookmark size={18} />
                       </button>
@@ -168,7 +169,7 @@ export default function CartPage() {
             className="inline-flex items-center gap-2 text-sm text-muted hover:text-foreground mt-6 transition-colors"
           >
             <ArrowLeft size={16} />
-            Continue Shopping
+            {t('common.continueShopping')}
           </Link>
 
           {/* Saved for Later */}
@@ -181,35 +182,34 @@ export default function CartPage() {
         <div className="lg:w-96">
           <div className="bg-surface-light rounded-xl p-6 lg:sticky lg:top-8">
             <h2 className="text-lg font-bold text-foreground mb-6">
-              Order Summary
+              {t('cart.orderSummary')}
             </h2>
 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted">Subtotal</span>
+                <span className="text-muted">{t('cart.subtotal')}</span>
                 <span className="font-medium text-foreground">
                   {formatPrice(subtotal)}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted">Shipping</span>
+                <span className="text-muted">{t('cart.shipping')}</span>
                 <span
                   className={cn(
                     "font-medium",
                     freeShipping ? "text-success" : "text-foreground"
                   )}
                 >
-                  {freeShipping ? "Free" : formatPrice(SHIPPING_COST)}
+                  {freeShipping ? t('common.free') : formatPrice(SHIPPING_COST)}
                 </span>
               </div>
               {!freeShipping && (
                 <p className="text-xs text-muted">
-                  Free shipping on orders over{" "}
-                  {formatPrice(SITE_CONFIG.freeShippingThreshold)}
+                  {t('cart.freeShippingNote', { threshold: formatPrice(SITE_CONFIG.freeShippingThreshold) })}
                 </p>
               )}
               <div className="flex justify-between">
-                <span className="text-muted">Estimated Tax</span>
+                <span className="text-muted">{t('cart.estimatedTax')}</span>
                 <span className="font-medium text-foreground">
                   {formatPrice(tax)}
                 </span>
@@ -239,7 +239,7 @@ export default function CartPage() {
             <div className="border-t border-border mt-4 pt-4">
               <div className="flex justify-between items-center mb-6">
                 <span className="text-base font-bold text-foreground">
-                  Total
+                  {t('cart.total')}
                 </span>
                 <span className="text-xl font-bold text-foreground">
                   {formatPrice(total)}
@@ -248,7 +248,7 @@ export default function CartPage() {
 
               <Link href="/checkout">
                 <Button fullWidth size="lg">
-                  Proceed to Checkout
+                  {t('cart.proceedToCheckout')}
                 </Button>
               </Link>
             </div>
@@ -260,7 +260,7 @@ export default function CartPage() {
       {recommended.length > 0 && (
         <div className="mt-12 pt-12 border-t border-border">
           <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6">
-            You might also like
+            {t('cart.youMightLike')}
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {recommended.map((product) => (

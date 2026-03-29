@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import type { Category } from "@/types/product";
 
 interface CategoryCardsProps {
@@ -8,6 +11,7 @@ interface CategoryCardsProps {
 }
 
 export default function CategoryCards({ categories }: CategoryCardsProps) {
+  const { t } = useTranslation();
   if (!categories.length) return null;
 
   const display = categories.slice(0, 3);
@@ -16,10 +20,10 @@ export default function CategoryCards({ categories }: CategoryCardsProps) {
     <div>
       <div className="text-center mb-14">
         <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
-          Curated Collections
+          {t('categories.overline')}
         </span>
         <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-          Shop by Category
+          {t('categories.heading')}
         </h2>
       </div>
 
@@ -48,7 +52,7 @@ export default function CategoryCards({ categories }: CategoryCardsProps) {
                 {display[0].name}
               </h3>
               <span className="inline-flex items-center gap-2 text-white/70 text-sm group-hover:text-white transition-colors duration-300">
-                Explore
+                {t('common.explore')}
                 <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </div>
@@ -79,7 +83,7 @@ export default function CategoryCards({ categories }: CategoryCardsProps) {
                 {category.name}
               </h3>
               <span className="inline-flex items-center gap-2 text-white/70 text-sm group-hover:text-white transition-colors duration-300">
-                Explore
+                {t('common.explore')}
                 <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
               </span>
             </div>

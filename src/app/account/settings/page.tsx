@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Check, Bell, Mail, Heart, Newspaper, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface Preferences {
   order_updates: boolean;
@@ -20,34 +21,35 @@ const DEFAULT_PREFS: Preferences = {
   newsletter: false,
 };
 
-const PREF_ITEMS: { key: keyof Preferences; label: string; description: string; icon: typeof Bell }[] = [
+const PREF_KEYS: { key: keyof Preferences; labelKey: string; descKey: string; icon: typeof Bell }[] = [
   {
     key: "order_updates",
-    label: "Order Updates",
-    description: "Get notified about order status changes",
+    labelKey: "settingsPage.orderUpdates",
+    descKey: "settingsPage.orderUpdatesDesc",
     icon: Bell,
   },
   {
     key: "promotions",
-    label: "Promotions",
-    description: "Receive deals and exclusive offers",
+    labelKey: "settingsPage.promotions",
+    descKey: "settingsPage.promotionsDesc",
     icon: Mail,
   },
   {
     key: "pet_care_tips",
-    label: "Pet Care Tips",
-    description: "Helpful tips for taking care of your pets",
+    labelKey: "settingsPage.petCareTips",
+    descKey: "settingsPage.petCareTipsDesc",
     icon: Heart,
   },
   {
     key: "newsletter",
-    label: "Newsletter",
-    description: "Monthly newsletter with new products and updates",
+    labelKey: "settingsPage.newsletter",
+    descKey: "settingsPage.newsletterDesc",
     icon: Newspaper,
   },
 ];
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [prefs, setPrefs] = useState<Preferences>(DEFAULT_PREFS);
@@ -87,17 +89,13 @@ export default function SettingsPage() {
 
   const handleSave = () => {
     localStorage.setItem("pet-shop-preferences", JSON.stringify(prefs));
-    setMessage({ type: "success", text: "Preferences saved!" });
+    setMessage({ type: "success", text: t('settingsPage.preferencesSaved') });
   };
 
   const handleDeleteAccount = () => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone."
-    );
+    const confirmed = window.confirm(t('settingsPage.deleteConfirm'));
     if (confirmed) {
-      alert(
-        "For security, account deletion requires contacting our support team. Please reach out to us at support@petshop.com."
-      );
+      alert(t('settingsPage.deleteContactSupport'));
     }
   };
 
@@ -111,13 +109,13 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-foreground mb-6">Settings</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-6">{t('settingsPage.heading')}</h1>
 
       {/* Notification Preferences */}
       <div className="bg-background rounded-md border border-border p-6 mb-6">
-        <h2 className="text-lg font-semibold text-foreground mb-4">Notification Preferences</h2>
+        <h2 className="text-lg font-semibold text-foreground mb-4">{t('settingsPage.notificationPreferences')}</h2>
         <div className="space-y-4">
-          {PREF_ITEMS.map((item) => {
+          {PREF_KEYS.map((item) => {
             const Icon = item.icon;
             return (
               <div
@@ -129,8 +127,8 @@ export default function SettingsPage() {
                     <Icon size={18} className="text-muted" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{item.label}</p>
-                    <p className="text-xs text-muted">{item.description}</p>
+                    <p className="text-sm font-medium text-foreground">{t(item.labelKey)}</p>
+                    <p className="text-xs text-muted">{t(item.descKey)}</p>
                   </div>
                 </div>
                 <button
@@ -162,7 +160,7 @@ export default function SettingsPage() {
         )}
 
         <div className="pt-4">
-          <Button onClick={handleSave}>Save Preferences</Button>
+          <Button onClick={handleSave}>{t('settingsPage.savePreferences')}</Button>
         </div>
       </div>
 
@@ -170,13 +168,13 @@ export default function SettingsPage() {
       <div className="bg-background rounded-md border border-sale/30 p-6">
         <div className="flex items-center gap-2 mb-3">
           <AlertTriangle size={18} className="text-sale" />
-          <h2 className="text-lg font-semibold text-sale">Danger Zone</h2>
+          <h2 className="text-lg font-semibold text-sale">{t('settingsPage.dangerZone')}</h2>
         </div>
         <p className="text-sm text-muted mb-4">
-          Once you delete your account, there is no going back. Please be certain.
+          {t('settingsPage.dangerZoneDesc')}
         </p>
         <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
-          Delete Account
+          {t('settingsPage.deleteAccount')}
         </Button>
       </div>
     </div>

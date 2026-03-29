@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Search, Loader2 } from "lucide-react";
 import Link from "next/link";
 import ProductGrid from "@/components/product/ProductGrid";
@@ -41,6 +42,7 @@ function SuggestedCategories() {
 }
 
 function SearchContent() {
+  const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") || "";
@@ -102,7 +104,7 @@ function SearchContent() {
             type="text"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Search for products..."
+            placeholder={t('searchPage.placeholder')}
             autoFocus
             className="w-full border border-border rounded-xl pl-12 pr-4 py-4 text-lg text-foreground placeholder:text-muted bg-background transition-colors focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent"
           />
@@ -118,8 +120,7 @@ function SearchContent() {
       {/* Results */}
       {searched && !loading && (
         <p className="text-sm text-muted mb-6">
-          {products.length} {products.length === 1 ? "result" : "results"} for
-          &ldquo;{query}&rdquo;
+          {t('searchPage.resultsCount', { count: products.length, query })}
         </p>
       )}
 
@@ -127,11 +128,10 @@ function SearchContent() {
         <div className="text-center py-16">
           <Search size={48} className="text-border mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-foreground mb-2">
-            No results found
+            {t('searchPage.noResults')}
           </h2>
           <p className="text-muted max-w-md mx-auto mb-8">
-            We couldn&apos;t find any products matching &ldquo;{query}&rdquo;.
-            Try different keywords or browse our categories below.
+            {t('searchPage.noResultsDesc', { query })}
           </p>
           <SuggestedCategories />
         </div>

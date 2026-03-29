@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { ChevronDown, Package, HelpCircle, User, Facebook, Instagram, Twitter, Youtube } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Drawer } from "@/components/ui/Drawer";
 import { Badge } from "@/components/ui/Badge";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
@@ -15,13 +17,14 @@ interface MobileNavProps {
 }
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/petlibro", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/petlibro", label: "Instagram" },
-  { icon: Twitter, href: "https://twitter.com/petlibro", label: "Twitter" },
-  { icon: Youtube, href: "https://youtube.com/@petlibro", label: "YouTube" },
+  { icon: Facebook, href: "https://facebook.com/petlibro", labelKey: "footer.facebook" },
+  { icon: Instagram, href: "https://instagram.com/petlibro", labelKey: "footer.instagram" },
+  { icon: Twitter, href: "https://twitter.com/petlibro", labelKey: "footer.twitter" },
+  { icon: Youtube, href: "https://youtube.com/@petlibro", labelKey: "footer.youtube" },
 ];
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   const toggle = (label: string) => {
@@ -53,7 +56,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                         {link.label}
                         {link.isNew && (
                           <span className="inline-flex items-center px-1.5 py-0.5 text-[9px] font-bold text-white bg-success rounded-full leading-none">
-                            NEW
+                            {t('common.new')}
                           </span>
                         )}
                       </span>
@@ -80,7 +83,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
                               onClick={onClose}
                               className="block px-4 py-3 text-[15px] font-medium text-accent hover:text-accent/70 transition-colors min-h-[44px]"
                             >
-                              Shop All {link.label}
+                              {t('nav.shopAll')} {link.label}
                             </Link>
                           </li>
                           {link.children.map((child) => (
@@ -142,7 +145,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <Package size={16} />
-              Track Order
+              {t('nav.trackOrder')}
             </Link>
             <Link
               href="/support"
@@ -150,7 +153,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <HelpCircle size={16} />
-              Help Center
+              {t('nav.helpCenter')}
             </Link>
             <Link
               href="/auth/login"
@@ -158,22 +161,27 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               className="flex items-center gap-3 px-4 py-3.5 text-[15px] text-muted hover:text-foreground transition-colors rounded-lg hover:bg-surface-light min-h-[48px]"
             >
               <User size={16} />
-              Account
+              {t('common.account')}
             </Link>
           </div>
+        </div>
+
+        {/* Language switcher */}
+        <div className="border-t border-border px-4 py-4">
+          <LanguageSwitcher />
         </div>
 
         {/* Social links */}
         <div className="border-t border-border px-4 py-4">
           <div className="flex items-center gap-2">
-            {socialLinks.map(({ icon: Icon, href, label }) => (
+            {socialLinks.map(({ icon: Icon, href, labelKey }) => (
               <a
-                key={label}
+                key={labelKey}
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-3 rounded-lg bg-surface-light text-muted hover:text-foreground transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
-                aria-label={label}
+                aria-label={t(labelKey)}
               >
                 <Icon size={16} />
               </a>

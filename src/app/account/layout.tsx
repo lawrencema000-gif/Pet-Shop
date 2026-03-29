@@ -15,25 +15,27 @@ import {
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/lib/supabase/auth-provider";
-
-const NAV_ITEMS = [
-  { href: "/account", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/account/profile", label: "Profile", icon: User },
-  { href: "/account/addresses", label: "Addresses", icon: MapPin },
-  { href: "/account/orders", label: "Orders", icon: Package },
-  { href: "/account/pets", label: "Pets", icon: PawPrint },
-  { href: "/account/settings", label: "Settings", icon: Settings },
-];
+import { useTranslation } from "react-i18next";
 
 export default function AccountLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   const pathname = usePathname();
   const router = useRouter();
   const { profile } = useAuth();
   const isAdmin = profile?.role === "admin";
+
+  const NAV_ITEMS = [
+    { href: "/account", label: t('account.dashboard'), icon: LayoutDashboard },
+    { href: "/account/profile", label: t('account.profile'), icon: User },
+    { href: "/account/addresses", label: t('account.addresses'), icon: MapPin },
+    { href: "/account/orders", label: t('account.orders'), icon: Package },
+    { href: "/account/pets", label: t('petsPage.heading'), icon: PawPrint },
+    { href: "/account/settings", label: t('account.settings'), icon: Settings },
+  ];
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -74,7 +76,7 @@ export default function AccountLayout({
               className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap bg-accent-light text-accent transition-colors"
             >
               <Shield size={16} />
-              Admin
+              {t('nav.admin')}
             </Link>
           )}
           <button
@@ -82,7 +84,7 @@ export default function AccountLayout({
             className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap bg-surface-light text-muted hover:text-sale hover:bg-sale/5 transition-colors"
           >
             <LogOut size={16} />
-            Sign Out
+            {t('common.signOut')}
           </button>
         </div>
       </nav>
@@ -117,7 +119,7 @@ export default function AccountLayout({
                   className="flex items-center gap-3 px-4 py-3 rounded text-sm font-medium text-accent hover:bg-accent-light transition-colors"
                 >
                   <Shield size={18} />
-                  Admin Panel
+                  {t('nav.adminPanel')}
                 </Link>
               </>
             )}
@@ -127,7 +129,7 @@ export default function AccountLayout({
               className="w-full flex items-center gap-3 px-4 py-3 rounded text-sm font-medium text-muted hover:text-sale hover:bg-sale/5 transition-colors"
             >
               <LogOut size={18} />
-              Sign Out
+              {t('common.signOut')}
             </button>
           </nav>
         </aside>

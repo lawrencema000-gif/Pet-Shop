@@ -6,6 +6,7 @@ import { MapPin, Plus, Pencil, Trash2, Loader2, Check, Star } from "lucide-react
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface Address {
   id: string;
@@ -32,6 +33,7 @@ const EMPTY_FORM: Omit<Address, "id" | "user_id"> = {
 };
 
 export default function AddressesPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -96,10 +98,10 @@ export default function AddressesPage() {
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("addresses").delete().eq("id", id);
     if (error) {
-      setMessage({ type: "error", text: "Failed to delete address." });
+      setMessage({ type: "error", text: t('addressesPage.deleteFailed') });
     } else {
       await fetchAddresses(userId);
-      setMessage({ type: "success", text: "Address deleted." });
+      setMessage({ type: "success", text: t('addressesPage.deleteSuccess') });
     }
   };
 
@@ -112,12 +114,12 @@ export default function AddressesPage() {
 
     await supabase.from("addresses").update({ is_default: true }).eq("id", id);
     await fetchAddresses(userId);
-    setMessage({ type: "success", text: "Default address updated." });
+    setMessage({ type: "success", text: t('addressesPage.defaultUpdated') });
   };
 
   const handleSave = async () => {
     if (!form.label || !form.line1 || !form.city || !form.state || !form.zip) {
-      setMessage({ type: "error", text: "Please fill in all required fields." });
+      setMessage({ type: "error", text: t('addressesPage.requiredFields') });
       return;
     }
 
@@ -148,7 +150,7 @@ export default function AddressesPage() {
         .eq("id", editingId);
 
       if (error) {
-        setMessage({ type: "error", text: "Failed to update address." });
+        setMessage({ type: "error", text: t('addressesPage.updateFailed') });
         setSaving(false);
         return;
       }
@@ -166,14 +168,14 @@ export default function AddressesPage() {
       });
 
       if (error) {
-        setMessage({ type: "error", text: "Failed to add address." });
+        setMessage({ type: "error", text: t('addressesPage.addFailed') });
         setSaving(false);
         return;
       }
     }
 
     await fetchAddresses(userId);
-    setMessage({ type: "success", text: editingId ? "Address updated!" : "Address added!" });
+    setMessage({ type: "success", text: editingId ? t('addressesPage.updateSuccess') : t('addressesPage.addSuccess') });
     resetForm();
     setSaving(false);
   };
@@ -189,7 +191,7 @@ export default function AddressesPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Addresses</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('addressesPage.heading')}</h1>
         {!showForm && (
           <Button
             size="sm"
@@ -199,7 +201,7 @@ export default function AddressesPage() {
             }}
             leftIcon={<Plus size={16} />}
           >
-            Add Address
+            {t('addressesPage.addAddress')}
           </Button>
         )}
       </div>
@@ -219,51 +221,51 @@ export default function AddressesPage() {
       {showForm && (
         <div className="bg-background rounded-md border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-4">
-            {editingId ? "Edit Address" : "New Address"}
+            {editingId ? t('addressesPage.editAddress') : t('addressesPage.newAddress')}
           </h2>
           <div className="space-y-4">
             <Input
-              label="Label"
-              placeholder='e.g. "Home", "Office"'
+              label={t('addressesPage.label')}
+              placeholder={t('addressesPage.labelPlaceholder')}
               value={form.label}
               onChange={(e) => setForm({ ...form, label: e.target.value })}
             />
             <Input
-              label="Address Line 1"
-              placeholder="Street address"
+              label={t('addressesPage.line1')}
+              placeholder={t('addressesPage.line1Placeholder')}
               value={form.line1}
               onChange={(e) => setForm({ ...form, line1: e.target.value })}
             />
             <Input
-              label="Address Line 2"
-              placeholder="Apt, suite, etc. (optional)"
+              label={t('addressesPage.line2')}
+              placeholder={t('addressesPage.line2Placeholder')}
               value={form.line2 || ""}
               onChange={(e) => setForm({ ...form, line2: e.target.value })}
             />
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="City"
-                placeholder="City"
+                label={t('addressesPage.city')}
+                placeholder={t('addressesPage.city')}
                 value={form.city}
                 onChange={(e) => setForm({ ...form, city: e.target.value })}
               />
               <Input
-                label="State"
-                placeholder="State"
+                label={t('addressesPage.state')}
+                placeholder={t('addressesPage.state')}
                 value={form.state}
                 onChange={(e) => setForm({ ...form, state: e.target.value })}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="ZIP Code"
-                placeholder="ZIP"
+                label={t('addressesPage.zip')}
+                placeholder={t('addressesPage.zip')}
                 value={form.zip}
                 onChange={(e) => setForm({ ...form, zip: e.target.value })}
               />
               <Input
-                label="Country"
-                placeholder="Country"
+                label={t('addressesPage.country')}
+                placeholder={t('addressesPage.country')}
                 value={form.country}
                 onChange={(e) => setForm({ ...form, country: e.target.value })}
               />
@@ -275,14 +277,14 @@ export default function AddressesPage() {
                 onChange={(e) => setForm({ ...form, is_default: e.target.checked })}
                 className="w-4 h-4 rounded border-border text-accent focus:ring-accent"
               />
-              <span className="text-sm font-medium text-foreground">Set as default address</span>
+              <span className="text-sm font-medium text-foreground">{t('addressesPage.setAsDefault')}</span>
             </label>
             <div className="flex gap-3 pt-2">
               <Button onClick={handleSave} loading={saving}>
-                {editingId ? "Update" : "Save"} Address
+                {editingId ? t('addressesPage.updateAddress') : t('addressesPage.saveAddress')}
               </Button>
               <Button variant="ghost" onClick={resetForm}>
-                Cancel
+                {t('common.cancel')}
               </Button>
             </div>
           </div>
@@ -293,14 +295,14 @@ export default function AddressesPage() {
       {addresses.length === 0 && !showForm ? (
         <div className="bg-background rounded-md border border-border p-12 text-center">
           <MapPin size={48} className="text-border mx-auto mb-4" />
-          <p className="text-muted mb-4">No saved addresses yet</p>
+          <p className="text-muted mb-4">{t('addressesPage.noAddresses')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowForm(true)}
             leftIcon={<Plus size={16} />}
           >
-            Add Your First Address
+            {t('addressesPage.addFirstAddress')}
           </Button>
         </div>
       ) : (
@@ -313,7 +315,7 @@ export default function AddressesPage() {
                   {addr.is_default && (
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-accent bg-accent/10 px-2 py-0.5 rounded-full">
                       <Star size={10} fill="currentColor" />
-                      Default
+                      {t('addressesPage.default')}
                     </span>
                   )}
                 </div>
@@ -345,7 +347,7 @@ export default function AddressesPage() {
                   onClick={() => handleSetDefault(addr.id)}
                   className="mt-3 text-xs text-muted hover:text-accent transition-colors"
                 >
-                  Set as default
+                  {t('addressesPage.setAsDefault')}
                 </button>
               )}
             </div>

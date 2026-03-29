@@ -6,6 +6,7 @@ import { PawPrint, Plus, Pencil, Trash2, Loader2, Check, AlertCircle } from "luc
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
+import { useTranslation } from "react-i18next";
 
 interface Pet {
   id: string;
@@ -47,6 +48,7 @@ const EMPTY_FORM = {
 };
 
 export default function PetsPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -116,16 +118,16 @@ export default function PetsPage() {
   const handleDelete = async (id: string) => {
     const { error } = await supabase.from("pets").delete().eq("id", id);
     if (error) {
-      setMessage({ type: "error", text: "Failed to delete pet." });
+      setMessage({ type: "error", text: t('petsPage.deleteFailed') });
     } else {
       await fetchPets(userId);
-      setMessage({ type: "success", text: "Pet removed." });
+      setMessage({ type: "success", text: t('petsPage.deleteSuccess') });
     }
   };
 
   const handleSave = async () => {
     if (!form.name) {
-      setMessage({ type: "error", text: "Please enter a name for your pet." });
+      setMessage({ type: "error", text: t('petsPage.nameRequired') });
       return;
     }
 
@@ -145,21 +147,21 @@ export default function PetsPage() {
     if (editingId) {
       const { error } = await supabase.from("pets").update(payload).eq("id", editingId);
       if (error) {
-        setMessage({ type: "error", text: "Failed to update pet." });
+        setMessage({ type: "error", text: t('petsPage.updateFailed') });
         setSaving(false);
         return;
       }
     } else {
       const { error } = await supabase.from("pets").insert(payload);
       if (error) {
-        setMessage({ type: "error", text: "Failed to add pet." });
+        setMessage({ type: "error", text: t('petsPage.addFailed') });
         setSaving(false);
         return;
       }
     }
 
     await fetchPets(userId);
-    setMessage({ type: "success", text: editingId ? "Pet updated!" : "Pet added!" });
+    setMessage({ type: "success", text: editingId ? t('petsPage.updateSuccess') : t('petsPage.addSuccess') });
     resetForm();
     setSaving(false);
   };
@@ -175,12 +177,12 @@ export default function PetsPage() {
   if (tableError) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-foreground mb-6">Pets</h1>
+        <h1 className="text-2xl font-bold text-foreground mb-6">{t('petsPage.heading')}</h1>
         <div className="bg-background rounded-md border border-border p-12 text-center">
           <PawPrint size={48} className="text-border mx-auto mb-4" />
-          <h2 className="text-lg font-semibold text-foreground mb-2">Pet profiles coming soon!</h2>
+          <h2 className="text-lg font-semibold text-foreground mb-2">{t('petsPage.comingSoon')}</h2>
           <p className="text-sm text-muted">
-            We&apos;re working on bringing pet profiles to your account. Check back later!
+            {t('petsPage.comingSoonDesc')}
           </p>
         </div>
       </div>
@@ -190,7 +192,7 @@ export default function PetsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Pets</h1>
+        <h1 className="text-2xl font-bold text-foreground">{t('petsPage.heading')}</h1>
         {!showForm && (
           <Button
             size="sm"
@@ -200,7 +202,7 @@ export default function PetsPage() {
             }}
             leftIcon={<Plus size={16} />}
           >
-            Add Pet
+            {t('petsPage.addPet')}
           </Button>
         )}
       </div>
@@ -220,18 +222,18 @@ export default function PetsPage() {
       {showForm && (
         <div className="bg-background rounded-md border border-border p-6 mb-6">
           <h2 className="text-lg font-semibold text-foreground mb-4">
-            {editingId ? "Edit Pet" : "Add a Pet"}
+            {editingId ? t('petsPage.editPet') : t('petsPage.addAPet')}
           </h2>
           <div className="space-y-4">
             <Input
-              label="Name"
-              placeholder="Your pet's name"
+              label={t('petsPage.name')}
+              placeholder={t('petsPage.namePlaceholder')}
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">Species</label>
+              <label className="text-sm font-medium text-foreground">{t('petsPage.species')}</label>
               <select
                 value={form.species}
                 onChange={(e) => setForm({ ...form, species: e.target.value as Pet["species"] })}
@@ -246,24 +248,24 @@ export default function PetsPage() {
             </div>
 
             <Input
-              label="Breed"
-              placeholder="e.g. Golden Retriever"
+              label={t('petsPage.breed')}
+              placeholder={t('petsPage.breedPlaceholder')}
               value={form.breed}
               onChange={(e) => setForm({ ...form, breed: e.target.value })}
             />
 
             <div className="grid grid-cols-2 gap-4">
               <Input
-                label="Age (years)"
+                label={t('petsPage.age')}
                 type="number"
-                placeholder="Age"
+                placeholder={t('petsPage.agePlaceholder')}
                 min="0"
                 value={form.age_years}
                 onChange={(e) => setForm({ ...form, age_years: e.target.value })}
               />
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium text-foreground">Size</label>
+                <label className="text-sm font-medium text-foreground">{t('petsPage.size')}</label>
                 <select
                   value={form.size}
                   onChange={(e) => setForm({ ...form, size: e.target.value as Pet["size"] })}
@@ -279,9 +281,9 @@ export default function PetsPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-foreground">Dietary Needs</label>
+              <label className="text-sm font-medium text-foreground">{t('petsPage.dietaryNeeds')}</label>
               <textarea
-                placeholder="Any special dietary needs or allergies..."
+                placeholder={t('petsPage.dietaryNeedsPlaceholder')}
                 value={form.dietary_needs}
                 onChange={(e) => setForm({ ...form, dietary_needs: e.target.value })}
                 rows={3}
@@ -291,10 +293,10 @@ export default function PetsPage() {
 
             <div className="flex gap-3 pt-2">
               <Button onClick={handleSave} loading={saving}>
-                {editingId ? "Update" : "Add"} Pet
+                {editingId ? t('petsPage.updatePet') : t('petsPage.addPet')}
               </Button>
               <Button variant="ghost" onClick={resetForm}>
-                Cancel
+                {t('common.cancel')}
               </Button>
             </div>
           </div>
@@ -305,14 +307,14 @@ export default function PetsPage() {
       {pets.length === 0 && !showForm ? (
         <div className="bg-background rounded-md border border-border p-12 text-center">
           <PawPrint size={48} className="text-border mx-auto mb-4" />
-          <p className="text-muted mb-4">No pets added yet</p>
+          <p className="text-muted mb-4">{t('petsPage.noPets')}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowForm(true)}
             leftIcon={<Plus size={16} />}
           >
-            Add Your First Pet
+            {t('petsPage.addFirstPet')}
           </Button>
         </div>
       ) : (
@@ -350,7 +352,7 @@ export default function PetsPage() {
               <div className="flex flex-wrap gap-2 mt-3">
                 {pet.age_years != null && (
                   <span className="text-xs bg-surface-light text-muted px-2.5 py-1 rounded-full">
-                    {pet.age_years} {pet.age_years === 1 ? "year" : "years"} old
+                    {t('petsPage.yearsOld', { count: pet.age_years })}
                   </span>
                 )}
                 <span className="text-xs bg-surface-light text-muted px-2.5 py-1 rounded-full capitalize">
@@ -359,7 +361,7 @@ export default function PetsPage() {
               </div>
               {pet.dietary_needs && (
                 <p className="text-xs text-muted mt-3 bg-surface-light rounded-lg p-2.5">
-                  <span className="font-medium">Diet:</span> {pet.dietary_needs}
+                  <span className="font-medium">{t('petsPage.diet')}:</span> {pet.dietary_needs}
                 </p>
               )}
             </div>

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
@@ -7,67 +9,48 @@ import {
   ArrowRight,
   RefreshCw,
 } from "lucide-react";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Returns & Refunds | PETLIBRO",
-  description:
-    "30-day hassle-free returns. Learn about our return policy, refund process, and exchanges.",
-};
-
-const returnSteps = [
-  {
-    step: 1,
-    title: "Initiate Your Return",
-    description:
-      "Contact us at support@petlibro.com or visit this page within 30 days of delivery. Include your order number and reason for return.",
-  },
-  {
-    step: 2,
-    title: "Receive Your Label",
-    description:
-      "We'll email you a prepaid return shipping label within 1 business day. Print it and attach it to your package.",
-  },
-  {
-    step: 3,
-    title: "Ship It Back",
-    description:
-      "Pack the item securely in its original packaging with all accessories included. Drop it off at any authorized shipping location.",
-  },
-  {
-    step: 4,
-    title: "Get Your Refund",
-    description:
-      "Once we receive and inspect the return, your refund will be processed within 5-7 business days to your original payment method.",
-  },
-];
-
-const nonReturnableItems = [
-  "Opened food products and treats",
-  "Used litter box liners and waste bags",
-  "Opened filter packs and consumable accessories",
-  "Personalized or custom-engraved items",
-  "Gift cards",
-  "Items marked as final sale",
-];
+import { useTranslation } from "react-i18next";
 
 export default function ReturnsPage() {
+  const { t } = useTranslation();
+
+  const returnSteps = [
+    {
+      step: 1,
+      title: t('returnsPage.step1Title'),
+      description: t('returnsPage.step1Description'),
+    },
+    {
+      step: 2,
+      title: t('returnsPage.step2Title'),
+      description: t('returnsPage.step2Description'),
+    },
+    {
+      step: 3,
+      title: t('returnsPage.step3Title'),
+      description: t('returnsPage.step3Description'),
+    },
+    {
+      step: 4,
+      title: t('returnsPage.step4Title'),
+      description: t('returnsPage.step4Description'),
+    },
+  ];
+
   return (
     <>
       <div className="container-main">
-        <Breadcrumb items={[{ label: "Returns & Refunds" }]} />
+        <Breadcrumb items={[{ label: t('returnsPage.breadcrumb') }]} />
       </div>
 
       <div className="container-main pb-20">
         <div className="max-w-3xl mx-auto">
           <div className="mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Returns & Refunds
+              {t('returnsPage.title')}
             </h1>
             <p className="text-muted text-lg">
-              We want you and your pets to love every purchase. If something
-              isn&apos;t right, our hassle-free return process makes it easy to
-              get a refund or exchange.
+              {t('returnsPage.subtitle')}
             </p>
           </div>
 
@@ -77,19 +60,17 @@ export default function ReturnsPage() {
             </div>
             <div>
               <h2 className="font-semibold text-foreground text-lg mb-1">
-                30-Day Return Window
+                {t('returnsPage.returnWindowTitle')}
               </h2>
               <p className="text-sm text-muted">
-                You have 30 days from the date of delivery to return most items
-                for a full refund. Items must be in their original condition with
-                all packaging and accessories.
+                {t('returnsPage.returnWindowDescription')}
               </p>
             </div>
           </div>
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              Condition Requirements
+              {t('returnsPage.conditionRequirementsTitle')}
             </h2>
             <div className="space-y-3 text-sm text-muted">
               <div className="flex items-start gap-3">
@@ -98,9 +79,8 @@ export default function ReturnsPage() {
                   className="text-success shrink-0 mt-0.5"
                 />
                 <p>
-                  <strong className="text-foreground">Unused & complete</strong>{" "}
-                  — Items must include all original parts, manuals,
-                  accessories, and packaging.
+                  <strong className="text-foreground">{t('returnsPage.condition1Label')}</strong>{" "}
+                  — {t('returnsPage.condition1Description')}
                 </p>
               </div>
               <div className="flex items-start gap-3">
@@ -110,11 +90,9 @@ export default function ReturnsPage() {
                 />
                 <p>
                   <strong className="text-foreground">
-                    Electronics in original sealed packaging
+                    {t('returnsPage.condition2Label')}
                   </strong>{" "}
-                  — Smart feeders, fountains, and litter boxes must be
-                  unopened for a full refund. Opened electronics may be subject
-                  to a 15% restocking fee.
+                  — {t('returnsPage.condition2Description')}
                 </p>
               </div>
               <div className="flex items-start gap-3">
@@ -123,9 +101,7 @@ export default function ReturnsPage() {
                   className="text-success shrink-0 mt-0.5"
                 />
                 <p>
-                  <strong className="text-foreground">No damage</strong> — Items
-                  must be free from pet hair, scratches, water damage, or signs
-                  of use.
+                  <strong className="text-foreground">{t('returnsPage.condition3Label')}</strong> — {t('returnsPage.condition3Description')}
                 </p>
               </div>
             </div>
@@ -133,7 +109,7 @@ export default function ReturnsPage() {
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-6">
-              How It Works
+              {t('returnsPage.howItWorksTitle')}
             </h2>
             <div className="space-y-0">
               {returnSteps.map((step, index) => (
@@ -160,19 +136,14 @@ export default function ReturnsPage() {
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
               <RefreshCw size={20} />
-              Exchanges
+              {t('returnsPage.exchangesTitle')}
             </h2>
             <div className="prose-sm text-muted space-y-3">
               <p>
-                Want a different size, color, or product? We&apos;re happy to
-                process an exchange. When contacting our team, let us know what
-                you&apos;d like instead and we&apos;ll handle the rest.
+                {t('returnsPage.exchangesDescription1')}
               </p>
               <p>
-                If the replacement item costs more, we&apos;ll charge the
-                difference. If it costs less, we&apos;ll refund the balance.
-                Exchange shipments are sent via standard shipping at no extra
-                cost.
+                {t('returnsPage.exchangesDescription2')}
               </p>
             </div>
           </section>
@@ -180,14 +151,13 @@ export default function ReturnsPage() {
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-4 flex items-center gap-2">
               <XCircle size={20} />
-              Non-Returnable Items
+              {t('returnsPage.nonReturnableTitle')}
             </h2>
             <p className="text-sm text-muted mb-4">
-              For hygiene and safety reasons, the following items cannot be
-              returned or exchanged:
+              {t('returnsPage.nonReturnableDescription')}
             </p>
             <ul className="space-y-2">
-              {nonReturnableItems.map((item) => (
+              {(t('returnsPage.nonReturnableItems', { returnObjects: true }) as string[]).map((item) => (
                 <li
                   key={item}
                   className="flex items-center gap-2 text-sm text-muted"
@@ -201,16 +171,16 @@ export default function ReturnsPage() {
 
           <div className="bg-surface rounded-md p-8 text-center">
             <h2 className="text-lg font-semibold text-foreground mb-2">
-              Need to start a return?
+              {t('returnsPage.ctaTitle')}
             </h2>
             <p className="text-sm text-muted mb-5">
-              Our team will guide you through every step of the process.
+              {t('returnsPage.ctaDescription')}
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors"
             >
-              Contact Support
+              {t('returnsPage.ctaButton')}
             </Link>
           </div>
         </div>

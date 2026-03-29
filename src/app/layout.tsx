@@ -6,6 +6,7 @@ import WebsiteSchema from "@/components/seo/WebsiteSchema";
 import { AuthProvider } from "@/lib/supabase/auth-provider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { StoreShell } from "@/components/layout/StoreShell";
+import { I18nProvider } from "@/components/I18nProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -81,14 +82,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <AuthProvider>
-          <ToastProvider>
-            <OrganizationSchema />
-            <WebsiteSchema />
-            <StoreShell>{children}</StoreShell>
-          </ToastProvider>
+          <I18nProvider>
+            <ToastProvider>
+              <OrganizationSchema />
+              <WebsiteSchema />
+              <StoreShell>{children}</StoreShell>
+            </ToastProvider>
+          </I18nProvider>
         </AuthProvider>
       </body>
     </html>

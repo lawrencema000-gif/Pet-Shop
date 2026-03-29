@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import {
@@ -9,93 +11,80 @@ import {
   Mail,
   Calendar,
 } from "lucide-react";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Press | PETLIBRO",
-  description: "PETLIBRO press information, brand assets, and media contact.",
-};
-
-const brandAssets = [
-  {
-    icon: FileText,
-    title: "Logo Pack",
-    description:
-      "Primary logo, wordmark, and icon in SVG, PNG, and EPS formats for light and dark backgrounds.",
-  },
-  {
-    icon: BookOpen,
-    title: "Brand Guidelines",
-    description:
-      "Typography, color palette, voice and tone, logo usage rules, and spacing requirements.",
-  },
-  {
-    icon: Image,
-    title: "Product Photos",
-    description:
-      "High-resolution lifestyle and studio product photography, ready for editorial use.",
-  },
-];
-
-const pressReleases = [
-  {
-    date: "March 15, 2026",
-    title: "PETLIBRO Launches Luma XL Smart Litter Box",
-    excerpt:
-      "The new Luma XL features a 30% larger interior, whisper-quiet operation, and enhanced Video Cloud AI for multi-cat households. Available for pre-order starting today.",
-  },
-  {
-    date: "January 22, 2026",
-    title: "PETLIBRO Reaches 2 Million Pets Served",
-    excerpt:
-      "PETLIBRO celebrates a major milestone as over two million pets worldwide now use its connected ecosystem of smart feeders, fountains, and litter boxes.",
-  },
-  {
-    date: "January 8, 2026",
-    title: "CES 2026: PETLIBRO Unveils AquaStream Pro",
-    excerpt:
-      "Debuted at CES 2026, the AquaStream Pro smart fountain features real-time water quality monitoring, UV-C sterilization, and seamless app integration.",
-  },
-  {
-    date: "November 12, 2025",
-    title: "PETLIBRO Raises Series B to Expand Smart Pet Care",
-    excerpt:
-      "PETLIBRO announces a $45M Series B funding round led by Accel Partners, with plans to accelerate international expansion and deepen AI-powered health insights.",
-  },
-];
-
-const mediaLogos = [
-  "TechCrunch",
-  "The Verge",
-  "WIRED",
-  "Pet Business Magazine",
-];
+import { useTranslation } from "react-i18next";
 
 export default function PressPage() {
+  const { t } = useTranslation();
+
+  const brandAssets = [
+    {
+      icon: FileText,
+      title: t('pressPage.logoPack'),
+      description: t('pressPage.logoPackDescription'),
+    },
+    {
+      icon: BookOpen,
+      title: t('pressPage.brandGuidelines'),
+      description: t('pressPage.brandGuidelinesDescription'),
+    },
+    {
+      icon: Image,
+      title: t('pressPage.productPhotos'),
+      description: t('pressPage.productPhotosDescription'),
+    },
+  ];
+
+  const pressReleases = [
+    {
+      date: t('pressPage.release1Date'),
+      title: t('pressPage.release1Title'),
+      excerpt: t('pressPage.release1Excerpt'),
+    },
+    {
+      date: t('pressPage.release2Date'),
+      title: t('pressPage.release2Title'),
+      excerpt: t('pressPage.release2Excerpt'),
+    },
+    {
+      date: t('pressPage.release3Date'),
+      title: t('pressPage.release3Title'),
+      excerpt: t('pressPage.release3Excerpt'),
+    },
+    {
+      date: t('pressPage.release4Date'),
+      title: t('pressPage.release4Title'),
+      excerpt: t('pressPage.release4Excerpt'),
+    },
+  ];
+
+  const mediaLogos = [
+    "TechCrunch",
+    "The Verge",
+    "WIRED",
+    "Pet Business Magazine",
+  ];
+
   return (
     <>
       <div className="container-main">
-        <Breadcrumb items={[{ label: "Press & Media" }]} />
+        <Breadcrumb items={[{ label: t('pressPage.breadcrumb') }]} />
       </div>
 
       <div className="container-main pb-20">
         {/* Hero Section */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Press &amp; Media
+            {t('pressPage.title')}
           </h1>
           <p className="text-muted text-lg leading-relaxed max-w-2xl mx-auto">
-            PETLIBRO is a smart pet care brand building connected products that
-            keep pets healthy, happy, and well-fed. We combine thoughtful design
-            with modern technology to help pet parents care for their furry
-            companions.
+            {t('pressPage.subtitle')}
           </p>
         </div>
 
         {/* Brand Assets */}
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-10">
-            Brand Assets
+            {t('pressPage.brandAssetsTitle')}
           </h2>
           <div className="grid sm:grid-cols-3 gap-6">
             {brandAssets.map((asset) => (
@@ -117,7 +106,7 @@ export default function PressPage() {
                   disabled
                 >
                   <Download size={14} />
-                  Coming Soon
+                  {t('pressPage.comingSoon')}
                 </button>
               </div>
             ))}
@@ -127,10 +116,10 @@ export default function PressPage() {
         {/* Press Releases */}
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-3">
-            Press Releases
+            {t('pressPage.pressReleasesTitle')}
           </h2>
           <p className="text-muted text-center mb-10 max-w-lg mx-auto">
-            The latest news and announcements from PETLIBRO.
+            {t('pressPage.pressReleasesSubtitle')}
           </p>
           <div className="space-y-4">
             {pressReleases.map((release) => (
@@ -154,7 +143,7 @@ export default function PressPage() {
                   href="#"
                   className="inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:text-accent-dark transition-colors"
                 >
-                  Read More
+                  {t('pressPage.readMore')}
                   <ArrowRight size={14} />
                 </Link>
               </div>
@@ -165,7 +154,7 @@ export default function PressPage() {
         {/* In the Media */}
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-10">
-            In the Media
+            {t('pressPage.inTheMediaTitle')}
           </h2>
           <div className="flex flex-wrap items-center justify-center gap-4">
             {mediaLogos.map((name) => (
@@ -182,10 +171,9 @@ export default function PressPage() {
         {/* Contact */}
         <div className="max-w-3xl mx-auto">
           <div className="bg-accent rounded-lg p-10 text-center text-white">
-            <h2 className="text-2xl font-bold mb-3">Media Inquiries</h2>
+            <h2 className="text-2xl font-bold mb-3">{t('pressPage.mediaInquiriesTitle')}</h2>
             <p className="text-white/80 mb-6 max-w-md mx-auto">
-              For press inquiries, interview requests, or access to brand assets,
-              reach out to our communications team.
+              {t('pressPage.mediaInquiriesDescription')}
             </p>
             <a
               href="mailto:press@petlibro.com"

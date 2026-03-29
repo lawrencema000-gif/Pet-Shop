@@ -1,104 +1,73 @@
+"use client";
+
 import Link from "next/link";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Shield, CheckCircle, XCircle, ArrowRight } from "lucide-react";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Warranty | PETLIBRO",
-  description:
-    "PETLIBRO warranty coverage details. 1-year warranty on electronics and 6-month warranty on accessories.",
-};
-
-const coverageTiers = [
-  {
-    category: "Smart Electronics",
-    duration: "1 Year",
-    items: [
-      "Smart feeders (Granary, One RFID, Polar)",
-      "Smart water fountains (Dockstream series)",
-      "Luma Smart Litter Box",
-      "Integrated cameras and sensors",
-    ],
-  },
-  {
-    category: "Accessories & Parts",
-    duration: "6 Months",
-    items: [
-      "Replacement bowls and trays",
-      "Power adapters and cables",
-      "Mechanical components (pumps, motors)",
-      "App-connected accessories",
-    ],
-  },
-];
-
-const coveredIssues = [
-  "Defects in materials or workmanship",
-  "Malfunctioning electronics under normal use",
-  "Motor or pump failure not caused by misuse",
-  "Software bugs affecting core device function",
-  "Display or indicator malfunctions",
-];
-
-const notCoveredIssues = [
-  "Damage from misuse, abuse, or unauthorized modification",
-  "Normal wear and tear including scratches and cosmetic damage",
-  "Damage caused by pets chewing, scratching, or knocking over the product",
-  "Water damage from submersion (non-waterproof components)",
-  "Consumable parts such as filters, desiccant pads, and liners",
-  "Products purchased from unauthorized resellers",
-];
-
-const claimSteps = [
-  {
-    step: 1,
-    title: "Gather Your Information",
-    description:
-      "Have your order number, product serial number, and a brief description of the issue ready. Photos or a short video of the defect are helpful.",
-  },
-  {
-    step: 2,
-    title: "Contact Our Warranty Team",
-    description:
-      "Email warranty@petlibro.com or reach out through our Contact page. Our team typically responds within 1 business day.",
-  },
-  {
-    step: 3,
-    title: "Diagnosis & Resolution",
-    description:
-      "Our team may walk you through troubleshooting steps. If the issue is confirmed as a warranty defect, we'll arrange a replacement or repair at no cost to you.",
-  },
-  {
-    step: 4,
-    title: "Receive Your Replacement",
-    description:
-      "Approved claims are fulfilled within 5-10 business days. We cover return shipping for defective products within the warranty period.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function WarrantyPage() {
+  const { t } = useTranslation();
+
+  const coverageTiers = [
+    {
+      category: t('warrantyPage.smartElectronicsCategory'),
+      duration: t('warrantyPage.smartElectronicsDuration'),
+      items: t('warrantyPage.electronicsItems', { returnObjects: true }) as string[],
+    },
+    {
+      category: t('warrantyPage.accessoriesCategory'),
+      duration: t('warrantyPage.accessoriesDuration'),
+      items: t('warrantyPage.accessoriesItems', { returnObjects: true }) as string[],
+    },
+  ];
+
+  const coveredIssues = t('warrantyPage.coveredItems', { returnObjects: true }) as string[];
+  const notCoveredIssues = t('warrantyPage.notCoveredItems', { returnObjects: true }) as string[];
+
+  const claimSteps = [
+    {
+      step: 1,
+      title: t('warrantyPage.claimStep1Title'),
+      description: t('warrantyPage.claimStep1Description'),
+    },
+    {
+      step: 2,
+      title: t('warrantyPage.claimStep2Title'),
+      description: t('warrantyPage.claimStep2Description'),
+    },
+    {
+      step: 3,
+      title: t('warrantyPage.claimStep3Title'),
+      description: t('warrantyPage.claimStep3Description'),
+    },
+    {
+      step: 4,
+      title: t('warrantyPage.claimStep4Title'),
+      description: t('warrantyPage.claimStep4Description'),
+    },
+  ];
+
   return (
     <>
       <div className="container-main">
-        <Breadcrumb items={[{ label: "Warranty" }]} />
+        <Breadcrumb items={[{ label: t('warrantyPage.breadcrumb') }]} />
       </div>
 
       <div className="container-main pb-20">
         <div className="max-w-3xl mx-auto">
           <div className="mb-12">
             <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Warranty Policy
+              {t('warrantyPage.title')}
             </h1>
             <p className="text-muted text-lg">
-              Every PETLIBRO product is built to last. We stand behind the
-              quality of our products with comprehensive warranty coverage.
+              {t('warrantyPage.subtitle')}
             </p>
           </div>
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-5 flex items-center gap-2">
               <Shield size={20} />
-              Coverage Overview
+              {t('warrantyPage.coverageOverviewTitle')}
             </h2>
             <div className="grid sm:grid-cols-2 gap-4">
               {coverageTiers.map((tier) => (
@@ -135,7 +104,7 @@ export default function WarrantyPage() {
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-4">
-              What&apos;s Covered
+              {t('warrantyPage.whatsCoveredTitle')}
             </h2>
             <div className="space-y-2.5">
               {coveredIssues.map((issue) => (
@@ -152,7 +121,7 @@ export default function WarrantyPage() {
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-4">
-              What&apos;s Not Covered
+              {t('warrantyPage.whatsNotCoveredTitle')}
             </h2>
             <div className="space-y-2.5">
               {notCoveredIssues.map((issue) => (
@@ -169,7 +138,7 @@ export default function WarrantyPage() {
 
           <section className="mb-12">
             <h2 className="text-xl font-semibold text-foreground mb-6">
-              How to File a Claim
+              {t('warrantyPage.howToFileTitle')}
             </h2>
             <div className="space-y-0">
               {claimSteps.map((step, index) => (
@@ -195,17 +164,16 @@ export default function WarrantyPage() {
 
           <div className="bg-surface rounded-md p-8 text-center">
             <h2 className="text-lg font-semibold text-foreground mb-2">
-              Need to file a warranty claim?
+              {t('warrantyPage.ctaTitle')}
             </h2>
             <p className="text-sm text-muted mb-5">
-              Our warranty team is here to help resolve any product issues
-              quickly.
+              {t('warrantyPage.ctaDescription')}
             </p>
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors"
             >
-              Contact Warranty Support
+              {t('warrantyPage.ctaButton')}
             </Link>
           </div>
         </div>

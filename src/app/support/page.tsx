@@ -1,27 +1,26 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { HelpCircle, MessageCircle, Truck, RotateCcw, Shield } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "Support | Pet Shop",
-  description: "Get help with your Pet Shop orders, products, and more.",
-};
-
-const supportLinks = [
-  { icon: HelpCircle, label: "FAQ", description: "Find answers to common questions", href: "/faq" },
-  { icon: MessageCircle, label: "Contact Us", description: "Reach our support team directly", href: "/contact" },
-  { icon: Truck, label: "Shipping & Returns", description: "Shipping policies and return info", href: "/shipping" },
-  { icon: RotateCcw, label: "Returns", description: "Start a return or exchange", href: "/returns" },
-  { icon: Shield, label: "Warranty", description: "Product warranty information", href: "/warranty" },
-];
-
 export default function SupportPage() {
+  const { t } = useTranslation();
+
+  const supportLinks = [
+    { icon: HelpCircle, label: t('supportPage.faqLabel'), description: t('supportPage.faqDesc'), href: "/faq" },
+    { icon: MessageCircle, label: t('supportPage.contactLabel'), description: t('supportPage.contactDesc'), href: "/contact" },
+    { icon: Truck, label: t('supportPage.shippingLabel'), description: t('supportPage.shippingDesc'), href: "/shipping" },
+    { icon: RotateCcw, label: t('supportPage.returnsLabel'), description: t('supportPage.returnsDesc'), href: "/returns" },
+    { icon: Shield, label: t('supportPage.warrantyLabel'), description: t('supportPage.warrantyDesc'), href: "/warranty" },
+  ];
+
   return (
     <main className="container-main py-20">
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-3">How Can We Help?</h1>
+        <h1 className="text-3xl font-bold text-center mb-3">{t('supportPage.heading')}</h1>
         <p className="text-muted text-center mb-12">
-          Find the support you need from our help resources below.
+          {t('supportPage.subheading')}
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           {supportLinks.map(({ icon: Icon, label, description, href }) => (

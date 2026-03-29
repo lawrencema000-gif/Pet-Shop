@@ -1,112 +1,95 @@
+"use client";
+
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { Heart, Zap, Shield, Leaf, ArrowRight } from "lucide-react";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "About Us | PETLIBRO",
-  description:
-    "We're pet parents on a mission to make pet care smarter. Learn about PETLIBRO's story, values, and the team behind our products.",
-};
-
-const values = [
-  {
-    icon: Heart,
-    title: "Pet-First Design",
-    description:
-      "Every product starts with the question: how does this make life better for pets? Comfort, safety, and happiness guide every design decision.",
-  },
-  {
-    icon: Zap,
-    title: "Smart Innovation",
-    description:
-      "We harness AI, IoT, and precision engineering to solve real problems — not gimmicks. Technology should simplify pet care, not complicate it.",
-  },
-  {
-    icon: Shield,
-    title: "Uncompromising Quality",
-    description:
-      "Food-grade stainless steel, BPA-free plastics, and rigorous testing. We use the same products at home with our own pets.",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainable Practices",
-    description:
-      "From recyclable packaging to energy-efficient devices, we're committed to reducing our environmental footprint with every product we ship.",
-  },
-];
-
-const milestones = [
-  {
-    year: "2019",
-    title: "The Spark",
-    description:
-      "Founded in a small apartment by two pet parents frustrated with outdated pet care products. The first prototype: a gravity feeder with a brain.",
-  },
-  {
-    year: "2020",
-    title: "First Product Launch",
-    description:
-      "Launched the Granary Smart Feeder on Kickstarter, raising 400% of our goal in 48 hours. Over 5,000 backers believed in our vision.",
-  },
-  {
-    year: "2021",
-    title: "Expanding the Ecosystem",
-    description:
-      "Introduced the Dockstream Smart Fountain and PETLIBRO app, creating a connected ecosystem for modern pet parents.",
-  },
-  {
-    year: "2022",
-    title: "One Million Pets Served",
-    description:
-      "Crossed the milestone of one million pets using PETLIBRO products worldwide. Launched the One RFID Feeder for multi-pet households.",
-  },
-  {
-    year: "2023",
-    title: "Luma: The Future of Litter",
-    description:
-      "Released the Luma Smart Litter Box with Video Cloud AI — our most ambitious product yet, combining self-cleaning with health monitoring.",
-  },
-  {
-    year: "2024",
-    title: "Going Global",
-    description:
-      "Expanding internationally, deepening our AI health insights, and continuing to build products that pets and their parents love.",
-  },
-  {
-    year: "2025",
-    title: "Expanded to 50+ Products",
-    description:
-      "Grew our catalog to over 50 products, launched the PETLIBRO mobile app with real-time health insights, and introduced same-day delivery in major cities.",
-  },
-  {
-    year: "2026",
-    title: "Continuing to Innovate",
-    description:
-      "Continuing to innovate for happy pets everywhere. New AI-powered health monitoring, expanded accessories line, and deeper smart home integrations.",
-  },
-];
 
 export default function AboutPage() {
+  const { t } = useTranslation();
+
+  const values = [
+    {
+      icon: Heart,
+      title: t('about.value1Title'),
+      description: t('about.value1Desc'),
+    },
+    {
+      icon: Zap,
+      title: t('about.value2Title'),
+      description: t('about.value2Desc'),
+    },
+    {
+      icon: Shield,
+      title: t('about.value3Title'),
+      description: t('about.value3Desc'),
+    },
+    {
+      icon: Leaf,
+      title: t('about.value4Title'),
+      description: t('about.value4Desc'),
+    },
+  ];
+
+  const milestones = [
+    {
+      year: "2019",
+      title: t('about.timeline2019Title'),
+      description: t('about.timeline2019Desc'),
+    },
+    {
+      year: "2020",
+      title: t('about.timeline2020Title'),
+      description: t('about.timeline2020Desc'),
+    },
+    {
+      year: "2021",
+      title: t('about.timeline2021Title'),
+      description: t('about.timeline2021Desc'),
+    },
+    {
+      year: "2022",
+      title: t('about.timeline2022Title'),
+      description: t('about.timeline2022Desc'),
+    },
+    {
+      year: "2023",
+      title: t('about.timeline2023Title'),
+      description: t('about.timeline2023Desc'),
+    },
+    {
+      year: "2024",
+      title: t('about.timeline2024Title'),
+      description: t('about.timeline2024Desc'),
+    },
+    {
+      year: "2025",
+      title: t('about.timeline2025Title'),
+      description: t('about.timeline2025Desc'),
+    },
+    {
+      year: "2026",
+      title: t('about.timeline2026Title'),
+      description: t('about.timeline2026Desc'),
+    },
+  ];
+
   return (
     <>
       <div className="container-main">
-        <Breadcrumb items={[{ label: "About Us" }]} />
+        <Breadcrumb items={[{ label: t('about.heading1') }]} />
       </div>
 
       <div className="container-main pb-20">
         {/* Hero Section */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Built by Pet Parents,
+            {t('about.heading1')}
             <br />
-            for Pet Parents
+            {t('about.heading2')}
           </h1>
           <p className="text-muted text-lg leading-relaxed max-w-2xl mx-auto">
-            We started PETLIBRO because we believed our pets deserved better
-            than plastic bowls and manual scooping. What began as a side project
-            in a Brooklyn apartment has grown into a mission to bring smart,
-            thoughtful technology to pet care — one product at a time.
+            {t('about.intro')}
           </p>
         </div>
 
@@ -114,12 +97,10 @@ export default function AboutPage() {
         <div className="max-w-4xl mx-auto mb-20">
           <div className="bg-surface rounded-lg p-8 md:p-12 text-center">
             <p className="text-xs font-semibold tracking-widest text-muted uppercase mb-3">
-              Our Mission
+              {t('about.missionTitle')}
             </p>
             <p className="text-xl md:text-2xl font-medium text-foreground leading-relaxed max-w-2xl mx-auto">
-              To empower pet parents with intelligent, beautifully designed
-              products that elevate the everyday experience of caring for the
-              animals we love.
+              {t('about.missionText')}
             </p>
           </div>
         </div>
@@ -127,7 +108,7 @@ export default function AboutPage() {
         {/* Values */}
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-10">
-            What We Stand For
+            {t('about.valuesTitle')}
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {values.map((value) => (
@@ -154,11 +135,10 @@ export default function AboutPage() {
           <div className="aspect-[21/9] rounded-lg bg-surface border border-border flex items-center justify-center">
             <div className="text-center">
               <p className="text-sm font-semibold text-muted mb-1">
-                Our Team
+                {t('about.teamTitle')}
               </p>
               <p className="text-xs text-muted/70">
-                50+ passionate pet lovers across engineering, design, and
-                customer care
+                {t('about.teamDesc')}
               </p>
             </div>
           </div>
@@ -167,7 +147,7 @@ export default function AboutPage() {
         {/* Timeline */}
         <div className="max-w-3xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-10">
-            Our Journey
+            {t('about.journeyTitle')}
           </h2>
           <div className="space-y-0">
             {milestones.map((milestone, index) => (
@@ -197,17 +177,16 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto">
           <div className="bg-accent rounded-lg p-10 text-center text-white">
             <h2 className="text-2xl font-bold mb-3">
-              Ready to upgrade your pet&apos;s life?
+              {t('about.ctaHeading')}
             </h2>
             <p className="text-white/80 mb-6 max-w-md mx-auto">
-              Explore our full range of smart pet care products designed with
-              love and precision.
+              {t('about.ctaDesc')}
             </p>
             <Link
               href="/products"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-accent rounded-lg font-medium hover:bg-white/90 transition-colors"
             >
-              Shop All Products
+              {t('common.shopAllProducts')}
               <ArrowRight size={16} />
             </Link>
           </div>

@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 import type { User as AuthUser } from "@supabase/supabase-js";
 import type { Order } from "@/types/order";
 
@@ -30,15 +31,8 @@ const STATUS_VARIANT: Record<string, "default" | "sale" | "new" | "popular"> = {
   cancelled: "sale",
 };
 
-const QUICK_LINKS = [
-  { href: "/account/profile", label: "Edit Profile", icon: User },
-  { href: "/account/addresses", label: "Address Book", icon: MapPin },
-  { href: "/account/orders", label: "Order History", icon: Package },
-  { href: "/account/pets", label: "Pet Profiles", icon: PawPrint },
-  { href: "/account/settings", label: "Settings", icon: Settings },
-];
-
 export default function AccountPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -108,7 +102,7 @@ export default function AccountPage() {
       {/* Welcome */}
       <div className="mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-foreground">
-          Welcome back, {fullName}
+          {t('account.welcome', { name: fullName })}
         </h1>
         <p className="text-muted mt-1">{user.email}</p>
       </div>
@@ -118,21 +112,21 @@ export default function AccountPage() {
         <div className="bg-surface-light rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <ShoppingBag size={20} className="text-muted" />
-            <span className="text-sm text-muted">Total Orders</span>
+            <span className="text-sm text-muted">{t('account.totalOrders')}</span>
           </div>
           <p className="text-2xl font-bold text-foreground">{totalOrderCount}</p>
         </div>
         <div className="bg-surface-light rounded-xl p-5">
           <div className="flex items-center gap-3 mb-2">
             <CalendarDays size={20} className="text-muted" />
-            <span className="text-sm text-muted">Member Since</span>
+            <span className="text-sm text-muted">{t('account.memberSince')}</span>
           </div>
           <p className="text-lg font-bold text-foreground">{memberSince}</p>
         </div>
         <div className="bg-surface-light rounded-xl p-5 col-span-2 md:col-span-1">
           <div className="flex items-center gap-3 mb-2">
             <PawPrint size={20} className="text-muted" />
-            <span className="text-sm text-muted">Pets</span>
+            <span className="text-sm text-muted">{t('account.pets')}</span>
           </div>
           <p className="text-2xl font-bold text-foreground">{petCount}</p>
         </div>
@@ -142,23 +136,23 @@ export default function AccountPage() {
       <div className="mb-8">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-foreground">
-            Recent Orders
+            {t('account.recentOrders')}
           </h2>
           <Link
             href="/account/orders"
             className="text-sm text-muted hover:text-foreground transition-colors"
           >
-            View All
+            {t('common.viewAll')}
           </Link>
         </div>
 
         {orders.length === 0 ? (
           <div className="bg-surface-light rounded-xl p-8 text-center">
             <Package size={40} className="text-border mx-auto mb-3" />
-            <p className="text-muted mb-4">No orders yet</p>
+            <p className="text-muted mb-4">{t('account.noOrders')}</p>
             <Link href="/products">
               <Button variant="outline" size="sm">
-                Start Shopping
+                {t('common.startShopping')}
               </Button>
             </Link>
           </div>
@@ -200,10 +194,16 @@ export default function AccountPage() {
       {/* Quick Links */}
       <div className="mb-8">
         <h2 className="text-lg font-semibold text-foreground mb-4">
-          Quick Links
+          {t('account.quickLinks')}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {QUICK_LINKS.map((link) => {
+          {[
+            { href: "/account/profile", labelKey: "account.editProfile", icon: User },
+            { href: "/account/addresses", labelKey: "account.addressBook", icon: MapPin },
+            { href: "/account/orders", labelKey: "account.orderHistory", icon: Package },
+            { href: "/account/pets", labelKey: "account.petProfiles", icon: PawPrint },
+            { href: "/account/settings", labelKey: "account.settings", icon: Settings },
+          ].map((link) => {
             const Icon = link.icon;
             return (
               <Link
@@ -214,7 +214,7 @@ export default function AccountPage() {
                 <div className="flex items-center gap-3">
                   <Icon size={20} className="text-muted" />
                   <span className="font-medium text-foreground">
-                    {link.label}
+                    {t(link.labelKey)}
                   </span>
                 </div>
                 <ChevronRight size={18} className="text-muted" />
@@ -227,13 +227,13 @@ export default function AccountPage() {
       {/* Need Help */}
       <div className="bg-surface-light rounded-xl p-6 text-center">
         <HelpCircle size={28} className="text-muted mx-auto mb-2" />
-        <h3 className="font-semibold text-foreground mb-1">Need Help?</h3>
+        <h3 className="font-semibold text-foreground mb-1">{t('account.needHelp')}</h3>
         <p className="text-sm text-muted mb-4">
-          Our support team is here for you and your pets.
+          {t('account.needHelpDesc')}
         </p>
         <Link href="/support">
           <Button variant="outline" size="sm">
-            Contact Support
+            {t('common.contactSupport')}
           </Button>
         </Link>
       </div>

@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function HeroBanner() {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
@@ -49,18 +51,17 @@ export default function HeroBanner() {
         <div className="container-main">
           <div className="max-w-2xl stagger-in">
             <span className="inline-block text-white/80 text-overline tracking-[0.25em] uppercase text-shadow-sm">
-              Next-Generation Pet Care
+              {t('hero.overline')}
             </span>
 
             <h1 className="font-display text-6xl sm:text-7xl md:text-8xl lg:text-[6.5rem] font-bold text-white leading-[0.9] tracking-tight text-shadow-hero">
-              Smarter
+              {t('hero.heading1')}
               <br />
-              Care.
+              {t('hero.heading2')}
             </h1>
 
             <p className="text-white/80 text-lg md:text-xl max-w-lg leading-relaxed text-shadow-sm">
-              App-controlled feeders, self-cleaning litter boxes, and smart
-              fountains — designed for pets, engineered for you.
+              {t('hero.subheading')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-start gap-4">
@@ -68,7 +69,7 @@ export default function HeroBanner() {
                 href="/products"
                 className="group inline-flex items-center gap-3 bg-white text-foreground px-12 py-4.5 text-sm font-semibold tracking-wide hover:bg-white/90 transition-all duration-300"
               >
-                Explore the Collection
+                {t('hero.cta')}
                 <ArrowRight
                   size={16}
                   className="transition-transform duration-300 group-hover:translate-x-1.5"
@@ -78,7 +79,7 @@ export default function HeroBanner() {
                 href="/categories/pet-feeders"
                 className="inline-flex items-center gap-3 border border-white/25 text-white px-12 py-4.5 text-sm font-semibold tracking-wide hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
               >
-                Our Story
+                {t('hero.secondaryCta')}
               </Link>
             </div>
 
@@ -91,10 +92,10 @@ export default function HeroBanner() {
                     </svg>
                   ))}
                 </div>
-                <span className="text-xs font-medium">4.9</span>
+                <span className="text-xs font-medium">{t('hero.rating')}</span>
               </div>
               <span className="w-px h-3 bg-white/20" />
-              <span className="text-white/60 text-xs tracking-wide">Trusted by 50,000+ Pet Parents</span>
+              <span className="text-white/60 text-xs tracking-wide">{t('hero.socialProof')}</span>
             </div>
           </div>
         </div>
@@ -102,7 +103,7 @@ export default function HeroBanner() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
-        <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">Scroll</span>
+        <span className="text-white/30 text-[10px] tracking-[0.3em] uppercase">{t('hero.scroll')}</span>
         <div className="w-px h-8 bg-gradient-to-b from-white/40 to-transparent" />
       </div>
     </section>

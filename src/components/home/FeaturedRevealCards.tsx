@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useTranslation } from "react-i18next";
 import { ProductRevealCard } from "@/components/ui/product-reveal-card";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
@@ -11,6 +12,7 @@ interface FeaturedRevealCardsProps {
 }
 
 export default function FeaturedRevealCards({ products }: FeaturedRevealCardsProps) {
+  const { t } = useTranslation();
   const addItem = useCartStore((s) => s.addItem);
 
   if (!products.length) return null;
@@ -20,13 +22,13 @@ export default function FeaturedRevealCards({ products }: FeaturedRevealCardsPro
       <div className="container-main">
         <div className="text-center mb-14">
           <span className="text-overline tracking-[0.25em] uppercase text-muted block mb-3">
-            Discover
+            {t('featured.overline')}
           </span>
           <h2 className="font-display text-3xl md:text-4xl font-bold text-foreground">
-            Top Picks for Your Pet
+            {t('featured.heading')}
           </h2>
           <p className="text-muted mt-4 max-w-lg mx-auto text-sm">
-            Hover to reveal details on our most-loved products
+            {t('featured.description')}
           </p>
         </div>
 
@@ -43,7 +45,7 @@ export default function FeaturedRevealCards({ products }: FeaturedRevealCardsPro
                   price={formatPrice(price)}
                   originalPrice={compareAt && compareAt > price ? formatPrice(compareAt) : undefined}
                   image={primaryImage?.url || "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=800&h=600&fit=crop"}
-                  description={product.description || "Premium quality pet product designed with your pet's comfort in mind."}
+                  description={product.description || t('featured.defaultDesc')}
                   rating={product.rating_avg || 4.5}
                   reviewCount={product.rating_count || 0}
                   onAdd={() => {
