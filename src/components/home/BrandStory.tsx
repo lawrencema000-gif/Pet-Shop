@@ -14,7 +14,7 @@ export default function BrandStory() {
         {/* Image */}
         <div className="relative aspect-[4/3] rounded-lg overflow-hidden fade-in">
           <Image
-            src="https://images.unsplash.com/photo-1450778869180-e77d3083dbb0?w=800&h=600&fit=crop"
+            src="https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=800&h=600&fit=crop"
             alt="Pet parent with their dog"
             fill
             sizes="(max-width: 750px) 100vw, 50vw"

@@ -83,7 +83,7 @@ export const COLLECTIONS: Collection[] = [
     longDescription:
       "Congratulations on your new furry family member! Getting started with pet care can feel overwhelming, so we've put together a beginner-friendly collection of smart products that are easy to set up and intuitive to use. Each product comes with step-by-step guides, and our app walks you through everything from initial configuration to daily routines. You'll feel like a pro within a day.",
     image:
-      "https://images.unsplash.com/photo-1583337130417-13104dec14c7?w=1200&h=500&fit=crop",
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=500&fit=crop",
     productSlugs: [
       "granary-smart-feeder",
       "dockstream-2-smart-water-fountain",

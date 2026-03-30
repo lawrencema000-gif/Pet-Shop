@@ -31,7 +31,7 @@ const BUNDLES: Bundle[] = [
     originalPrice: 329.96,
     bundlePrice: 249.99,
     image:
-      "https://images.unsplash.com/photo-1583337130417-13104dec14c7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=800&h=600&fit=crop",
     badge: "Best Seller",
   },
   {

@@ -22,7 +22,7 @@ export default function ProductSpotlight() {
       comparePrice: "$179.99",
       features: [t('spotlight.feederFeature1'), t('spotlight.feederFeature2'), t('spotlight.feederFeature3'), t('spotlight.feederFeature4')],
       image:
-        "https://images.unsplash.com/photo-1583337130417-13104dec14a8?w=800&h=800&fit=crop",
+        "https://images.unsplash.com/photo-1596854407944-bf87f6fdd49e?w=800&h=800&fit=crop",
       href: "/categories/pet-feeders",
     },
     {
