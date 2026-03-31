@@ -14,11 +14,13 @@ import {
   Send,
   CheckCircle,
 } from "lucide-react";
+import { Turnstile, useTurnstile } from "@/components/ui/Turnstile";
 
 export default function ContactPage() {
   const { t } = useTranslation();
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
+  const { token: turnstileToken, handleVerify, handleExpire } = useTurnstile();
 
   const subjectOptions = [
     { value: "Product Question", label: t('contact.subjectProductQuestion') },
@@ -54,6 +56,7 @@ export default function ContactPage() {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!turnstileToken) return;
     setSending(true);
     const formData = new FormData(e.currentTarget);
     const data = {
@@ -226,9 +229,11 @@ export default function ContactPage() {
                       />
                     </div>
 
+                    <Turnstile onVerify={handleVerify} onExpire={handleExpire} />
+
                     <button
                       type="submit"
-                      disabled={sending}
+                      disabled={sending || !turnstileToken}
                       className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors disabled:opacity-60"
                     >
                       <Send size={16} />

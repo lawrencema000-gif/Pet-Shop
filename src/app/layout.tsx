@@ -7,6 +7,7 @@ import { AuthProvider } from "@/lib/supabase/auth-provider";
 import { ToastProvider } from "@/components/ui/Toast";
 import { StoreShell } from "@/components/layout/StoreShell";
 import { I18nProvider } from "@/components/I18nProvider";
+import { GoogleAnalytics } from "@/components/GoogleAnalytics";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -84,6 +85,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+        <GoogleAnalytics />
         <AuthProvider>
           <I18nProvider>
             <ToastProvider>

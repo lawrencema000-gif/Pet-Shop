@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
 import { useTranslation } from "react-i18next";
+import { Turnstile, useTurnstile } from "@/components/ui/Turnstile";
 
 function LoginForm() {
   const { t } = useTranslation();
@@ -18,11 +19,18 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { token: turnstileToken, handleVerify, handleExpire } = useTurnstile();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+
+    if (!turnstileToken) {
+      setError("Please complete the verification.");
+      setLoading(false);
+      return;
+    }
 
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -134,6 +142,8 @@ function LoginForm() {
                 {t("auth.forgotPassword")}
               </Link>
             </div>
+
+            <Turnstile onVerify={handleVerify} onExpire={handleExpire} />
 
             <Button type="submit" fullWidth size="lg" loading={loading}>
               {t("auth.signIn")}

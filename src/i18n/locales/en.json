@@ -536,7 +536,20 @@
     "deleteWarning": "Once you delete your account, there is no going back. Please be certain.",
     "deleteAccount": "Delete Account",
     "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
-    "deleteInstruction": "For security, account deletion requires contacting our support team. Please reach out to us at support@petshop.com."
+    "deleteInstruction": "For security, account deletion requires contacting our support team. Please reach out to us at support@petshop.com.",
+    "changePassword": "Change Password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password (min 6 characters)",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "updatePassword": "Update Password",
+    "passwordChanged": "Password updated successfully!",
+    "passwordMismatch": "Passwords do not match.",
+    "notificationPreferences": "Notification Preferences",
+    "preferencesSaved": "Preferences saved!",
+    "savePreferences": "Save Preferences",
+    "dangerZoneDesc": "Once you delete your account, there is no going back. Please be certain.",
+    "deleteContactSupport": "For security, account deletion requires contacting our support team."
   },
   "privacy": {
     "metaTitle": "Privacy Policy | Pet and Angels",

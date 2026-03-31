@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { supabase } from "@/lib/supabase/client";
 import { useTranslation } from "react-i18next";
+import { Turnstile, useTurnstile } from "@/components/ui/Turnstile";
 
 export default function SignUpPage() {
   const { t } = useTranslation();
@@ -19,6 +20,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const { token: turnstileToken, handleVerify, handleExpire } = useTurnstile();
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +28,11 @@ export default function SignUpPage() {
 
     if (password.length < 6) {
       setError(t("auth.passwordMinLength"));
+      return;
+    }
+
+    if (!turnstileToken) {
+      setError("Please complete the verification.");
       return;
     }
 
@@ -191,6 +198,8 @@ export default function SignUpPage() {
               </button>
               <p className="text-xs text-muted mt-1">{t("auth.mustBe6Chars")}</p>
             </div>
+
+            <Turnstile onVerify={handleVerify} onExpire={handleExpire} />
 
             <Button type="submit" fullWidth size="lg" loading={loading}>
               {t("auth.createAccount")}
