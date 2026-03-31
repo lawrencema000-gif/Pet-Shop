@@ -9,7 +9,7 @@ const topFAQs = [
   faqSections[0].items[0], // How long does shipping take?
   faqSections[0].items[1], // Do you offer free shipping?
   faqSections[1].items[0], // What is your return policy?
-  faqSections[2].items[3], // Is the PETLIBRO app free?
+  faqSections[2].items[3], // Is the Pet and Angels app free?
 ];
 
 export default function FAQPreview() {

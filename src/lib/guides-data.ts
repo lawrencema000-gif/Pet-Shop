@@ -17,7 +17,7 @@ export const GUIDES: Guide[] = [
       "Everything you need to know about choosing the right automatic pet feeder for your home, lifestyle, and furry friend.",
     image:
       "https://images.unsplash.com/photo-1589924691995-400dc9ecc119?w=1200&h=600&fit=crop",
-    author: "PETLIBRO Team",
+    author: "Pet and Angels Team",
     readTime: "8 min read",
     categorySlug: "smart-feeders",
     content: `
@@ -128,7 +128,7 @@ export const GUIDES: Guide[] = [
       "A complete guide to pet water fountains — from filtration systems to materials, capacity, and noise levels.",
     image:
       "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?w=1200&h=600&fit=crop",
-    author: "PETLIBRO Team",
+    author: "Pet and Angels Team",
     readTime: "6 min read",
     categorySlug: "water-fountains",
     content: `
@@ -179,7 +179,7 @@ export const GUIDES: Guide[] = [
       "Self-cleaning, odor control, sizing, and multi-cat considerations — everything you need to know about smart litter boxes.",
     image:
       "https://images.unsplash.com/photo-1526336024174-e58f5cdd8e13?w=1200&h=600&fit=crop",
-    author: "PETLIBRO Team",
+    author: "Pet and Angels Team",
     readTime: "7 min read",
     categorySlug: "litter-boxes",
     content: `

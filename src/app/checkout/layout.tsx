@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Checkout | PETLIBRO",
+  title: "Checkout | Pet and Angels",
   description:
     "Complete your purchase securely. Free shipping on orders over $75. 30-day return policy.",
 };

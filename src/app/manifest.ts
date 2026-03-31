@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "PETLIBRO - Smart Pet Care",
-    short_name: "PETLIBRO",
+    name: "Pet and Angels - Smart Pet Care",
+    short_name: "Pet and Angels",
     description: "Smart pet care products for modern pet parents",
     start_url: "/",
     display: "standalone",

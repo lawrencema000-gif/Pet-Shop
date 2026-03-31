@@ -82,9 +82,9 @@ export const faqSections: FAQSectionData[] = [
           "Fountain filters should be replaced every 2-4 weeks depending on usage and water hardness. Feeder desiccant pads last about 30 days. We offer convenient subscription plans so you never run out.",
       },
       {
-        question: "Is the PETLIBRO app free?",
+        question: "Is the Pet and Angels app free?",
         answer:
-          "Yes, the PETLIBRO app is completely free for iOS and Android. All smart features including scheduling, monitoring, and notifications are included at no extra cost. There are no subscription fees for app functionality.",
+          "Yes, the Pet and Angels app is completely free for iOS and Android. All smart features including scheduling, monitoring, and notifications are included at no extra cost. There are no subscription fees for app functionality.",
       },
     ],
   },

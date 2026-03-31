@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Search, User, ShoppingBag, Menu } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NAV_LINKS, SITE_CONFIG } from "@/lib/constants";
@@ -53,9 +54,18 @@ export function Header() {
               </button>
               <Link
                 href="/"
-                className="font-display font-bold tracking-tight text-foreground text-xl lg:text-2xl"
+                className="flex items-center gap-2"
               >
-                {SITE_CONFIG.name}
+                <Image
+                  src="/logo.png"
+                  alt="Pet and Angels"
+                  width={36}
+                  height={36}
+                  className="rounded-full"
+                />
+                <span className="font-display font-bold tracking-tight text-foreground text-lg lg:text-xl">
+                  {SITE_CONFIG.name}
+                </span>
               </Link>
             </div>
 

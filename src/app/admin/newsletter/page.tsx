@@ -304,7 +304,7 @@ export default function AdminNewsletterPage() {
                   <div className="p-6">
                     <div className="max-w-md mx-auto">
                       <div className="text-center mb-4">
-                        <p className="text-lg font-display font-bold text-foreground">PETLIBRO</p>
+                        <p className="text-lg font-display font-bold text-foreground">Pet and Angels</p>
                       </div>
                       <p className="text-xs text-muted mb-4">Subject: <span className="font-medium text-foreground">{subject || t("admin.newsletter.noSubject")}</span></p>
                       <div className="text-sm text-foreground leading-relaxed">

@@ -59,11 +59,11 @@ export async function generateMetadata({
   if (!product) return { title: "Product Not Found" };
 
   return {
-    title: `${product.name} | PETLIBRO`,
+    title: `${product.name} | Pet and Angels`,
     description:
       product.subtitle ||
       product.description?.slice(0, 160) ||
-      `Shop ${product.name} at PETLIBRO.`,
+      `Shop ${product.name} at Pet and Angels.`,
   };
 }
 
@@ -137,7 +137,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
     image: product.images?.[0]?.url,
     brand: {
       "@type": "Brand",
-      name: "PETLIBRO",
+      name: "Pet and Angels",
     },
     ...(defaultVariant?.sku && { sku: defaultVariant.sku }),
     offers: {
@@ -148,7 +148,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       priceValidUntil: `${currentYear}-12-31`,
       seller: {
         "@type": "Organization",
-        name: "PETLIBRO",
+        name: "Pet and Angels",
       },
     },
     ...(product.rating_count > 0 && {

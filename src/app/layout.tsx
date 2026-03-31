@@ -25,8 +25,8 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL("https://pet-shop-lac-ten.vercel.app"),
   title: {
-    default: "PETLIBRO | Smart Pet Care Products for Modern Pet Parents",
-    template: "%s | PETLIBRO",
+    default: "Pet and Angels | Smart Pet Care Products for Modern Pet Parents",
+    template: "%s | Pet and Angels",
   },
   description:
     "Discover smart pet feeders, water fountains, self-cleaning litter boxes, and premium accessories. Free shipping on orders over $75. 30-day returns. 1-year warranty.",
@@ -41,15 +41,15 @@ export const metadata: Metadata = {
     "dog feeder",
     "cat fountain",
   ],
-  authors: [{ name: "PETLIBRO" }],
-  creator: "PETLIBRO",
-  publisher: "PETLIBRO",
+  authors: [{ name: "Pet and Angels" }],
+  creator: "Pet and Angels",
+  publisher: "Pet and Angels",
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "https://pet-shop-lac-ten.vercel.app",
-    siteName: "PETLIBRO",
-    title: "PETLIBRO | Smart Pet Care Products",
+    siteName: "Pet and Angels",
+    title: "Pet and Angels | Smart Pet Care Products",
     description:
       "Smart pet feeders, water fountains, litter boxes & accessories. Free shipping $75+.",
     images: [
@@ -57,13 +57,13 @@ export const metadata: Metadata = {
         url: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=1200&h=630&fit=crop",
         width: 1200,
         height: 630,
-        alt: "PETLIBRO Smart Pet Care",
+        alt: "Pet and Angels Smart Pet Care",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "PETLIBRO | Smart Pet Care Products",
+    title: "Pet and Angels | Smart Pet Care Products",
     description:
       "Smart pet feeders, water fountains, litter boxes & accessories.",
   },

@@ -81,7 +81,7 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
       {/* Logo */}
       <div className="h-16 flex items-center px-5 border-b border-border">
         <Link href="/admin" className="font-display font-bold text-xl text-foreground tracking-tight" onClick={onClose}>
-          PETLIBRO
+          Pet and Angels
         </Link>
         <span className="ml-2 text-[10px] font-semibold text-accent bg-accent-light px-1.5 py-0.5 rounded">
           {t("admin.sidebar.admin")}

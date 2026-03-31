@@ -306,7 +306,7 @@ export const blogPosts: BlogPost[] = [
   {
     id: "7",
     slug: "petlibro-vs-traditional-feeders",
-    title: "PETLIBRO Smart Feeders vs Traditional Feeders: Which Is Better?",
+    title: "Pet and Angels Smart Feeders vs Traditional Feeders: Which Is Better?",
     excerpt:
       "Smart feeders promise convenience and precision, but traditional feeders have stood the test of time. We compare both options across price, features, reliability, and pet health outcomes to help you decide.",
     category: "Product Guides",
@@ -327,7 +327,7 @@ export const blogPosts: BlogPost[] = [
     recommendedProducts: ["granary-smart-camera-feeder", "air-smart-feeder"],
     content: `
       <h2>The Feeding Dilemma: Smart vs Traditional</h2>
-      <p>Choosing the right feeder for your pet is one of the most impactful decisions you'll make as a pet parent. <strong>Traditional feeders</strong> — simple bowls, gravity dispensers, and basic timed models — have served pet owners well for decades. But the rise of <strong>smart Wi-Fi-connected feeders</strong> like the PETLIBRO Granary series has introduced a new standard of convenience, precision, and health monitoring. So which is actually better for your pet? Let's compare them head-to-head.</p>
+      <p>Choosing the right feeder for your pet is one of the most impactful decisions you'll make as a pet parent. <strong>Traditional feeders</strong> — simple bowls, gravity dispensers, and basic timed models — have served pet owners well for decades. But the rise of <strong>smart Wi-Fi-connected feeders</strong> like the Pet and Angels Granary series has introduced a new standard of convenience, precision, and health monitoring. So which is actually better for your pet? Let's compare them head-to-head.</p>
 
       <h2>Head-to-Head Comparison</h2>
       <table style="width:100%; border-collapse:collapse; margin:1.5rem 0;">
@@ -335,7 +335,7 @@ export const blogPosts: BlogPost[] = [
           <tr style="border-bottom:2px solid #e5e7eb;">
             <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">Feature</th>
             <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">Traditional Feeder</th>
-            <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">PETLIBRO Smart Feeder</th>
+            <th style="text-align:left; padding:0.75rem 1rem; font-weight:600;">Pet and Angels Smart Feeder</th>
           </tr>
         </thead>
         <tbody>
@@ -398,16 +398,16 @@ export const blogPosts: BlogPost[] = [
         <li><strong>No monitoring:</strong> You have no way to track how much your pet actually ate, or spot changes in eating patterns that might indicate illness.</li>
       </ul>
 
-      <h2>Pros of PETLIBRO Smart Feeders</h2>
+      <h2>Pros of Pet and Angels Smart Feeders</h2>
       <ul>
         <li><strong>Precision nutrition:</strong> The Granary Smart Camera Feeder dispenses portions accurate to 1 gram, making it easy to follow your vet's dietary recommendations exactly.</li>
         <li><strong>Total schedule control:</strong> Set up to 10 meals per day with specific times and amounts. Your pet eats on schedule regardless of where you are.</li>
-        <li><strong>Remote access:</strong> The PETLIBRO app lets you adjust meals, dispense food manually, and check the camera from anywhere in the world.</li>
+        <li><strong>Remote access:</strong> The Pet and Angels app lets you adjust meals, dispense food manually, and check the camera from anywhere in the world.</li>
         <li><strong>Health insights:</strong> Track daily intake over time, set feeding goals, and receive alerts if your pet skips a meal — catching potential health issues early.</li>
         <li><strong>Peace of mind:</strong> The built-in camera with night vision and two-way audio means you can check on your pet anytime. Battery backup ensures feeding continues during outages.</li>
       </ul>
 
-      <h2>Cons of PETLIBRO Smart Feeders</h2>
+      <h2>Cons of Pet and Angels Smart Feeders</h2>
       <ul>
         <li><strong>Higher upfront cost:</strong> Smart feeders range from $60-180, significantly more than traditional options.</li>
         <li><strong>Requires Wi-Fi:</strong> Core features depend on an internet connection, though scheduled feedings work offline once programmed.</li>
@@ -416,7 +416,7 @@ export const blogPosts: BlogPost[] = [
       </ul>
 
       <h2>The Verdict: Which Should You Choose?</h2>
-      <p>For pet parents who travel frequently, work long hours, or have pets that need strict portion control (overweight pets, diabetic pets, or multi-pet households), a <strong>PETLIBRO smart feeder is the clear winner</strong>. The precision, monitoring, and remote access justify the investment — and many owners say it pays for itself in reduced vet bills from better weight management.</p>
+      <p>For pet parents who travel frequently, work long hours, or have pets that need strict portion control (overweight pets, diabetic pets, or multi-pet households), a <strong>Pet and Angels smart feeder is the clear winner</strong>. The precision, monitoring, and remote access justify the investment — and many owners say it pays for itself in reduced vet bills from better weight management.</p>
       <p>If you're always home at mealtimes, have a single pet that self-regulates well, and prefer the simplest possible setup, a traditional feeder is perfectly adequate. But even in this scenario, upgrading to a smart feeder adds a layer of data and convenience that most pet parents quickly come to rely on.</p>
       <p>Our recommendation? <strong>Start with the Granary Smart Camera Feeder</strong> — it covers every use case and consistently ranks as our best-selling product for good reason.</p>
     `,
@@ -457,7 +457,7 @@ export const blogPosts: BlogPost[] = [
       <p>A cozy, machine-washable pet blanket in a stylish print is always welcome. Opt for one that's reversible — plush on one side, waterproof on the other — to protect furniture while keeping pets comfortable. Brands that offer personalization with the pet's name add an extra special touch.</p>
 
       <h3>Replacement Filter Packs ($20-30)</h3>
-      <p>If you know the pet parent already has a water fountain or smart feeder, a pack of replacement filters is an incredibly practical gift. It's the kind of thing people always need but rarely treat themselves to. For PETLIBRO fountain owners, our 6-pack filter sets are always a hit.</p>
+      <p>If you know the pet parent already has a water fountain or smart feeder, a pack of replacement filters is an incredibly practical gift. It's the kind of thing people always need but rarely treat themselves to. For Pet and Angels fountain owners, our 6-pack filter sets are always a hit.</p>
 
       <h2>Mid-Range Gifts: $50 – $100</h2>
       <p>This price range opens up some genuinely impressive options that combine quality with functionality.</p>
@@ -481,7 +481,7 @@ export const blogPosts: BlogPost[] = [
       <p>For cat parents, the <strong>Luma Smart Litter Box</strong> is a life-changing gift. It eliminates daily scooping entirely, monitors cat health through usage analytics, and controls odor through sealed waste compartments. Yes, the price tag is premium, but every cat parent who receives one says the same thing: "I can't believe I waited this long." It's the kind of gift that gets talked about for years.</p>
 
       <h3>Complete Smart Pet Bundle ($250-500)</h3>
-      <p>For the ultimate gesture, gift a complete smart care bundle: feeder + fountain + litter box. PETLIBRO offers <strong>bundle discounts of 15-25%</strong> compared to buying each device separately. Everything connects through one app, creating a unified ecosystem that tracks feeding, hydration, and litter box usage. It's the complete pet care upgrade — and the savings on the bundle make it even sweeter.</p>
+      <p>For the ultimate gesture, gift a complete smart care bundle: feeder + fountain + litter box. Pet and Angels offers <strong>bundle discounts of 15-25%</strong> compared to buying each device separately. Everything connects through one app, creating a unified ecosystem that tracks feeding, hydration, and litter box usage. It's the complete pet care upgrade — and the savings on the bundle make it even sweeter.</p>
 
       <h2>Gift-Giving Tips</h2>
       <ul>

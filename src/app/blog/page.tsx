@@ -10,7 +10,7 @@ import BlogCard from "@/components/blog/BlogCard";
 import FeaturedPosts from "@/components/blog/FeaturedPosts";
 
 export const metadata: Metadata = {
-  title: "Pet Care Blog | PETLIBRO",
+  title: "Pet Care Blog | Pet and Angels",
   description:
     "Expert tips, guides, and insights for modern pet parents. Learn about pet nutrition, smart feeders, hydration, health, and the latest in pet tech.",
   keywords: [
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     "pet nutrition",
   ],
   openGraph: {
-    title: "Pet Care Blog | PETLIBRO",
+    title: "Pet Care Blog | Pet and Angels",
     description:
       "Expert tips, guides, and insights for modern pet parents.",
     type: "website",

@@ -38,7 +38,7 @@ export const COLLECTIONS: Collection[] = [
       {
         question: "Can I control everything from one app?",
         answer:
-          "Yes! All PETLIBRO smart products connect to the PETLIBRO app, giving you a single dashboard to manage feeding schedules, water levels, and litter box status.",
+          "Yes! All Pet and Angels smart products connect to the Pet and Angels app, giving you a single dashboard to manage feeding schedules, water levels, and litter box status.",
       },
     ],
   },
@@ -108,7 +108,7 @@ export const COLLECTIONS: Collection[] = [
       {
         question: "Is there a warranty?",
         answer:
-          "Every PETLIBRO product comes with a 1-year standard warranty. Bundle purchases receive an extended 2-year warranty at no extra cost.",
+          "Every Pet and Angels product comes with a 1-year standard warranty. Bundle purchases receive an extended 2-year warranty at no extra cost.",
       },
     ],
   },

@@ -15,7 +15,7 @@ const steps = [
     icon: Smartphone,
     title: "Connect the App",
     description:
-      "Download the PETLIBRO app and pair your device via Wi-Fi in seconds.",
+      "Download the Pet and Angels app and pair your device via Wi-Fi in seconds.",
   },
   {
     number: 3,

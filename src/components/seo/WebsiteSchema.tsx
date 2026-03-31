@@ -2,7 +2,7 @@ export default function WebsiteSchema() {
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "PETLIBRO",
+    name: "Pet and Angels",
     url: "https://pet-shop-lac-ten.vercel.app",
     potentialAction: {
       "@type": "SearchAction",

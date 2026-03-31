@@ -7,9 +7,9 @@ import ProductGrid from "@/components/product/ProductGrid";
 import SEOBlock from "@/components/category/SEOBlock";
 
 export const metadata: Metadata = {
-  title: "Cat Products | PETLIBRO",
+  title: "Cat Products | Pet and Angels",
   description:
-    "Shop smart products for cats. Self-cleaning litter boxes, feeders, water fountains, and more from PETLIBRO.",
+    "Shop smart products for cats. Self-cleaning litter boxes, feeders, water fountains, and more from Pet and Angels.",
 };
 
 export default async function CatsPage() {

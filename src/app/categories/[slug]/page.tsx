@@ -33,7 +33,7 @@ export async function generateMetadata({
   if (!category) return { title: "Category Not Found" };
 
   return {
-    title: `${category.name} | PETLIBRO`,
+    title: `${category.name} | Pet and Angels`,
     description:
       category.description ||
       `Shop ${category.name} - premium smart pet care products.`,

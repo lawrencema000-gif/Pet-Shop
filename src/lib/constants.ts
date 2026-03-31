@@ -4,7 +4,7 @@ export const TAX_RATE = 0.08;
 export const MAX_ITEM_QUANTITY = 10;
 
 export const SITE_CONFIG = {
-  name: "PETLIBRO",
+  name: "Pet and Angels",
   description: "Smart pet care products for modern pet parents",
   url: "https://pet-shop-lac-ten.vercel.app",
   freeShippingThreshold: FREE_SHIPPING_THRESHOLD,

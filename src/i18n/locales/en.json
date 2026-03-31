@@ -150,7 +150,7 @@
     "litterFeature4": "Odor Lock"
   },
   "whyChooseUs": {
-    "overline": "The PETLIBRO Difference",
+    "overline": "The Pet and Angels Difference",
     "heading": "Crafted for Modern Pet Parents",
     "description": "Smart technology meets thoughtful design to give your pets the care they deserve.",
     "smartTech": "Smart Technology",
@@ -184,11 +184,11 @@
     "defaultDesc": "Premium quality pet product designed with your pet's comfort in mind."
   },
   "about": {
-    "metaTitle": "About Us | PETLIBRO",
-    "metaDesc": "We're pet parents on a mission to make pet care smarter. Learn about PETLIBRO's story, values, and the team behind our products.",
+    "metaTitle": "About Us | Pet and Angels",
+    "metaDesc": "We're pet parents on a mission to make pet care smarter. Learn about Pet and Angels's story, values, and the team behind our products.",
     "heading1": "Built by Pet Parents,",
     "heading2": "for Pet Parents",
-    "intro": "We started PETLIBRO because we believed our pets deserved better than plastic bowls and manual scooping. What began as a side project in a Brooklyn apartment has grown into a mission to bring smart, thoughtful technology to pet care — one product at a time.",
+    "intro": "We started Pet and Angels because we believed our pets deserved better than plastic bowls and manual scooping. What began as a side project in a Brooklyn apartment has grown into a mission to bring smart, thoughtful technology to pet care — one product at a time.",
     "missionTitle": "Our Mission",
     "missionText": "To empower pet parents with intelligent, beautifully designed products that elevate the everyday experience of caring for the animals we love.",
     "valuesTitle": "What We Stand For",
@@ -208,15 +208,15 @@
     "timeline2020Title": "First Product Launch",
     "timeline2020Desc": "Launched the Granary Smart Feeder on Kickstarter, raising 400% of our goal in 48 hours. Over 5,000 backers believed in our vision.",
     "timeline2021Title": "Expanding the Ecosystem",
-    "timeline2021Desc": "Introduced the Dockstream Smart Fountain and PETLIBRO app, creating a connected ecosystem for modern pet parents.",
+    "timeline2021Desc": "Introduced the Dockstream Smart Fountain and Pet and Angels app, creating a connected ecosystem for modern pet parents.",
     "timeline2022Title": "One Million Pets Served",
-    "timeline2022Desc": "Crossed the milestone of one million pets using PETLIBRO products worldwide. Launched the One RFID Feeder for multi-pet households.",
+    "timeline2022Desc": "Crossed the milestone of one million pets using Pet and Angels products worldwide. Launched the One RFID Feeder for multi-pet households.",
     "timeline2023Title": "Luma: The Future of Litter",
     "timeline2023Desc": "Released the Luma Smart Litter Box with Video Cloud AI — our most ambitious product yet, combining self-cleaning with health monitoring.",
     "timeline2024Title": "Going Global",
     "timeline2024Desc": "Expanding internationally, deepening our AI health insights, and continuing to build products that pets and their parents love.",
     "timeline2025Title": "Expanded to 50+ Products",
-    "timeline2025Desc": "Grew our catalog to over 50 products, launched the PETLIBRO mobile app with real-time health insights, and introduced same-day delivery in major cities.",
+    "timeline2025Desc": "Grew our catalog to over 50 products, launched the Pet and Angels mobile app with real-time health insights, and introduced same-day delivery in major cities.",
     "timeline2026Title": "Continuing to Innovate",
     "timeline2026Desc": "Continuing to innovate for happy pets everywhere. New AI-powered health monitoring, expanded accessories line, and deeper smart home integrations.",
     "ctaHeading": "Ready to upgrade your pet's life?",
@@ -378,8 +378,8 @@
     "noProductsDesc": "Try adjusting your filters."
   },
   "newArrivals": {
-    "metaTitle": "New Arrivals | PETLIBRO",
-    "metaDesc": "Discover the latest smart pet products. New feeders, water fountains, litter boxes, and accessories just landed at PETLIBRO.",
+    "metaTitle": "New Arrivals | Pet and Angels",
+    "metaDesc": "Discover the latest smart pet products. New feeders, water fountains, litter boxes, and accessories just landed at Pet and Angels.",
     "overline": "Just Dropped",
     "heading": "New Arrivals",
     "description": "The latest in smart pet care technology. Be the first to discover our newest products, designed to make life better for you and your furry friends.",
@@ -389,7 +389,7 @@
     "newBadge": "New"
   },
   "sale": {
-    "metaTitle": "Spring Sale — Up to 30% Off | PETLIBRO",
+    "metaTitle": "Spring Sale — Up to 30% Off | Pet and Angels",
     "metaDesc": "Shop our biggest sale of the season. Save up to 30% on smart pet feeders, water fountains, litter boxes, and accessories. Sale ends March 31.",
     "overline": "Spring Sale Event",
     "heading1": "Up to 30% Off",
@@ -533,12 +533,12 @@
     "deleteInstruction": "For security, account deletion requires contacting our support team. Please reach out to us at support@petshop.com."
   },
   "privacy": {
-    "metaTitle": "Privacy Policy | PETLIBRO",
-    "metaDesc": "Learn how PETLIBRO collects, uses, and protects your personal information.",
+    "metaTitle": "Privacy Policy | Pet and Angels",
+    "metaDesc": "Learn how Pet and Angels collects, uses, and protects your personal information.",
     "heading": "Privacy Policy",
     "lastUpdated": "Last updated: March 15, 2026",
     "introTitle": "Introduction",
-    "introText": "PETLIBRO (\"we,\" \"us,\" or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our mobile application, or purchase our products.",
+    "introText": "Pet and Angels (\"we,\" \"us,\" or \"our\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website, use our mobile application, or purchase our products.",
     "introConsent": "By using our services, you agree to the collection and use of information in accordance with this policy. If you do not agree, please do not use our services.",
     "collectTitle": "Information We Collect",
     "personalInfo": "Personal Information",
@@ -559,7 +559,7 @@
       "Referring website or search terms"
     ],
     "smartProductData": "Smart Product Data",
-    "smartProductDesc": "If you use our PETLIBRO app with smart products, we may collect:",
+    "smartProductDesc": "If you use our Pet and Angels app with smart products, we may collect:",
     "smartProductItems": [
       "Feeding schedules and portion data",
       "Water consumption metrics",
@@ -612,12 +612,12 @@
     "contactPage": "Contact page"
   },
   "terms": {
-    "metaTitle": "Terms of Service | PETLIBRO",
-    "metaDesc": "Read the terms and conditions that govern your use of the PETLIBRO website and services.",
+    "metaTitle": "Terms of Service | Pet and Angels",
+    "metaDesc": "Read the terms and conditions that govern your use of the Pet and Angels website and services.",
     "heading": "Terms of Service",
     "lastUpdated": "Last updated: March 15, 2026",
     "section1Title": "1. Acceptance of Terms",
-    "section1Text": "By accessing or using the PETLIBRO website (the \"Site\"), mobile application, or any of our services, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not use our services.",
+    "section1Text": "By accessing or using the Pet and Angels website (the \"Site\"), mobile application, or any of our services, you agree to be bound by these Terms of Service (\"Terms\"). If you do not agree to these Terms, you may not use our services.",
     "section1Text2": "We reserve the right to update these Terms at any time. Continued use of the Site after changes constitutes acceptance of the revised Terms.",
     "section2Title": "2. Eligibility",
     "section2Text": "You must be at least 18 years of age to make purchases on our Site. By using our services, you represent and warrant that you meet this requirement and have the legal capacity to enter into a binding agreement.",
@@ -638,7 +638,7 @@
     "returnsPolicyLink": "Returns & Refunds Policy",
     "section7Text2": ". Please review it before making a purchase. By completing a purchase, you acknowledge and accept the terms of our return policy.",
     "section8Title": "8. Intellectual Property",
-    "section8Text": "All content on the Site — including text, images, logos, graphics, product designs, software, and trademarks — is the property of PETLIBRO or its licensors and is protected by copyright, trademark, and other intellectual property laws.",
+    "section8Text": "All content on the Site — including text, images, logos, graphics, product designs, software, and trademarks — is the property of Pet and Angels or its licensors and is protected by copyright, trademark, and other intellectual property laws.",
     "section8Text2": "You may not reproduce, distribute, modify, or create derivative works from any content on this Site without our prior written consent.",
     "section9Title": "9. User Conduct",
     "section9Desc": "You agree not to:",
@@ -651,13 +651,13 @@
       "Submit false or misleading information"
     ],
     "section10Title": "10. Limitation of Liability",
-    "section10Text": "To the fullest extent permitted by law, PETLIBRO shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our products or services. Our total liability for any claim shall not exceed the amount you paid for the product giving rise to the claim.",
+    "section10Text": "To the fullest extent permitted by law, Pet and Angels shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of our products or services. Our total liability for any claim shall not exceed the amount you paid for the product giving rise to the claim.",
     "section11Title": "11. Disclaimer of Warranties",
     "section11Text": "Our products and services are provided \"as is\" and \"as available\" without warranties of any kind, either express or implied, except as expressly stated in our",
     "warrantyPolicyLink": "Warranty Policy",
     "section11Text2": ". We do not warrant that the Site will be uninterrupted, error-free, or secure.",
     "section12Title": "12. Indemnification",
-    "section12Text": "You agree to indemnify and hold harmless PETLIBRO, its officers, employees, and agents from any claims, damages, or expenses arising from your use of the Site, violation of these Terms, or infringement of any third-party rights.",
+    "section12Text": "You agree to indemnify and hold harmless Pet and Angels, its officers, employees, and agents from any claims, damages, or expenses arising from your use of the Site, violation of these Terms, or infringement of any third-party rights.",
     "section13Title": "13. Governing Law",
     "section13Text": "These Terms shall be governed by and construed in accordance with the laws of the State of New York, without regard to conflict of law principles. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts in New York County, New York.",
     "section14Title": "14. Contact",
@@ -665,7 +665,7 @@
     "orVisitOur": "or visit our"
   },
   "shippingPage": {
-    "metaTitle": "Shipping Policy | PETLIBRO",
+    "metaTitle": "Shipping Policy | Pet and Angels",
     "metaDesc": "Free shipping on orders over $75. Learn about our shipping methods, delivery times, and tracking options.",
     "heading": "Shipping Policy",
     "description": "We work hard to get your order to you as quickly as possible. Enjoy free standard shipping on all orders over $75.",
@@ -702,7 +702,7 @@
     "trackMyOrder": "Track My Order"
   },
   "returnsPage": {
-    "metaTitle": "Returns & Refunds | PETLIBRO",
+    "metaTitle": "Returns & Refunds | Pet and Angels",
     "metaDesc": "30-day hassle-free returns. Learn about our return policy, refund process, and exchanges.",
     "heading": "Returns & Refunds",
     "description": "We want you and your pets to love every purchase. If something isn't right, our hassle-free return process makes it easy to get a refund or exchange.",
@@ -741,10 +741,10 @@
     "ctaDesc": "Our team will guide you through every step of the process."
   },
   "warrantyPage": {
-    "metaTitle": "Warranty | PETLIBRO",
-    "metaDesc": "PETLIBRO warranty coverage details. 1-year warranty on electronics and 6-month warranty on accessories.",
+    "metaTitle": "Warranty | Pet and Angels",
+    "metaDesc": "Pet and Angels warranty coverage details. 1-year warranty on electronics and 6-month warranty on accessories.",
     "heading": "Warranty Policy",
-    "description": "Every PETLIBRO product is built to last. We stand behind the quality of our products with comprehensive warranty coverage.",
+    "description": "Every Pet and Angels product is built to last. We stand behind the quality of our products with comprehensive warranty coverage.",
     "coverageTitle": "Coverage Overview",
     "electronicsTitle": "Smart Electronics",
     "electronicsPeriod": "1 Year",
@@ -793,10 +793,10 @@
     "ctaButton": "Contact Warranty Support"
   },
   "pressPage": {
-    "metaTitle": "Press | PETLIBRO",
-    "metaDesc": "PETLIBRO press information, brand assets, and media contact.",
+    "metaTitle": "Press | Pet and Angels",
+    "metaDesc": "Pet and Angels press information, brand assets, and media contact.",
     "heading": "Press & Media",
-    "description": "PETLIBRO is a smart pet care brand building connected products that keep pets healthy, happy, and well-fed. We combine thoughtful design with modern technology to help pet parents care for their furry companions.",
+    "description": "Pet and Angels is a smart pet care brand building connected products that keep pets healthy, happy, and well-fed. We combine thoughtful design with modern technology to help pet parents care for their furry companions.",
     "brandAssets": "Brand Assets",
     "logoPack": "Logo Pack",
     "logoPackDesc": "Primary logo, wordmark, and icon in SVG, PNG, and EPS formats for light and dark backgrounds.",
@@ -805,25 +805,25 @@
     "productPhotos": "Product Photos",
     "productPhotosDesc": "High-resolution lifestyle and studio product photography, ready for editorial use.",
     "pressReleases": "Press Releases",
-    "pressReleasesDesc": "The latest news and announcements from PETLIBRO.",
+    "pressReleasesDesc": "The latest news and announcements from Pet and Angels.",
     "pr1Date": "March 15, 2026",
-    "pr1Title": "PETLIBRO Launches Luma XL Smart Litter Box",
+    "pr1Title": "Pet and Angels Launches Luma XL Smart Litter Box",
     "pr1Desc": "The new Luma XL features a 30% larger interior, whisper-quiet operation, and enhanced Video Cloud AI for multi-cat households. Available for pre-order starting today.",
     "pr2Date": "January 22, 2026",
-    "pr2Title": "PETLIBRO Reaches 2 Million Pets Served",
-    "pr2Desc": "PETLIBRO celebrates a major milestone as over two million pets worldwide now use its connected ecosystem of smart feeders, fountains, and litter boxes.",
+    "pr2Title": "Pet and Angels Reaches 2 Million Pets Served",
+    "pr2Desc": "Pet and Angels celebrates a major milestone as over two million pets worldwide now use its connected ecosystem of smart feeders, fountains, and litter boxes.",
     "pr3Date": "January 8, 2026",
-    "pr3Title": "CES 2026: PETLIBRO Unveils AquaStream Pro",
+    "pr3Title": "CES 2026: Pet and Angels Unveils AquaStream Pro",
     "pr3Desc": "Debuted at CES 2026, the AquaStream Pro smart fountain features real-time water quality monitoring, UV-C sterilization, and seamless app integration.",
     "pr4Date": "November 12, 2025",
-    "pr4Title": "PETLIBRO Raises Series B to Expand Smart Pet Care",
-    "pr4Desc": "PETLIBRO announces a $45M Series B funding round led by Accel Partners, with plans to accelerate international expansion and deepen AI-powered health insights.",
+    "pr4Title": "Pet and Angels Raises Series B to Expand Smart Pet Care",
+    "pr4Desc": "Pet and Angels announces a $45M Series B funding round led by Accel Partners, with plans to accelerate international expansion and deepen AI-powered health insights.",
     "inTheMedia": "In the Media",
     "mediaInquiries": "Media Inquiries",
     "mediaInquiriesDesc": "For press inquiries, interview requests, or access to brand assets, reach out to our communications team."
   },
   "helpMeChoose": {
-    "metaTitle": "Help Me Choose | PETLIBRO",
+    "metaTitle": "Help Me Choose | Pet and Angels",
     "metaDesc": "Find the perfect smart pet product with our personalized quiz."
   },
   "languageSwitcher": {
@@ -831,7 +831,7 @@
   },
   "auth": {
     "welcomeBack": "Welcome Back",
-    "signInSubtitle": "Sign in to your PETLIBRO account",
+    "signInSubtitle": "Sign in to your Pet and Angels account",
     "continueWithGoogle": "Continue with Google",
     "or": "or",
     "emailLabel": "Email",
@@ -845,9 +845,9 @@
     "freeShippingNote": "Free shipping on orders $75+ \u00b7 30-day returns",
     "passwordMinLength": "Password must be at least 6 characters",
     "accountCreated": "Account Created!",
-    "welcomeMessage": "Welcome to PETLIBRO! Your account is ready.",
+    "welcomeMessage": "Welcome to Pet and Angels! Your account is ready.",
     "createAccount": "Create Account",
-    "joinSubtitle": "Join PETLIBRO for a smarter pet care experience",
+    "joinSubtitle": "Join Pet and Angels for a smarter pet care experience",
     "fullNameLabel": "Full Name",
     "namePlaceholder": "John Doe",
     "passwordHint": "At least 6 characters",
@@ -885,7 +885,7 @@
     "loadingProducts": "Loading products..."
   },
   "liveChat": {
-    "supportTitle": "PETLIBRO Support",
+    "supportTitle": "Pet and Angels Support",
     "replyTime": "We typically reply in a few minutes",
     "welcomeMessage": "Hi! How can we help you today?",
     "signInPrompt": "Please sign in to start a conversation.",
@@ -1250,7 +1250,7 @@
         "invoicePrice": "Price",
         "invoiceTotal": "Total",
         "invoiceTracking": "Tracking: {{number}} ({{carrier}})",
-        "invoiceThankYou": "Thank you for shopping with PETLIBRO!",
+        "invoiceThankYou": "Thank you for shopping with Pet and Angels!",
         "invoiceContact": "Questions? Contact support@petlibro.com"
       }
     },
@@ -1708,7 +1708,7 @@
       "preheaderCharCount": "{{count}}/120 characters",
       "emailBody": "Email Body *",
       "bodyPlaceholder": "Write your email here...\n\nSeparate paragraphs with blank lines.\nLine breaks within a paragraph are preserved.",
-      "bodyHelpText": "Plain text \u2014 paragraphs separated by blank lines. Will be wrapped in a branded PETLIBRO email template with a \"Shop Now\" button.",
+      "bodyHelpText": "Plain text \u2014 paragraphs separated by blank lines. Will be wrapped in a branded Pet and Angels email template with a \"Shop Now\" button.",
       "emailPreview": "Email Preview",
       "closePreview": "Close",
       "noSubject": "(no subject)",
@@ -1727,7 +1727,7 @@
       "noSubscribersToSend": "No subscribers to send to.",
       "accessRestricted": "Access Restricted",
       "noPermission": "You don't have permission to view newsletter subscribers.",
-      "subscriptionNotice": "You're receiving this because you subscribed to the PETLIBRO newsletter."
+      "subscriptionNotice": "You're receiving this because you subscribed to the Pet and Angels newsletter."
     },
     "content": {
       "title": "Content",

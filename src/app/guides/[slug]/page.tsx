@@ -19,9 +19,9 @@ export async function generateMetadata({
   params,
 }: GuidePageProps): Promise<Metadata> {
   const guide = getGuideBySlug(params.slug);
-  if (!guide) return { title: "Guide Not Found | PETLIBRO" };
+  if (!guide) return { title: "Guide Not Found | Pet and Angels" };
   return {
-    title: `${guide.title} | PETLIBRO`,
+    title: `${guide.title} | Pet and Angels`,
     description: guide.description,
   };
 }

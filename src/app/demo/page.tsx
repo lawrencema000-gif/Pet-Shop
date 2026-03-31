@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import ProductDetail from "@/components/ui/e-commerce-product-detail";
 
 export const metadata = {
-  title: "Product Detail Demo | PETLIBRO",
+  title: "Product Detail Demo | Pet and Angels",
 };
 
 export default async function DemoPage() {

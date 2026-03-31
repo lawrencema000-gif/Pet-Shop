@@ -5,7 +5,7 @@ import { ChevronRight, BookOpen, ArrowRight } from "lucide-react";
 import { GUIDES } from "@/lib/guides-data";
 
 export const metadata: Metadata = {
-  title: "Buying Guides | PETLIBRO",
+  title: "Buying Guides | Pet and Angels",
   description:
     "Expert buying guides to help you find the perfect smart pet products. Compare feeders, water fountains, litter boxes, and more.",
 };

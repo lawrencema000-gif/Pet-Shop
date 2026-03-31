@@ -52,7 +52,7 @@ export default function GiftCardsClient() {
             </span>
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-muted md:text-lg">
-            Let them choose exactly what their pet needs. A PETLIBRO gift card
+            Let them choose exactly what their pet needs. A Pet and Angels gift card
             is the perfect present for any pet lover.
           </p>
         </div>
@@ -97,11 +97,11 @@ export default function GiftCardsClient() {
           <div className="mt-10 rounded-md bg-gradient-to-br from-purple-600 to-pink-500 p-8 text-white text-center shadow-sm">
             <Gift className="h-10 w-10 mx-auto mb-3 opacity-80" />
             <p className="text-sm uppercase tracking-wide opacity-80">
-              PETLIBRO Gift Card
+              Pet and Angels Gift Card
             </p>
             <p className="text-5xl font-bold mt-2">${selected}</p>
             <p className="mt-3 text-sm opacity-80">
-              Valid for all products at PETLIBRO
+              Valid for all products at Pet and Angels
             </p>
           </div>
         </div>
@@ -131,7 +131,7 @@ export default function GiftCardsClient() {
                 icon: ShoppingBag,
                 step: "3",
                 title: "They Shop",
-                desc: "Your recipient can use the gift card on any PETLIBRO product — feeders, fountains, accessories, and more.",
+                desc: "Your recipient can use the gift card on any Pet and Angels product — feeders, fountains, accessories, and more.",
               },
             ].map((item) => (
               <div key={item.step} className="text-center">

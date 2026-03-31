@@ -3,9 +3,9 @@ import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Accessibility | PETLIBRO",
+  title: "Accessibility | Pet and Angels",
   description:
-    "PETLIBRO is committed to making our website accessible to everyone. Learn about our accessibility efforts.",
+    "Pet and Angels is committed to making our website accessible to everyone. Learn about our accessibility efforts.",
 };
 
 export default function AccessibilityPage() {
@@ -30,7 +30,7 @@ export default function AccessibilityPage() {
             <section>
               <h2>Our Commitment</h2>
               <p>
-                PETLIBRO is committed to ensuring digital accessibility for
+                Pet and Angels is committed to ensuring digital accessibility for
                 people of all abilities. We are continually improving the user
                 experience for everyone and applying the relevant accessibility
                 standards to ensure we provide equal access to all users.

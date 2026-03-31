@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { faqSections } from "./faq-data";
 
 export const metadata: Metadata = {
-  title: "FAQ | PETLIBRO",
+  title: "FAQ | Pet and Angels",
   description:
-    "Frequently asked questions about PETLIBRO products, shipping, returns, and support.",
+    "Frequently asked questions about Pet and Angels products, shipping, returns, and support.",
 };
 
 const jsonLd = {

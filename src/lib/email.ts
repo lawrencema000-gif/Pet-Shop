@@ -13,7 +13,7 @@ function getResend() {
   return _resend;
 }
 
-const FROM = "PETLIBRO <onboarding@resend.dev>"; // Change to your domain once verified
+const FROM = "Pet and Angels <onboarding@resend.dev>"; // Change to your domain once verified
 
 interface OrderEmailData {
   orderId: string;
@@ -53,7 +53,7 @@ function baseTemplate(content: string) {
   <div style="max-width:600px;margin:0 auto;padding:32px 16px">
     <!-- Header -->
     <div style="text-align:center;padding:24px 0">
-      <h1 style="margin:0;font-size:28px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px">PETLIBRO</h1>
+      <h1 style="margin:0;font-size:28px;font-weight:800;color:#1a1a1a;letter-spacing:-0.5px">Pet and Angels</h1>
       <p style="margin:4px 0 0;font-size:12px;color:#8b8680;text-transform:uppercase;letter-spacing:2px">Smart Pet Care</p>
     </div>
     <!-- Content -->
@@ -62,7 +62,7 @@ function baseTemplate(content: string) {
     </div>
     <!-- Footer -->
     <div style="text-align:center;padding:24px 0;color:#8b8680;font-size:12px">
-      <p style="margin:0">Thank you for choosing PETLIBRO</p>
+      <p style="margin:0">Thank you for choosing Pet and Angels</p>
       <p style="margin:8px 0 0">
         <a href="https://pet-shop-lac-ten.vercel.app" style="color:#2d6a4f;text-decoration:none">Visit our store</a>
         &nbsp;&middot;&nbsp;
@@ -213,7 +213,7 @@ export async function sendNewsletterEmail(data: {
       <a href="https://pet-shop-lac-ten.vercel.app" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">Shop Now</a>
     </div>
     <p style="margin-top:32px;font-size:11px;color:#8b8680;text-align:center">
-      You're receiving this because you subscribed to the PETLIBRO newsletter.
+      You're receiving this because you subscribed to the Pet and Angels newsletter.
     </p>
   `);
 

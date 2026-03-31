@@ -35,7 +35,7 @@ export default function AdminSettingsPage() {
   const { t } = useTranslation();
   const { hasPermission, isSuperAdmin, loaded } = useStaffPermissions();
   const [settings, setSettings] = useState<SettingsState>({
-    store_name: "PETLIBRO",
+    store_name: "Pet and Angels",
     store_currency: "USD",
     super_admin_emails: [],
     custom_admin_nav: [],
@@ -59,7 +59,7 @@ export default function AdminSettingsPage() {
       const { data } = await supabase.from("app_settings").select("key, value");
       const map = new Map((data ?? []).map((d) => [d.key, d.value]));
       setSettings({
-        store_name: (map.get("store_name") as string) ?? "PETLIBRO",
+        store_name: (map.get("store_name") as string) ?? "Pet and Angels",
         store_currency: (map.get("store_currency") as string) ?? "USD",
         super_admin_emails: (map.get("super_admin_emails") as string[]) ?? [],
         custom_admin_nav: (map.get("custom_admin_nav") as SettingsState["custom_admin_nav"]) ?? [],

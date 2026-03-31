@@ -231,7 +231,7 @@ export default function BundlesPage() {
               {
                 title: "One Connected App",
                 description:
-                  "All PETLIBRO devices work together in one app. Monitor feeding, hydration, and litter box usage from a single dashboard.",
+                  "All Pet and Angels devices work together in one app. Monitor feeding, hydration, and litter box usage from a single dashboard.",
               },
               {
                 title: "Free Shipping",

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Search Products | PETLIBRO",
+  title: "Search Products | Pet and Angels",
   description:
     "Search our full catalog of smart pet feeders, water fountains, litter boxes, and accessories.",
 };

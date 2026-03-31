@@ -11,12 +11,12 @@ export default function ProductFAQ({ productName }: ProductFAQProps) {
     {
       title: `How do I set up ${productName}?`,
       content:
-        "Setting up is quick and easy. Download the PETLIBRO app, follow the step-by-step guide, and you'll be ready in under 5 minutes. The app walks you through Wi-Fi pairing, calibration, and scheduling.",
+        "Setting up is quick and easy. Download the Pet and Angels app, follow the step-by-step guide, and you'll be ready in under 5 minutes. The app walks you through Wi-Fi pairing, calibration, and scheduling.",
     },
     {
       title: "What warranty does this product have?",
       content:
-        "All PETLIBRO smart products come with a 1-year warranty covering manufacturing defects and hardware malfunctions. Extended warranty options are available at checkout for additional peace of mind.",
+        "All Pet and Angels smart products come with a 1-year warranty covering manufacturing defects and hardware malfunctions. Extended warranty options are available at checkout for additional peace of mind.",
     },
     {
       title: "Is this product easy to clean?",
@@ -26,7 +26,7 @@ export default function ProductFAQ({ productName }: ProductFAQProps) {
     {
       title: "Can I control this with my phone?",
       content:
-        "Yes, the PETLIBRO app (iOS & Android) lets you control all features remotely, set schedules, receive notifications, and monitor usage. The app also supports multiple devices and family sharing.",
+        "Yes, the Pet and Angels app (iOS & Android) lets you control all features remotely, set schedules, receive notifications, and monitor usage. The app also supports multiple devices and family sharing.",
     },
   ];
 

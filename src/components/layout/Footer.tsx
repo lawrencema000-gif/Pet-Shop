@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslation } from "react-i18next";
 import { FOOTER_LINKS, SITE_CONFIG } from "@/lib/constants";
 import {
@@ -82,7 +83,8 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-10 lg:gap-16">
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
-            <Link href="/" className="inline-block mb-4">
+            <Link href="/" className="inline-flex items-center gap-2 mb-4">
+              <Image src="/logo.png" alt="Pet and Angels" width={32} height={32} className="rounded-full" />
               <span className="text-lg font-display font-bold tracking-tight text-foreground">
                 {SITE_CONFIG.name}
               </span>

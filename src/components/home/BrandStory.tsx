@@ -31,7 +31,7 @@ export default function BrandStory() {
             Designed by Pet Parents, for Pet Parents
           </h2>
           <p className="text-muted leading-relaxed">
-            We started PETLIBRO because we believed pet care could be smarter.
+            We started Pet and Angels because we believed pet care could be smarter.
             As pet parents ourselves, we know the worry of leaving your furry
             friend at home. That&apos;s why we build connected, intelligent
             products that give you peace of mind and keep your pets healthy and

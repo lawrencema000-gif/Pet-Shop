@@ -13,8 +13,8 @@ import {
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Careers | PETLIBRO",
-  description: "Join the PETLIBRO team. We're always looking for passionate pet lovers.",
+  title: "Careers | Pet and Angels",
+  description: "Join the Pet and Angels team. We're always looking for passionate pet lovers.",
 };
 
 const perks = [
@@ -50,28 +50,28 @@ const openPositions = [
     department: "Engineering",
     location: "Remote",
     description:
-      "Build the next generation of our e-commerce platform and PETLIBRO app using React, Next.js, and TypeScript. You'll shape the interfaces that millions of pet parents interact with daily.",
+      "Build the next generation of our e-commerce platform and Pet and Angels app using React, Next.js, and TypeScript. You'll shape the interfaces that millions of pet parents interact with daily.",
   },
   {
     title: "Product Designer",
     department: "Design",
     location: "NYC / Remote",
     description:
-      "Own end-to-end product design for our connected pet devices and digital experiences. From user research to high-fidelity prototypes, you'll define how people experience PETLIBRO.",
+      "Own end-to-end product design for our connected pet devices and digital experiences. From user research to high-fidelity prototypes, you'll define how people experience Pet and Angels.",
   },
   {
     title: "Customer Success Lead",
     department: "Support",
     location: "Austin, TX",
     description:
-      "Lead our customer success team and build processes that turn pet parents into lifelong PETLIBRO advocates. You'll shape support strategy and mentor a growing team.",
+      "Lead our customer success team and build processes that turn pet parents into lifelong Pet and Angels advocates. You'll shape support strategy and mentor a growing team.",
   },
   {
     title: "Supply Chain Analyst",
     department: "Operations",
     location: "NYC",
     description:
-      "Optimize our global supply chain to ensure PETLIBRO products reach pet parents faster and more sustainably. You'll work cross-functionally with manufacturing and logistics partners.",
+      "Optimize our global supply chain to ensure Pet and Angels products reach pet parents faster and more sustainably. You'll work cross-functionally with manufacturing and logistics partners.",
   },
 ];
 
@@ -86,7 +86,7 @@ export default function CareersPage() {
         {/* Hero Section */}
         <div className="max-w-3xl mx-auto text-center mb-16">
           <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-6">
-            Join the PETLIBRO Pack
+            Join the Pet and Angels Pack
           </h1>
           <p className="text-muted text-lg leading-relaxed max-w-2xl mx-auto">
             We&apos;re building the future of pet care — and we need passionate,
@@ -95,10 +95,10 @@ export default function CareersPage() {
           </p>
         </div>
 
-        {/* Why PETLIBRO Section */}
+        {/* Why Pet and Angels Section */}
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="text-2xl font-bold text-foreground text-center mb-10">
-            Why PETLIBRO?
+            Why Pet and Angels?
           </h2>
           <div className="grid sm:grid-cols-2 gap-6">
             {perks.map((perk) => (

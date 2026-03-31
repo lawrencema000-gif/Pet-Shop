@@ -30,7 +30,7 @@ export async function generateMetadata({
   if (!post) return { title: "Post Not Found" };
 
   return {
-    title: `${post.title} | PETLIBRO Blog`,
+    title: `${post.title} | Pet and Angels Blog`,
     description: post.excerpt,
     keywords: post.tags,
     openGraph: {
@@ -70,7 +70,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
     },
     publisher: {
       "@type": "Organization",
-      name: "PETLIBRO",
+      name: "Pet and Angels",
       url: SITE_CONFIG.url,
     },
     mainEntityOfPage: {
@@ -193,7 +193,7 @@ export default function BlogPostPage({ params }: BlogPostPageProps) {
                 <p className="font-semibold text-foreground">{post.author}</p>
                 <p className="text-sm text-muted">{post.author_role}</p>
                 <p className="mt-1 text-sm text-muted">
-                  Contributing writer at PETLIBRO, sharing expert insights on pet
+                  Contributing writer at Pet and Angels, sharing expert insights on pet
                   health, nutrition, and modern pet care technology.
                 </p>
               </div>

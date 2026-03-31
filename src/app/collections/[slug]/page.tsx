@@ -22,9 +22,9 @@ export async function generateMetadata({
   params,
 }: CollectionPageProps): Promise<Metadata> {
   const collection = getCollectionBySlug(params.slug);
-  if (!collection) return { title: "Collection Not Found | PETLIBRO" };
+  if (!collection) return { title: "Collection Not Found | Pet and Angels" };
   return {
-    title: `${collection.title} | PETLIBRO`,
+    title: `${collection.title} | Pet and Angels`,
     description: collection.description,
   };
 }

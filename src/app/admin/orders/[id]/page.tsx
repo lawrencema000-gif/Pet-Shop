@@ -624,7 +624,7 @@ function InvoicePrint({
       {/* Header */}
       <div className="flex justify-between items-start mb-8">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">PETLIBRO</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Pet and Angels</h1>
           <p className="text-gray-500 text-xs mt-1">Smart Pet Care</p>
         </div>
         <div className="text-right">

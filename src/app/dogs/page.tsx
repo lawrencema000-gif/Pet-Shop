@@ -7,9 +7,9 @@ import ProductGrid from "@/components/product/ProductGrid";
 import SEOBlock from "@/components/category/SEOBlock";
 
 export const metadata: Metadata = {
-  title: "Dog Products | PETLIBRO",
+  title: "Dog Products | Pet and Angels",
   description:
-    "Shop smart products for dogs. Automatic feeders, water fountains, and more from PETLIBRO.",
+    "Shop smart products for dogs. Automatic feeders, water fountains, and more from Pet and Angels.",
 };
 
 export default async function DogsPage() {
