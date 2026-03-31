@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -8,13 +10,35 @@ const supabaseAdmin = createClient(
 
 const LANGUAGES = ["ja", "zh", "ko"] as const;
 
+async function verifyAdmin(): Promise<boolean> {
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    { cookies: { getAll() { return cookieStore.getAll(); }, setAll() {} } }
+  );
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+  const { data } = await supabaseAdmin
+    .from("admin_role_cache")
+    .select("role")
+    .eq("user_id", user.id)
+    .single();
+  return data?.role === "admin";
+}
+
 /**
  * POST /api/translate/bulk
- * Creates translation entries for all products and categories that don't have them yet.
- * The entries contain the English text as placeholder — admin can edit translations later.
+ * Creates translation entries for all products and categories.
+ * Requires admin authentication.
  */
 export async function POST() {
   try {
+    const isAdmin = await verifyAdmin();
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
     // Fetch all products
     const { data: products, error: pErr } = await supabaseAdmin
       .from("products")
