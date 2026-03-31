@@ -97,11 +97,27 @@ export default function SettingsPage() {
     setMessage({ type: "success", text: t('settingsPage.preferencesSaved') });
   };
 
-  const handleDeleteAccount = () => {
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeleteAccount = async () => {
     const confirmed = window.confirm(t('settingsPage.deleteConfirm'));
-    if (confirmed) {
-      alert(t('settingsPage.deleteContactSupport'));
+    if (!confirmed) return;
+    const doubleConfirm = window.confirm("This CANNOT be undone. Are you absolutely sure?");
+    if (!doubleConfirm) return;
+
+    setDeleting(true);
+    const res = await fetch("/api/account", { method: "DELETE" });
+    if (res.ok) {
+      await supabase.auth.signOut();
+      router.push("/");
+    } else {
+      alert("Failed to delete account. Please contact support.");
+      setDeleting(false);
     }
+  };
+
+  const handleExportData = () => {
+    window.open("/api/account", "_blank");
   };
 
   if (loading) {
@@ -239,6 +255,17 @@ export default function SettingsPage() {
         </form>
       </div>
 
+      {/* Data & Privacy */}
+      <div className="bg-background rounded-md border border-border p-6 mb-6">
+        <h2 className="text-lg font-semibold text-foreground mb-3">Data & Privacy</h2>
+        <p className="text-sm text-muted mb-4">
+          Download a copy of all your personal data (orders, reviews, addresses, etc.)
+        </p>
+        <Button variant="outline" size="sm" onClick={handleExportData}>
+          Export My Data
+        </Button>
+      </div>
+
       {/* Danger Zone */}
       <div className="bg-background rounded-md border border-sale/30 p-6">
         <div className="flex items-center gap-2 mb-3">
@@ -248,7 +275,7 @@ export default function SettingsPage() {
         <p className="text-sm text-muted mb-4">
           {t('settingsPage.dangerZoneDesc')}
         </p>
-        <Button variant="destructive" size="sm" onClick={handleDeleteAccount}>
+        <Button variant="destructive" size="sm" onClick={handleDeleteAccount} loading={deleting}>
           {t('settingsPage.deleteAccount')}
         </Button>
       </div>

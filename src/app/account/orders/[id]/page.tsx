@@ -12,6 +12,7 @@ import {
   Clock,
   HelpCircle,
   ExternalLink,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -282,6 +283,46 @@ export default function OrderDetailPage() {
             <span className="font-bold text-foreground text-base">{formatPrice(order.total)}</span>
           </div>
         </div>
+      </div>
+
+      {/* Download Invoice */}
+      <div className="mb-6">
+        <button
+          onClick={() => {
+            const w = window.open("", "_blank");
+            if (!w) return;
+            const addr = order.shipping_address;
+            w.document.write(`<!DOCTYPE html><html><head><title>Invoice #${order.id.slice(0, 8).toUpperCase()}</title>
+<style>body{font-family:system-ui,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#1a1a1a}
+h1{font-size:24px;margin-bottom:4px}table{width:100%;border-collapse:collapse;margin:20px 0}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid #e5e5e5;font-size:14px}
+th{font-weight:600;background:#f9f9f9}.total{font-weight:700;font-size:16px}
+.meta{color:#666;font-size:13px}.right{text-align:right}@media print{body{margin:0}}</style></head><body>
+<h1>Pet and Angels</h1>
+<p class="meta">Invoice #${order.id.slice(0, 8).toUpperCase()}</p>
+<p class="meta">Date: ${new Date(order.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+<p class="meta">Email: ${order.email}</p>
+${addr ? `<p class="meta">Ship to: ${addr.line1}${addr.line2 ? ", " + addr.line2 : ""}, ${addr.city}, ${addr.state} ${addr.zip}</p>` : ""}
+<table><thead><tr><th>Item</th><th>Qty</th><th class="right">Price</th></tr></thead><tbody>
+${items.map((i) => `<tr><td>${i.product_name}${i.variant_name ? " — " + i.variant_name : ""}</td><td>${i.quantity}</td><td class="right">$${i.total_price.toFixed(2)}</td></tr>`).join("")}
+</tbody></table>
+<table><tbody>
+<tr><td>Subtotal</td><td class="right">$${order.subtotal.toFixed(2)}</td></tr>
+${order.discount_amount > 0 ? `<tr><td>Discount${order.coupon_code ? " (" + order.coupon_code + ")" : ""}</td><td class="right">-$${order.discount_amount.toFixed(2)}</td></tr>` : ""}
+<tr><td>Shipping</td><td class="right">${order.shipping_amount === 0 ? "Free" : "$" + order.shipping_amount.toFixed(2)}</td></tr>
+<tr><td>Tax</td><td class="right">$${order.tax_amount.toFixed(2)}</td></tr>
+<tr class="total"><td>Total</td><td class="right">$${order.total.toFixed(2)}</td></tr>
+</tbody></table>
+<p class="meta" style="margin-top:40px">Thank you for shopping with Pet and Angels!</p>
+</body></html>`);
+            w.document.close();
+            w.print();
+          }}
+          className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg text-sm font-medium text-foreground hover:bg-surface transition-colors"
+        >
+          <FileText size={16} />
+          Download Invoice
+        </button>
       </div>
 
       {/* Shipping Address */}

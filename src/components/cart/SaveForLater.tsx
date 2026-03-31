@@ -6,12 +6,14 @@ import Link from "next/link";
 import { ShoppingCart, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCartStore } from "@/lib/store/cart";
+import { useAuth } from "@/lib/supabase/auth-provider";
+import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
 
 const STORAGE_KEY = "saved-for-later";
 
-function getSavedItems(): CartItem[] {
+function getLocalItems(): CartItem[] {
   if (typeof window === "undefined") return [];
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -21,42 +23,92 @@ function getSavedItems(): CartItem[] {
   }
 }
 
-function setSavedItems(items: CartItem[]) {
+function setLocalItems(items: CartItem[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 }
 
 export function SaveForLater() {
   const { t } = useTranslation();
+  const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const addItem = useCartStore((s) => s.addItem);
 
+  // Load items: from DB if logged in, localStorage if guest
   useEffect(() => {
-    setItems(getSavedItems());
-  }, []);
+    if (!user) {
+      setItems(getLocalItems());
+      return;
+    }
 
-  // Listen for storage changes from other components (e.g. cart store saveForLater)
+    supabase
+      .from("saved_for_later")
+      .select("product_id, variant_id, products(name, slug, base_price, images:product_images(url, is_primary)), variants:product_variants(id, name, price)")
+      .eq("user_id", user.id)
+      .then(({ data }) => {
+        if (!data) { setItems(getLocalItems()); return; }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const mapped: CartItem[] = data.map((row: any) => {
+          const product = row.products;
+          const variant = row.variants;
+          const primaryImage = product?.images?.find((i: { is_primary: boolean }) => i.is_primary) || product?.images?.[0];
+          return {
+            id: variant?.id ?? row.product_id,
+            product_id: row.product_id,
+            variant_id: row.variant_id ?? null,
+            name: product?.name ?? "",
+            variant_name: variant?.name ?? null,
+            price: variant?.price ?? product?.base_price ?? 0,
+            compare_at_price: null,
+            image_url: primaryImage?.url ?? "",
+            slug: product?.slug ?? "",
+            quantity: 1,
+          };
+        });
+        setItems(mapped);
+      });
+  }, [user]);
+
+  // Listen for localStorage changes from cart (guest mode)
   useEffect(() => {
-    const onStorage = () => setItems(getSavedItems());
+    const onStorage = () => { if (!user) setItems(getLocalItems()); };
     window.addEventListener("saved-for-later-updated", onStorage);
     return () => window.removeEventListener("saved-for-later-updated", onStorage);
-  }, []);
+  }, [user]);
 
   const moveToCart = useCallback(
-    (item: CartItem) => {
+    async (item: CartItem) => {
       const { quantity, ...rest } = item;
       addItem(rest, quantity);
-      const updated = getSavedItems().filter((i) => i.id !== item.id);
-      setSavedItems(updated);
+      // Remove from saved
+      if (user) {
+        await supabase
+          .from("saved_for_later")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("product_id", item.product_id);
+      }
+      const updated = items.filter((i) => i.id !== item.id);
       setItems(updated);
+      setLocalItems(updated);
     },
-    [addItem]
+    [addItem, user, items]
   );
 
-  const removeItem = useCallback((id: string) => {
-    const updated = getSavedItems().filter((i) => i.id !== id);
-    setSavedItems(updated);
-    setItems(updated);
-  }, []);
+  const removeItem = useCallback(
+    async (item: CartItem) => {
+      if (user) {
+        await supabase
+          .from("saved_for_later")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("product_id", item.product_id);
+      }
+      const updated = items.filter((i) => i.id !== item.id);
+      setItems(updated);
+      setLocalItems(updated);
+    },
+    [user, items]
+  );
 
   if (items.length === 0) return null;
 
@@ -101,7 +153,7 @@ export function SaveForLater() {
                 <ShoppingCart size={16} />
               </button>
               <button
-                onClick={() => removeItem(item.id)}
+                onClick={() => removeItem(item)}
                 className="p-1.5 text-muted hover:text-sale transition-colors"
                 aria-label={t("saveForLater.removeAria")}
                 title={t("saveForLater.remove")}

@@ -20,6 +20,7 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [tosAccepted, setTosAccepted] = useState(false);
   const { token: turnstileToken, handleVerify, handleExpire } = useTurnstile();
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -28,6 +29,11 @@ export default function SignUpPage() {
 
     if (password.length < 6) {
       setError(t("auth.passwordMinLength"));
+      return;
+    }
+
+    if (!tosAccepted) {
+      setError("Please accept the Terms of Service.");
       return;
     }
 
@@ -198,6 +204,21 @@ export default function SignUpPage() {
               </button>
               <p className="text-xs text-muted mt-1">{t("auth.mustBe6Chars")}</p>
             </div>
+
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={tosAccepted}
+                onChange={(e) => setTosAccepted(e.target.checked)}
+                className="mt-1 rounded border-border"
+              />
+              <span className="text-xs text-muted">
+                I agree to the{" "}
+                <Link href="/terms" className="text-foreground underline" target="_blank">Terms of Service</Link>
+                {" "}and{" "}
+                <Link href="/privacy" className="text-foreground underline" target="_blank">Privacy Policy</Link>
+              </span>
+            </label>
 
             <Turnstile onVerify={handleVerify} onExpire={handleExpire} />
 
