@@ -11,6 +11,7 @@ import {
   Truck,
   Clock,
   HelpCircle,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -172,6 +173,55 @@ export default function OrderDetailPage() {
       {isCancelled && (
         <div className="bg-sale/5 border border-sale/20 rounded-xl p-6 mb-6 text-center">
           <p className="text-sale font-medium">{t('orderDetail.cancelledMessage')}</p>
+        </div>
+      )}
+
+      {/* Tracking Info */}
+      {order.tracking_number && (
+        <div className="bg-background rounded-md border border-border p-6 mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Truck size={18} className="text-accent" />
+            <h2 className="text-lg font-semibold text-foreground">{t('trackOrder.shippingInfo')}</h2>
+          </div>
+          <div className="space-y-2 text-sm">
+            {order.carrier && (
+              <div className="flex justify-between">
+                <span className="text-muted">{t('trackOrder.carrier')}</span>
+                <span className="text-foreground font-medium">{order.carrier}</span>
+              </div>
+            )}
+            <div className="flex justify-between">
+              <span className="text-muted">{t('trackOrder.trackingNumber')}</span>
+              <span className="text-foreground font-mono text-xs">{order.tracking_number}</span>
+            </div>
+            {order.shipped_at && (
+              <div className="flex justify-between">
+                <span className="text-muted">{t('trackOrder.shippedDate')}</span>
+                <span className="text-foreground">
+                  {new Date(order.shipped_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                </span>
+              </div>
+            )}
+            {order.delivered_at && (
+              <div className="flex justify-between">
+                <span className="text-muted">{t('trackOrder.deliveredDate')}</span>
+                <span className="text-foreground">
+                  {new Date(order.delivered_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                </span>
+              </div>
+            )}
+            {order.tracking_url && (
+              <a
+                href={order.tracking_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 mt-2 bg-accent text-white text-sm font-medium rounded hover:bg-accent/90 transition-colors"
+              >
+                {t('trackOrder.trackPackage')}
+                <ExternalLink size={14} />
+              </a>
+            )}
+          </div>
         </div>
       )}
 

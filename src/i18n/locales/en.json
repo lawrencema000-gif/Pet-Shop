@@ -354,7 +354,13 @@
     "orderDate": "Order Date",
     "emailLabel": "Email",
     "lastUpdated": "Last updated",
-    "trackingTip": "You can also find tracking information in the confirmation email sent when your order shipped. Check your inbox or spam folder for an email from orders@petlibro.com."
+    "shippingInfo": "Shipping & Tracking",
+    "carrier": "Carrier",
+    "trackingNumber": "Tracking Number",
+    "shippedDate": "Shipped",
+    "deliveredDate": "Delivered",
+    "trackPackage": "Track Package",
+    "trackingTip": "You can also find tracking information in the confirmation email sent when your order shipped."
   },
   "supportPage": {
     "metaTitle": "Support | Pet Shop",

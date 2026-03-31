@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { Search, Package, CheckCircle, Clock, Loader2 } from "lucide-react";
+import { Search, Package, CheckCircle, Clock, Loader2, Truck, ExternalLink } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { formatPrice } from "@/lib/utils";
 
@@ -15,6 +15,11 @@ interface OrderResult {
   email: string;
   created_at: string;
   shipping_address: Record<string, string> | null;
+  tracking_number: string | null;
+  carrier: string | null;
+  tracking_url: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
 }
 
 export default function TrackOrderPage() {
@@ -33,7 +38,7 @@ export default function TrackOrderPage() {
 
     const { data } = await supabase
       .from("orders")
-      .select("id, status, total, email, created_at, shipping_address")
+      .select("id, status, total, email, created_at, shipping_address, tracking_number, carrier, tracking_url, shipped_at, delivered_at")
       .eq("email", email.toLowerCase())
       .or(`id.eq.${orderNumber}`)
       .limit(1)
@@ -169,6 +174,54 @@ export default function TrackOrderPage() {
                   <span className="text-muted">{t('trackOrder.emailLabel')}</span>
                   <span className="text-foreground">{result.email}</span>
                 </div>
+                {/* Shipping & Tracking */}
+                {result.tracking_number && (
+                  <div className="border-t border-border pt-4 mt-4 space-y-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Truck size={16} className="text-accent" />
+                      <span className="text-sm font-semibold text-foreground">{t('trackOrder.shippingInfo')}</span>
+                    </div>
+                    {result.carrier && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted">{t('trackOrder.carrier')}</span>
+                        <span className="text-foreground font-medium">{result.carrier}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted">{t('trackOrder.trackingNumber')}</span>
+                      <span className="text-foreground font-mono text-xs">{result.tracking_number}</span>
+                    </div>
+                    {result.shipped_at && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted">{t('trackOrder.shippedDate')}</span>
+                        <span className="text-foreground">
+                          {new Date(result.shipped_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                        </span>
+                      </div>
+                    )}
+                    {result.delivered_at && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted">{t('trackOrder.deliveredDate')}</span>
+                        <span className="text-foreground">
+                          {new Date(result.delivered_at).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
+                        </span>
+                      </div>
+                    )}
+                    {result.tracking_url && (
+                      <a
+                        href={result.tracking_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-4 py-2 mt-2 bg-accent text-white text-sm font-medium rounded hover:bg-accent/90 transition-colors"
+                      >
+                        {t('trackOrder.trackPackage')}
+                        <ExternalLink size={14} />
+                      </a>
+                    )}
+                  </div>
+                )}
+
+                {/* Status indicator */}
                 <div className="border-t border-border pt-4 mt-4">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center shrink-0">

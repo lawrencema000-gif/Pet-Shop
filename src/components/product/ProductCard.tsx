@@ -2,9 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Heart } from "lucide-react";
 import { formatPrice, getDiscountPercentage } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/lib/supabase/auth-provider";
+import { useWishlist } from "@/hooks/useWishlist";
 import type { Product } from "@/types/product";
 import { useTranslatedProduct } from "@/hooks/useTranslatedProduct";
 
@@ -15,6 +18,8 @@ interface ProductCardProps {
 export default function ProductCard({ product: rawProduct }: ProductCardProps) {
   const product = useTranslatedProduct(rawProduct) ?? rawProduct;
   const { t } = useTranslation();
+  const { user } = useAuth();
+  const { isWishlisted, toggle } = useWishlist();
   const addItem = useCartStore((s) => s.addItem);
 
   const primaryImage = product.images?.find((img) => img.is_primary) || product.images?.[0];
@@ -58,11 +63,25 @@ export default function ProductCard({ product: rawProduct }: ProductCardProps) {
             </div>
           )}
 
-          {/* Discount badge only */}
+          {/* Discount badge */}
           {discount > 0 && (
             <span className="absolute top-3 left-3 bg-sale text-white text-xs font-medium px-2 py-0.5">
               -{discount}%
             </span>
+          )}
+
+          {/* Wishlist heart */}
+          {user && (
+            <button
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(product.id); }}
+              className="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center hover:bg-white transition-colors z-10"
+              aria-label={isWishlisted(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+            >
+              <Heart
+                size={16}
+                className={isWishlisted(product.id) ? "fill-sale text-sale" : "text-muted"}
+              />
+            </button>
           )}
 
           {/* Add to Cart on hover */}
