@@ -1037,11 +1037,22 @@
   },
   "reviewSection": {
     "stars": "{{count}}점",
-    "reviewCount_one": "리뷰 {{count}}건",
-    "reviewCount_other": "리뷰 {{count}}건",
+    "reviewCount_one": "리뷰 {{count}}개",
+    "reviewCount_other": "리뷰 {{count}}개",
     "writeReview": "리뷰 작성",
-    "verifiedPurchase": "인증된 구매",
-    "noReviews": "아직 리뷰가 없습니다. 첫 번째로 경험을 공유해 주세요!"
+    "loginToReview": "로그인 후 리뷰 작성",
+    "alreadyReviewed": "이미 이 상품에 리뷰를 작성하셨습니다.",
+    "yourRating": "평점",
+    "reviewTitle": "리뷰 제목 (선택사항)",
+    "titlePlaceholder": "경험을 요약해 주세요",
+    "reviewBody": "리뷰 내용",
+    "bodyPlaceholder": "이 제품에 대해 좋았던 점이나 아쉬웠던 점을 알려주세요...",
+    "submitReview": "리뷰 제출",
+    "submitSuccess": "감사합니다! 리뷰가 제출되었습니다.",
+    "errorRating": "평점을 선택해 주세요.",
+    "errorBody": "리뷰 내용을 입력해 주세요.",
+    "verifiedPurchase": "구매 인증",
+    "noReviews": "아직 리뷰가 없습니다. 첫 번째 리뷰를 작성해 보세요!"
   },
   "addToCart": {
     "decreaseQuantity": "수량 줄이기",
