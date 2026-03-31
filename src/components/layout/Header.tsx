@@ -57,7 +57,7 @@ export function Header() {
                 className="flex items-center gap-2"
               >
                 <Image
-                  src="/logo.png"
+                  src="/logo.jpg"
                   alt="Pet and Angels"
                   width={36}
                   height={36}

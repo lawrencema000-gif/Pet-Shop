@@ -84,7 +84,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" className="inline-flex items-center gap-2 mb-4">
-              <Image src="/logo.png" alt="Pet and Angels" width={32} height={32} className="rounded-full" />
+              <Image src="/logo.jpg" alt="Pet and Angels" width={32} height={32} className="rounded-full" />
               <span className="text-lg font-display font-bold tracking-tight text-foreground">
                 {SITE_CONFIG.name}
               </span>
