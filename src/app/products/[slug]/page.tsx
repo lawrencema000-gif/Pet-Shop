@@ -12,6 +12,7 @@ import TrackView from "@/components/product/TrackView";
 import HowItWorks from "@/components/product/HowItWorks";
 import BenefitsSection from "@/components/product/BenefitsSection";
 import ProductFAQ from "@/components/product/ProductFAQ";
+import ProductQA from "@/components/product/ProductQA";
 import BreadcrumbSchema from "@/components/seo/BreadcrumbSchema";
 import type { Review } from "@/types/product";
 
@@ -243,6 +244,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
         {/* Product FAQ */}
         <ProductFAQ productName={product.name} />
+
+        {/* Questions & Answers */}
+        <ProductQA productId={product.id} />
 
         {/* Why Choose This Product */}
         <WhyChooseSection />

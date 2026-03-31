@@ -11,6 +11,7 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { MegaMenu } from "./MegaMenu";
 import { MobileNav } from "./MobileNav";
 import { SearchModal } from "./SearchModal";
+import { NotificationBell } from "@/components/NotificationBell";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -116,6 +117,7 @@ export function Header() {
               >
                 <Search size={20} />
               </button>
+              <NotificationBell />
               <Link
                 href="/auth/login"
                 className="p-2 hover:bg-surface-light transition-colors hidden sm:flex rounded"
