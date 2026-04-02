@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  Shield, CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Send,
+  Shield, CheckCircle, XCircle, Clock, ChevronDown, ChevronUp,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -21,13 +21,7 @@ interface QuestionRow {
   user_name: string | null;
 }
 
-interface AnswerRow {
-  id: string;
-  body: string;
-  is_admin_answer: boolean;
-  created_at: string;
-  user_name: string | null;
-}
+
 
 const PAGE_SIZE = 20;
 
@@ -43,12 +37,6 @@ export default function AdminQAPage() {
 
   // Expanded row state
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<AnswerRow[]>([]);
-  const [answersLoading, setAnswersLoading] = useState(false);
-
-  // Admin answer state
-  const [replyBody, setReplyBody] = useState("");
-  const [replying, setReplying] = useState(false);
 
   // Confirm dialog
   const [confirmAction, setConfirmAction] = useState<{
@@ -93,36 +81,8 @@ export default function AdminQAPage() {
     fetchQuestions();
   }, [fetchQuestions]);
 
-  async function fetchAnswers(questionId: string) {
-    setAnswersLoading(true);
-    const { data } = await supabase
-      .from("question_answers")
-      .select("id, body, is_admin_answer, created_at, user:profiles(full_name)")
-      .eq("question_id", questionId)
-      .order("created_at", { ascending: true });
-
-    setAnswers(
-      (data ?? []).map((r: Record<string, unknown>) => ({
-        id: r.id as string,
-        body: r.body as string,
-        is_admin_answer: r.is_admin_answer as boolean,
-        created_at: r.created_at as string,
-        user_name: (r.user as Record<string, string>)?.full_name ?? null,
-      }))
-    );
-    setAnswersLoading(false);
-  }
-
   function toggleExpand(questionId: string) {
-    if (expandedId === questionId) {
-      setExpandedId(null);
-      setAnswers([]);
-      setReplyBody("");
-    } else {
-      setExpandedId(questionId);
-      fetchAnswers(questionId);
-      setReplyBody("");
-    }
+    setExpandedId(expandedId === questionId ? null : questionId);
   }
 
   async function handleStatusChange() {
@@ -145,53 +105,7 @@ export default function AdminQAPage() {
     fetchQuestions();
   }
 
-  async function handlePostAnswer(questionId: string) {
-    if (!replyBody.trim()) return;
-    setReplying(true);
 
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-    const userId = session?.user?.id;
-
-    const { error } = await supabase.from("question_answers").insert({
-      question_id: questionId,
-      user_id: userId,
-      body: replyBody.trim(),
-      is_admin_answer: true,
-    });
-
-    if (error) {
-      console.error("Post answer failed:", error.message);
-      setReplying(false);
-      return;
-    }
-
-    // Increment answer_count
-    await supabase.rpc("increment_answer_count", { qid: questionId }).catch(() => {
-      // Fallback: manual increment
-      supabase
-        .from("questions")
-        .select("answer_count")
-        .eq("id", questionId)
-        .single()
-        .then(({ data }) => {
-          if (data) {
-            supabase
-              .from("questions")
-              .update({ answer_count: (data.answer_count ?? 0) + 1 })
-              .eq("id", questionId)
-              .then(() => {});
-          }
-        });
-    });
-
-    await logAdminAction("post_admin_answer", "question_answer", questionId);
-    setReplyBody("");
-    setReplying(false);
-    fetchAnswers(questionId);
-    fetchQuestions();
-  }
 
   const statusBadge = (status: string) => {
     switch (status) {
@@ -364,92 +278,6 @@ export default function AdminQAPage() {
         total={total}
         onPageChange={setPage}
         emptyTitle={t("admin.qa.noQuestionsFound", "No questions found")}
-        renderExpandedRow={
-          expandedId
-            ? (row) => {
-                if (row.id !== expandedId) return null;
-                return (
-                  <div className="px-6 py-4 bg-surface/30 border-t border-border">
-                    {/* Full question body */}
-                    <div className="mb-4">
-                      <p className="text-xs font-semibold text-muted uppercase mb-1">
-                        {t("admin.qa.fullQuestion", "Full Question")}
-                      </p>
-                      <p className="text-sm text-foreground">{row.body}</p>
-                    </div>
-
-                    {/* Answers list */}
-                    <div className="mb-4">
-                      <p className="text-xs font-semibold text-muted uppercase mb-2">
-                        {t("admin.qa.answersSection", "Answers")} ({answers.length})
-                      </p>
-                      {answersLoading ? (
-                        <p className="text-xs text-muted">Loading...</p>
-                      ) : answers.length === 0 ? (
-                        <p className="text-xs text-muted italic">
-                          {t("admin.qa.noAnswersYet", "No answers yet")}
-                        </p>
-                      ) : (
-                        <div className="space-y-3">
-                          {answers.map((a) => (
-                            <div
-                              key={a.id}
-                              className={`p-3 rounded-lg border ${
-                                a.is_admin_answer
-                                  ? "border-accent/30 bg-accent/5"
-                                  : "border-border bg-white"
-                              }`}
-                            >
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="text-xs font-medium text-foreground">
-                                  {a.user_name ?? "Anonymous"}
-                                </span>
-                                {a.is_admin_answer && (
-                                  <span className="text-[10px] font-semibold text-accent bg-accent/10 px-1.5 py-0.5 rounded">
-                                    ADMIN
-                                  </span>
-                                )}
-                                <span className="text-[10px] text-muted">
-                                  {new Date(a.created_at).toLocaleDateString()}
-                                </span>
-                              </div>
-                              <p className="text-sm text-foreground">{a.body}</p>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Admin reply */}
-                    <div className="flex items-start gap-3">
-                      <div className="flex-1">
-                        <textarea
-                          value={replyBody}
-                          onChange={(e) => setReplyBody(e.target.value)}
-                          rows={2}
-                          className="w-full px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y"
-                          placeholder={t(
-                            "admin.qa.replyPlaceholder",
-                            "Write an admin answer..."
-                          )}
-                        />
-                      </div>
-                      <button
-                        onClick={() => handlePostAnswer(row.id)}
-                        disabled={!replyBody.trim() || replying}
-                        className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent-dark disabled:opacity-60 shrink-0"
-                      >
-                        <Send size={14} />
-                        {replying
-                          ? t("admin.qa.posting", "Posting...")
-                          : t("admin.qa.postAnswer", "Post Answer")}
-                      </button>
-                    </div>
-                  </div>
-                );
-              }
-            : undefined
-        }
       />
 
       <ConfirmDialog

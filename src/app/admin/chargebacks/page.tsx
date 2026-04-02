@@ -233,7 +233,7 @@ export default function AdminChargebacksPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-foreground">
-                        {formatPrice(cb.amount, cb.currency)}
+                        {formatPrice(cb.amount)}
                       </span>
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${STATUS_COLOR[cb.status]}`}>
                         {cb.status.replace("_", " ")}

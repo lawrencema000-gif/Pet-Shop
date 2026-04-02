@@ -415,24 +415,6 @@ export default function AdminEmailCampaignsPage() {
               "admin.emailCampaigns.noCampaignsFound",
               "No campaigns yet"
             )}
-            renderExpandedRow={
-              previewId
-                ? (row) => {
-                    if (row.id !== previewId || !row.body_html) return null;
-                    return (
-                      <div className="px-6 py-4 bg-surface/30 border-t border-border">
-                        <p className="text-xs font-semibold text-muted uppercase mb-2">
-                          {t("admin.emailCampaigns.htmlPreview", "HTML Preview")}
-                        </p>
-                        <div
-                          className="bg-white border border-border rounded-lg p-6 max-w-2xl text-sm"
-                          dangerouslySetInnerHTML={{ __html: row.body_html }}
-                        />
-                      </div>
-                    );
-                  }
-                : undefined
-            }
           />
         </>
       )}
