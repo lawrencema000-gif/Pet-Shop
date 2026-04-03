@@ -6,7 +6,7 @@ export const MAX_ITEM_QUANTITY = 10;
 export const SITE_CONFIG = {
   name: "Pet and Angels",
   description: "Smart pet care products for modern pet parents",
-  url: "https://pet-shop-lac-ten.vercel.app",
+  url: "https://www.petandangel.com",
   freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
 };
 

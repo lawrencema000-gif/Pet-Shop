@@ -143,10 +143,10 @@ export default function AccessibilityPage() {
                 <li>
                   Email:{" "}
                   <a
-                    href="mailto:accessibility@petlibro.com"
+                    href="mailto:accessibility@petandangel.com"
                     className="text-foreground underline underline-offset-2 hover:text-accent"
                   >
-                    accessibility@petlibro.com
+                    accessibility@petandangel.com
                   </a>
                 </li>
                 <li>Phone: (888) 555-PETS</li>

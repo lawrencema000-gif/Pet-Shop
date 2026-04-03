@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 
-const BASE_URL = "https://pet-shop-lac-ten.vercel.app";
+const BASE_URL = "https://www.petandangel.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createServerSupabaseClient();

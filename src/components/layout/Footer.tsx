@@ -54,10 +54,10 @@ export function Footer() {
   const { t } = useTranslation();
 
   const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com/petlibro", label: t('footer.facebook') },
-    { icon: Instagram, href: "https://instagram.com/petlibro", label: t('footer.instagram') },
-    { icon: Twitter, href: "https://twitter.com/petlibro", label: t('footer.twitter') },
-    { icon: Youtube, href: "https://youtube.com/@petlibro", label: t('footer.youtube') },
+    { icon: Facebook, href: "https://facebook.com/petandangels", label: t('footer.facebook') },
+    { icon: Instagram, href: "https://instagram.com/petandangels", label: t('footer.instagram') },
+    { icon: Twitter, href: "https://twitter.com/petandangels", label: t('footer.twitter') },
+    { icon: Youtube, href: "https://youtube.com/@petandangels", label: t('footer.youtube') },
   ];
 
   const trustBadges = [

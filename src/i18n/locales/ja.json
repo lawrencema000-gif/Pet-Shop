@@ -221,7 +221,7 @@
     "heading": "お問い合わせ",
     "description": "製品についてのご質問やご注文のサポートが必要ですか？お気軽にお問い合わせください。通常24時間以内にご返信いたします。",
     "emailUs": "メールでのお問い合わせ",
-    "emailAddress": "support@petlibro.com",
+    "emailAddress": "support@petandangel.com",
     "callUs": "お電話でのお問い合わせ",
     "phoneNumber": "(888) 555-PETS",
     "businessHours": "営業時間",
@@ -348,7 +348,7 @@
     "orderDate": "注文日",
     "emailLabel": "メールアドレス",
     "lastUpdated": "最終更新",
-    "trackingTip": "注文の発送時に送信された確認メールにも追跡情報が記載されています。orders@petlibro.comからのメールを受信トレイまたは迷惑メールフォルダでご確認ください。"
+    "trackingTip": "注文の発送時に送信された確認メールにも追跡情報が記載されています。orders@petandangel.comからのメールを受信トレイまたは迷惑メールフォルダでご確認ください。"
   },
   "supportPage": {
     "metaTitle": "サポート | Pet Shop",
@@ -711,7 +711,7 @@
     "condition3Desc": " — ペットの毛、傷、水濡れ、使用跡のない状態であること。",
     "howItWorks": "返品の流れ",
     "step1Title": "返品の申請",
-    "step1Desc": "お届けから30日以内にsupport@petlibro.comにご連絡いただくか、このページからお手続きください。注文番号と返品理由をお知らせください。",
+    "step1Desc": "お届けから30日以内にsupport@petandangel.comにご連絡いただくか、このページからお手続きください。注文番号と返品理由をお知らせください。",
     "step2Title": "返送ラベルの受け取り",
     "step2Desc": "1営業日以内に着払いの返送用ラベルをメールでお送りします。印刷してパッケージに貼り付けてください。",
     "step3Title": "商品の返送",
@@ -777,7 +777,7 @@
     "claim1Title": "情報のご準備",
     "claim1Desc": "注文番号、製品のシリアル番号、不具合の簡単な説明をご用意ください。不具合の写真や短い動画があるとスムーズです。",
     "claim2Title": "保証チームへのご連絡",
-    "claim2Desc": "warranty@petlibro.comにメールをお送りいただくか、お問い合わせページからご連絡ください。通常1営業日以内にご返信いたします。",
+    "claim2Desc": "warranty@petandangel.comにメールをお送りいただくか、お問い合わせページからご連絡ください。通常1営業日以内にご返信いたします。",
     "claim3Title": "診断・解決",
     "claim3Desc": "サポートチームがトラブルシューティングの手順をご案内する場合があります。保証対象の不具合と確認された場合、無償で交換品の手配または修理を行います。",
     "claim4Title": "交換品のお届け",
@@ -1256,7 +1256,7 @@
         "invoiceTotal": "合計",
         "invoiceTracking": "追跡：{{number}}（{{carrier}}）",
         "invoiceThankYou": "Pet and Angelsでのお買い物ありがとうございます！",
-        "invoiceContact": "ご質問はsupport@petlibro.comまでお問い合わせください"
+        "invoiceContact": "ご質問はsupport@petandangel.comまでお問い合わせください"
       }
     },
     "returns": {

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { X } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 
-const DISMISS_KEY = "petlibro_exit_popup_dismissed";
+const DISMISS_KEY = "petandangel_exit_popup_dismissed";
 const DISMISS_DAYS = 14;
 
 export default function ExitIntentPopup() {

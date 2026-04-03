@@ -154,7 +154,7 @@ export default function CareersPage() {
                     </p>
                   </div>
                   <Link
-                    href={`mailto:careers@petlibro.com?subject=Application: ${position.title}`}
+                    href={`mailto:careers@petandangel.com?subject=Application: ${position.title}`}
                     className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg text-sm font-semibold hover:bg-accent-dark transition-colors shrink-0 self-start"
                   >
                     Apply Now
@@ -177,11 +177,11 @@ export default function CareersPage() {
               and tell us why you&apos;d be a great addition to the pack.
             </p>
             <a
-              href="mailto:careers@petlibro.com"
+              href="mailto:careers@petandangel.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-accent rounded-lg font-medium hover:bg-white/90 transition-colors"
             >
               <Mail size={16} />
-              careers@petlibro.com
+              careers@petandangel.com
             </a>
           </div>
         </div>

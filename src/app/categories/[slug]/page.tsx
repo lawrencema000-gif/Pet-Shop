@@ -134,8 +134,8 @@ export default async function CategoryPage({
     <>
     <BreadcrumbSchema
       items={[
-        { name: "Home", url: "https://pet-shop-lac-ten.vercel.app" },
-        { name: category.name, url: `https://pet-shop-lac-ten.vercel.app/categories/${category.slug}` },
+        { name: "Home", url: "https://www.petandangel.com" },
+        { name: category.name, url: `https://www.petandangel.com/categories/${category.slug}` },
       ]}
     />
     <div className="max-w-7xl mx-auto px-4 py-8">

@@ -170,18 +170,18 @@ export default async function ProductPage({ params }: ProductPageProps) {
       />
       <BreadcrumbSchema
         items={[
-          { name: "Home", url: "https://pet-shop-lac-ten.vercel.app" },
+          { name: "Home", url: "https://www.petandangel.com" },
           ...(product.category
             ? [
                 {
                   name: product.category.name,
-                  url: `https://pet-shop-lac-ten.vercel.app/categories/${product.category.slug}`,
+                  url: `https://www.petandangel.com/categories/${product.category.slug}`,
                 },
               ]
             : []),
           {
             name: product.name,
-            url: `https://pet-shop-lac-ten.vercel.app/products/${product.slug}`,
+            url: `https://www.petandangel.com/products/${product.slug}`,
           },
         ]}
       />

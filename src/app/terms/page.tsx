@@ -132,10 +132,10 @@ export default function TermsPage() {
               <p>
                 {t('terms.section14P1')}{" "}
                 <a
-                  href="mailto:legal@petlibro.com"
+                  href="mailto:legal@petandangel.com"
                   className="text-foreground underline underline-offset-2 hover:text-accent"
                 >
-                  legal@petlibro.com
+                  legal@petandangel.com
                 </a>{" "}
                 {t('terms.section14OrVisit')}{" "}
                 <Link

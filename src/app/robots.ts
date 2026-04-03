@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/", "/auth/callback", "/account/", "/cart", "/checkout"],
       },
     ],
-    sitemap: "https://pet-shop-lac-ten.vercel.app/sitemap.xml",
+    sitemap: "https://www.petandangel.com/sitemap.xml",
   };
 }

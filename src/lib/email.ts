@@ -13,7 +13,7 @@ function getResend() {
   return _resend;
 }
 
-const FROM = "Pet and Angels <onboarding@resend.dev>"; // Change to your domain once verified
+const FROM = process.env.EMAIL_FROM || "Pet and Angels <onboarding@resend.dev>";
 
 interface OrderEmailData {
   orderId: string;
@@ -64,9 +64,9 @@ function baseTemplate(content: string) {
     <div style="text-align:center;padding:24px 0;color:#8b8680;font-size:12px">
       <p style="margin:0">Thank you for choosing Pet and Angels</p>
       <p style="margin:8px 0 0">
-        <a href="https://pet-shop-lac-ten.vercel.app" style="color:#2d6a4f;text-decoration:none">Visit our store</a>
+        <a href="https://www.petandangel.com" style="color:#2d6a4f;text-decoration:none">Visit our store</a>
         &nbsp;&middot;&nbsp;
-        <a href="https://pet-shop-lac-ten.vercel.app/support" style="color:#2d6a4f;text-decoration:none">Get help</a>
+        <a href="https://www.petandangel.com/support" style="color:#2d6a4f;text-decoration:none">Get help</a>
       </p>
     </div>
   </div>
@@ -144,7 +144,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
     ${addressBlock}
 
     <div style="text-align:center;margin-top:24px">
-      <a href="https://pet-shop-lac-ten.vercel.app/account/orders/${data.orderId}" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">View Order</a>
+      <a href="https://www.petandangel.com/account/orders/${data.orderId}" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">View Order</a>
     </div>
   `);
 
@@ -184,7 +184,7 @@ export async function sendOrderShipped(data: ShippedEmailData) {
     ${trackingBlock}
 
     <div style="text-align:center;margin-top:24px">
-      <a href="https://pet-shop-lac-ten.vercel.app/account/orders/${data.orderId}" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">View Order</a>
+      <a href="https://www.petandangel.com/account/orders/${data.orderId}" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">View Order</a>
     </div>
   `);
 
@@ -210,7 +210,7 @@ export async function sendNewsletterEmail(data: {
       ${data.body}
     </div>
     <div style="text-align:center;margin-top:32px">
-      <a href="https://pet-shop-lac-ten.vercel.app" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">Shop Now</a>
+      <a href="https://www.petandangel.com" style="display:inline-block;background:#2d6a4f;color:#ffffff;padding:12px 32px;border-radius:8px;text-decoration:none;font-size:14px;font-weight:600">Shop Now</a>
     </div>
     <p style="margin-top:32px;font-size:11px;color:#8b8680;text-align:center">
       You're receiving this because you subscribed to the Pet and Angels newsletter.

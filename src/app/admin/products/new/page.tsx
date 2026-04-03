@@ -262,7 +262,7 @@ export default function NewProductPage() {
           <div className="bg-surface/50 rounded-md p-4">
             <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.products.new.googlePreview")}</p>
             <p className="text-[#1a0dab] text-base font-medium truncate">{form.meta_title || form.name || t("admin.products.new.productNameFallback")}</p>
-            <p className="text-[#006621] text-xs truncate">petlibro.com/products/{form.slug || t("admin.products.new.productSlugFallback")}</p>
+            <p className="text-[#006621] text-xs truncate">petandangel.com/products/{form.slug || t("admin.products.new.productSlugFallback")}</p>
             <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{form.meta_description || form.description || t("admin.products.new.noDescription")}</p>
           </div>
         </div>

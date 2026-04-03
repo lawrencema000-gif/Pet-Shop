@@ -3,11 +3,11 @@ export default function WebsiteSchema() {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "Pet and Angels",
-    url: "https://pet-shop-lac-ten.vercel.app",
+    url: "https://www.petandangel.com",
     potentialAction: {
       "@type": "SearchAction",
       target:
-        "https://pet-shop-lac-ten.vercel.app/search?q={search_term_string}",
+        "https://www.petandangel.com/search?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
   };

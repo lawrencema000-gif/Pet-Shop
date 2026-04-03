@@ -18,26 +18,36 @@ interface TurnstileProps {
   onExpire?: () => void;
 }
 
-const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "1x00000000000000000000AA"; // Cloudflare test key (always passes)
+const SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
 
 export function Turnstile({ onVerify, onExpire }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const enabled = !!SITE_KEY;
 
   const renderWidget = useCallback(() => {
-    if (!containerRef.current || !window.turnstile || widgetIdRef.current) return;
+    if (!enabled || !containerRef.current || !window.turnstile || widgetIdRef.current) return;
     widgetIdRef.current = window.turnstile.render(containerRef.current, {
-      sitekey: SITE_KEY,
+      sitekey: SITE_KEY!,
       callback: onVerify,
       "expired-callback": onExpire,
       theme: "light",
       size: "normal",
     });
-  }, [onVerify, onExpire]);
+  }, [onVerify, onExpire, enabled]);
 
+  // Auto-verify if Turnstile not configured
   useEffect(() => {
-    // Load Turnstile script if not already loaded
+    if (!enabled) {
+      onVerify("no-turnstile-configured");
+    }
+  }, [enabled, onVerify]);
+
+  // Load Turnstile script
+  useEffect(() => {
+    if (!enabled) return;
+
     if (window.turnstile) {
       setLoaded(true);
       return;
@@ -62,11 +72,14 @@ export function Turnstile({ onVerify, onExpire }: TurnstileProps) {
         widgetIdRef.current = null;
       }
     };
-  }, []);
+  }, [enabled]);
 
+  // Render widget when loaded
   useEffect(() => {
     if (loaded) renderWidget();
   }, [loaded, renderWidget]);
+
+  if (!enabled) return null;
 
   return <div ref={containerRef} className="my-3" />;
 }

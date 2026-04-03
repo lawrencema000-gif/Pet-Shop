@@ -48,7 +48,7 @@ export const faqSections: FAQSectionData[] = [
       {
         question: "How do I start a return?",
         answer:
-          "Visit our Returns page or contact our support team at support@petlibro.com. We'll provide a prepaid return label and process your refund within 5-7 business days of receiving the returned item.",
+          "Visit our Returns page or contact our support team at support@petandangel.com. We'll provide a prepaid return label and process your refund within 5-7 business days of receiving the returned item.",
       },
       {
         question: "Can I exchange an item instead of returning it?",
@@ -100,7 +100,7 @@ export const faqSections: FAQSectionData[] = [
       {
         question: "Can I modify or cancel my order?",
         answer:
-          "Orders can be modified or cancelled within 2 hours of placement. After that, your order enters our fulfillment process. Contact us immediately at support@petlibro.com and we'll do our best to accommodate changes.",
+          "Orders can be modified or cancelled within 2 hours of placement. After that, your order enters our fulfillment process. Contact us immediately at support@petandangel.com and we'll do our best to accommodate changes.",
       },
       {
         question: "Do you offer discounts for multiple items?",
@@ -121,7 +121,7 @@ export const faqSections: FAQSectionData[] = [
       {
         question: "How do I contact customer support?",
         answer:
-          "You can reach us via our Contact page, email at support@petlibro.com, or call us at (888) 555-PETS during business hours (Mon-Fri 9 AM - 6 PM EST, Sat 10 AM - 4 PM EST).",
+          "You can reach us via our Contact page, email at support@petandangel.com, or call us at (888) 555-PETS during business hours (Mon-Fri 9 AM - 6 PM EST, Sat 10 AM - 4 PM EST).",
       },
       {
         question: "Is my personal information secure?",

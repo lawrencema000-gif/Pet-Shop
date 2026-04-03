@@ -396,7 +396,7 @@ export default function EditProductPage() {
             <div className="bg-surface/50 rounded-md p-4">
               <p className="text-xs font-semibold text-muted uppercase mb-2">{t("admin.products.editor.googlePreview")}</p>
               <p className="text-[#1a0dab] text-base font-medium truncate">{product.meta_title || product.name}</p>
-              <p className="text-[#006621] text-xs truncate">petlibro.com/products/{product.slug}</p>
+              <p className="text-[#006621] text-xs truncate">petandangel.com/products/{product.slug}</p>
               <p className="text-xs text-[#545454] line-clamp-2 mt-0.5">{product.meta_description || product.description || t("admin.products.editor.noDescription")}</p>
             </div>
           </div>

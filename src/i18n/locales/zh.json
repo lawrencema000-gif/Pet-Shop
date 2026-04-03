@@ -221,7 +221,7 @@
     "heading": "联系我们",
     "description": "对我们的产品有疑问或需要订单帮助？我们随时为您服务，通常在 24 小时内回复。",
     "emailUs": "发送邮件",
-    "emailAddress": "support@petlibro.com",
+    "emailAddress": "support@petandangel.com",
     "callUs": "致电我们",
     "phoneNumber": "(888) 555-PETS",
     "businessHours": "营业时间",
@@ -348,7 +348,7 @@
     "orderDate": "下单日期",
     "emailLabel": "邮箱",
     "lastUpdated": "最后更新",
-    "trackingTip": "您也可以在订单发货时收到的确认邮件中找到物流追踪信息。请查看收件箱或垃圾邮件文件夹中来自 orders@petlibro.com 的邮件。"
+    "trackingTip": "您也可以在订单发货时收到的确认邮件中找到物流追踪信息。请查看收件箱或垃圾邮件文件夹中来自 orders@petandangel.com 的邮件。"
   },
   "supportPage": {
     "metaTitle": "客服支持 | Pet Shop",
@@ -711,7 +711,7 @@
     "condition3Desc": "——商品不得有宠物毛发、划痕、水渍或使用痕迹。",
     "howItWorks": "退货流程",
     "step1Title": "发起退货",
-    "step1Desc": "请在收货后 30 天内发送邮件至 support@petlibro.com 或访问本页面。请提供您的订单号和退货原因。",
+    "step1Desc": "请在收货后 30 天内发送邮件至 support@petandangel.com 或访问本页面。请提供您的订单号和退货原因。",
     "step2Title": "获取退货标签",
     "step2Desc": "我们将在 1 个工作日内通过邮件发送预付退货运单。请打印并贴在包裹上。",
     "step3Title": "寄回商品",
@@ -777,7 +777,7 @@
     "claim1Title": "准备您的信息",
     "claim1Desc": "请准备好您的订单号、产品序列号和问题简述。缺陷的照片或简短视频将有助于处理。",
     "claim2Title": "联系我们的保修团队",
-    "claim2Desc": "发送邮件至 warranty@petlibro.com 或通过我们的联系页面与我们取得联系。我们的团队通常在 1 个工作日内回复。",
+    "claim2Desc": "发送邮件至 warranty@petandangel.com 或通过我们的联系页面与我们取得联系。我们的团队通常在 1 个工作日内回复。",
     "claim3Title": "诊断与解决",
     "claim3Desc": "我们的团队可能会指导您进行故障排查。如果确认为保修范围内的缺陷，我们将免费为您安排更换或维修。",
     "claim4Title": "收到替换品",
@@ -1256,7 +1256,7 @@
         "invoiceTotal": "合计",
         "invoiceTracking": "物流：{{number}}（{{carrier}}）",
         "invoiceThankYou": "感谢您在 Pet and Angels 购物！",
-        "invoiceContact": "有疑问？请联系 support@petlibro.com"
+        "invoiceContact": "有疑问？请联系 support@petandangel.com"
       }
     },
     "returns": {

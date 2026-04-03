@@ -38,7 +38,7 @@ export function SeoHead({
 }: SeoHeadProps) {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
-  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://pet-shop-lac-ten.vercel.app";
+  const baseUrl = typeof window !== "undefined" ? window.location.origin : "https://www.petandangel.com";
 
   useEffect(() => {
     // Set document title

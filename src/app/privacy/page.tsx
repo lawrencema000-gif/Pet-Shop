@@ -106,10 +106,10 @@ export default function PrivacyPage() {
               <p>
                 {t('privacy.exerciseRights')}{" "}
                 <a
-                  href="mailto:privacy@petlibro.com"
+                  href="mailto:privacy@petandangel.com"
                   className="text-foreground underline underline-offset-2 hover:text-accent"
                 >
-                  privacy@petlibro.com
+                  privacy@petandangel.com
                 </a>
                 .
               </p>
@@ -132,10 +132,10 @@ export default function PrivacyPage() {
                 <li>
                   {t('privacy.contactEmail')}{" "}
                   <a
-                    href="mailto:privacy@petlibro.com"
+                    href="mailto:privacy@petandangel.com"
                     className="text-foreground underline underline-offset-2 hover:text-accent"
                   >
-                    privacy@petlibro.com
+                    privacy@petandangel.com
                   </a>
                 </li>
                 <li>

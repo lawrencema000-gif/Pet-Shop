@@ -227,7 +227,7 @@
     "heading": "Get in Touch",
     "description": "Have a question about our products or need help with an order? We're here to help and typically respond within 24 hours.",
     "emailUs": "Email Us",
-    "emailAddress": "support@petlibro.com",
+    "emailAddress": "support@petandangel.com",
     "callUs": "Call Us",
     "phoneNumber": "(888) 555-PETS",
     "businessHours": "Business Hours",
@@ -309,7 +309,15 @@
     "free": "Free",
     "tax": "Tax",
     "discount": "Discount ({{code}})",
-    "total": "Total"
+    "total": "Total",
+    "zip": "ZIP / Postal Code",
+    "stripeRedirectNote": "You'll be redirected to Stripe's secure checkout to complete your payment. Your card details are never stored on our servers.",
+    "errorEmail": "Please enter a valid email address.",
+    "errorAddress": "Address is required.",
+    "errorCity": "City is required.",
+    "errorState": "State / Province is required.",
+    "errorZip": "ZIP / Postal code is required.",
+    "errorGeneric": "Something went wrong. Please try again."
   },
   "checkoutSuccess": {
     "noSession": "No session ID found",
@@ -736,7 +744,7 @@
     "condition3Desc": " — Items must be free from pet hair, scratches, water damage, or signs of use.",
     "howItWorks": "How It Works",
     "step1Title": "Initiate Your Return",
-    "step1Desc": "Contact us at support@petlibro.com or visit this page within 30 days of delivery. Include your order number and reason for return.",
+    "step1Desc": "Contact us at support@petandangel.com or visit this page within 30 days of delivery. Include your order number and reason for return.",
     "step2Title": "Receive Your Label",
     "step2Desc": "We'll email you a prepaid return shipping label within 1 business day. Print it and attach it to your package.",
     "step3Title": "Ship It Back",
@@ -802,7 +810,7 @@
     "claim1Title": "Gather Your Information",
     "claim1Desc": "Have your order number, product serial number, and a brief description of the issue ready. Photos or a short video of the defect are helpful.",
     "claim2Title": "Contact Our Warranty Team",
-    "claim2Desc": "Email warranty@petlibro.com or reach out through our Contact page. Our team typically responds within 1 business day.",
+    "claim2Desc": "Email warranty@petandangel.com or reach out through our Contact page. Our team typically responds within 1 business day.",
     "claim3Title": "Diagnosis & Resolution",
     "claim3Desc": "Our team may walk you through troubleshooting steps. If the issue is confirmed as a warranty defect, we'll arrange a replacement or repair at no cost to you.",
     "claim4Title": "Receive Your Replacement",
@@ -1288,7 +1296,7 @@
         "invoiceTotal": "Total",
         "invoiceTracking": "Tracking: {{number}} ({{carrier}})",
         "invoiceThankYou": "Thank you for shopping with Pet and Angels!",
-        "invoiceContact": "Questions? Contact support@petlibro.com"
+        "invoiceContact": "Questions? Contact support@petandangel.com"
       }
     },
     "returns": {

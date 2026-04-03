@@ -17,10 +17,10 @@ interface MobileNavProps {
 }
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/petlibro", labelKey: "footer.facebook" },
-  { icon: Instagram, href: "https://instagram.com/petlibro", labelKey: "footer.instagram" },
-  { icon: Twitter, href: "https://twitter.com/petlibro", labelKey: "footer.twitter" },
-  { icon: Youtube, href: "https://youtube.com/@petlibro", labelKey: "footer.youtube" },
+  { icon: Facebook, href: "https://facebook.com/petandangels", labelKey: "footer.facebook" },
+  { icon: Instagram, href: "https://instagram.com/petandangels", labelKey: "footer.instagram" },
+  { icon: Twitter, href: "https://twitter.com/petandangels", labelKey: "footer.twitter" },
+  { icon: Youtube, href: "https://youtube.com/@petandangels", labelKey: "footer.youtube" },
 ];
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {

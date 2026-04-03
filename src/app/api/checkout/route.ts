@@ -226,7 +226,7 @@ export async function POST(request: Request) {
     }
 
     // Create Stripe Checkout Session
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pet-shop-lac-ten.vercel.app";
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.petandangel.com";
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems.map((li) => ({

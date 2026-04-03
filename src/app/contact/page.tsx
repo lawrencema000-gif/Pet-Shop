@@ -103,10 +103,10 @@ export default function ContactPage() {
               </div>
               <h3 className="font-semibold text-foreground mb-1">{t('contact.emailUsTitle')}</h3>
               <a
-                href="mailto:support@petlibro.com"
+                href="mailto:support@petandangel.com"
                 className="text-sm text-muted hover:text-foreground transition-colors"
               >
-                support@petlibro.com
+                support@petandangel.com
               </a>
             </div>
             <div className="flex flex-col items-center text-center p-6 bg-surface rounded-xl">

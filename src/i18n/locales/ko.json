@@ -221,7 +221,7 @@
     "heading": "문의하기",
     "description": "제품에 대한 질문이나 주문 관련 도움이 필요하신가요? 저희가 도와드리겠습니다. 보통 24시간 이내에 답변드립니다.",
     "emailUs": "이메일 문의",
-    "emailAddress": "support@petlibro.com",
+    "emailAddress": "support@petandangel.com",
     "callUs": "전화 문의",
     "phoneNumber": "(888) 555-PETS",
     "businessHours": "영업 시간",
@@ -348,7 +348,7 @@
     "orderDate": "주문 날짜",
     "emailLabel": "이메일",
     "lastUpdated": "최종 업데이트",
-    "trackingTip": "주문이 발송될 때 전송된 확인 이메일에서도 배송 추적 정보를 확인할 수 있습니다. orders@petlibro.com에서 온 이메일을 받은 편지함이나 스팸 폴더에서 확인해 주세요."
+    "trackingTip": "주문이 발송될 때 전송된 확인 이메일에서도 배송 추적 정보를 확인할 수 있습니다. orders@petandangel.com에서 온 이메일을 받은 편지함이나 스팸 폴더에서 확인해 주세요."
   },
   "supportPage": {
     "metaTitle": "고객 지원 | Pet Shop",
@@ -711,7 +711,7 @@
     "condition3Desc": " — 반려동물 털, 긁힘, 수분 손상 또는 사용 흔적이 없어야 합니다.",
     "howItWorks": "절차 안내",
     "step1Title": "반품 신청",
-    "step1Desc": "배달 후 30일 이내에 support@petlibro.com으로 문의하거나 이 페이지를 방문하세요. 주문 번호와 반품 사유를 포함해 주세요.",
+    "step1Desc": "배달 후 30일 이내에 support@petandangel.com으로 문의하거나 이 페이지를 방문하세요. 주문 번호와 반품 사유를 포함해 주세요.",
     "step2Title": "반품 라벨 수령",
     "step2Desc": "영업일 1일 이내에 선불 반품 배송 라벨을 이메일로 보내드립니다. 인쇄하여 포장에 부착하세요.",
     "step3Title": "반송",
@@ -777,7 +777,7 @@
     "claim1Title": "정보 준비",
     "claim1Desc": "주문 번호, 제품 일련번호, 문제에 대한 간단한 설명을 준비하세요. 결함 사진이나 짧은 동영상이 있으면 도움이 됩니다.",
     "claim2Title": "보증팀에 문의",
-    "claim2Desc": "warranty@petlibro.com으로 이메일을 보내시거나 문의 페이지를 통해 연락해 주세요. 저희 팀은 보통 영업일 1일 이내에 응답합니다.",
+    "claim2Desc": "warranty@petandangel.com으로 이메일을 보내시거나 문의 페이지를 통해 연락해 주세요. 저희 팀은 보통 영업일 1일 이내에 응답합니다.",
     "claim3Title": "진단 및 해결",
     "claim3Desc": "저희 팀이 문제 해결 단계를 안내해 드릴 수 있습니다. 보증 결함으로 확인되면 무상으로 교체 또는 수리를 진행합니다.",
     "claim4Title": "교체품 수령",
@@ -1256,7 +1256,7 @@
         "invoiceTotal": "합계",
         "invoiceTracking": "추적: {{number}} ({{carrier}})",
         "invoiceThankYou": "Pet and Angels에서 쇼핑해 주셔서 감사합니다!",
-        "invoiceContact": "문의사항? support@petlibro.com으로 연락해 주세요"
+        "invoiceContact": "문의사항? support@petandangel.com으로 연락해 주세요"
       }
     },
     "returns": {

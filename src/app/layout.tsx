@@ -24,7 +24,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://pet-shop-lac-ten.vercel.app"),
+  metadataBase: new URL("https://www.petandangel.com"),
   title: {
     default: "Pet and Angels | Smart Pet Care Products for Modern Pet Parents",
     template: "%s | Pet and Angels",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://pet-shop-lac-ten.vercel.app",
+    url: "https://www.petandangel.com",
     siteName: "Pet and Angels",
     title: "Pet and Angels | Smart Pet Care Products",
     description:
@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://pet-shop-lac-ten.vercel.app",
+    canonical: "https://www.petandangel.com",
   },
 };
 

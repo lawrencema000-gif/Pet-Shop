@@ -176,11 +176,11 @@ export default function PressPage() {
               {t('pressPage.mediaInquiriesDescription')}
             </p>
             <a
-              href="mailto:press@petlibro.com"
+              href="mailto:press@petandangel.com"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-accent rounded-lg font-medium hover:bg-white/90 transition-colors"
             >
               <Mail size={16} />
-              press@petlibro.com
+              press@petandangel.com
             </a>
           </div>
         </div>
