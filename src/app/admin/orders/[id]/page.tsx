@@ -12,6 +12,7 @@ import { supabase } from "@/lib/supabase/client";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatPrice } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 
 interface OrderDetail {
   id: string;
@@ -106,27 +107,40 @@ export default function OrderDetailPage() {
     load();
   }, [id]);
 
-  async function updateStatus(newStatus: string) {
+  const [showCancelDialog, setShowCancelDialog] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  async function handleCancelOrder() {
     if (!order) return;
     setUpdating(true);
+    const { error } = await supabase.rpc("cancel_order", { p_order_id: id });
+    if (error) {
+      setStatusMessage({ type: "error", text: "Failed to cancel: " + error.message });
+      setUpdating(false);
+      return;
+    }
+    await logAdminAction("update_order_status", "order", id, { from: order.status, to: "cancelled" });
+    setOrder({ ...order, status: "cancelled" });
+    setStatusMessage({ type: "success", text: "Order cancelled. Inventory restored." });
+    setUpdating(false);
+    setShowCancelDialog(false);
+  }
 
-    // Use cancel_order RPC for cancellations (restores inventory)
+  async function updateStatus(newStatus: string) {
+    if (!order) return;
+    setStatusMessage(null);
+
     if (newStatus === "cancelled") {
-      if (!window.confirm("Cancel this order? Inventory will be restored.")) {
-        setUpdating(false);
-        return;
-      }
-      const { error } = await supabase.rpc("cancel_order", { p_order_id: id });
-      if (error) {
-        console.error("Cancel order failed:", error.message);
-        alert("Failed to cancel: " + error.message);
-        setUpdating(false);
-        return;
-      }
-    } else {
+      setShowCancelDialog(true);
+      return;
+    }
+
+    setUpdating(true);
+
+    {
       // Require tracking before marking shipped
       if (newStatus === "shipped" && !order.tracking_number) {
-        alert("Please add a tracking number before marking as shipped.");
+        setStatusMessage({ type: "error", text: "Please add a tracking number before marking as shipped." });
         setUpdating(false);
         return;
       }
@@ -637,6 +651,26 @@ export default function OrderDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Status message */}
+      {statusMessage && (
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium ${
+          statusMessage.type === "success" ? "bg-success text-white" : "bg-sale text-white"
+        }`}>
+          {statusMessage.text}
+        </div>
+      )}
+
+      {/* Cancel order dialog */}
+      <ConfirmDialog
+        isOpen={showCancelDialog}
+        title="Cancel Order"
+        message="Cancel this order? Inventory will be restored and the customer will need to be refunded separately."
+        confirmLabel="Cancel Order"
+        variant="danger"
+        onConfirm={handleCancelOrder}
+        onCancel={() => setShowCancelDialog(false)}
+      />
 
       {/* Print-only Invoice */}
       <div className="hidden print:block">

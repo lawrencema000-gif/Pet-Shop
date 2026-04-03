@@ -112,6 +112,8 @@ export default function AdminCustomersPage() {
   }
 
   async function toggleBan(id: string, ban: boolean) {
+    const action = ban ? "ban" : "unban";
+    if (!window.confirm(`Are you sure you want to ${action} this customer?`)) return;
     const { error } = await supabase.from("profiles").update({ is_banned: ban }).eq("id", id);
     if (error) { console.error("Toggle ban failed:", error.message); return; }
     await logAdminAction(ban ? "ban_customer" : "unban_customer", "profile", id);

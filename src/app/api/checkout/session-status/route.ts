@@ -8,6 +8,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing session_id" }, { status: 400 });
   }
 
+  // Validate session_id format (Stripe checkout sessions start with cs_)
+  if (!sessionId.startsWith("cs_")) {
+    return NextResponse.json({ error: "Invalid session_id" }, { status: 400 });
+  }
+
   const supabase = createAdminSupabaseClient();
 
   // Look up order by stripe_checkout_session_id

@@ -383,7 +383,7 @@ export default function AdminQAPage() {
             ? t("admin.qa.approve", "Approve")
             : t("admin.qa.reject", "Reject")
         }
-        variant={confirmAction?.action === "published" ? "danger" : "danger"}
+        variant={confirmAction?.action === "rejected" ? "danger" : "default"}
         onConfirm={handleStatusChange}
         onCancel={() => setConfirmAction(null)}
       />

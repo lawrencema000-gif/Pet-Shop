@@ -36,13 +36,20 @@ export default function TrackOrderPage() {
     setLoading(true);
     setResult(null);
 
-    const { data } = await supabase
+    // Search by email AND order ID (both must match for security)
+    let query = supabase
       .from("orders")
       .select("id, status, total, email, created_at, shipping_address, tracking_number, carrier, tracking_url, shipped_at, delivered_at")
-      .eq("email", email.toLowerCase())
-      .or(`id.eq.${orderNumber}`)
-      .limit(1)
-      .maybeSingle();
+      .eq("email", email.toLowerCase().trim());
+
+    // Match order by ID prefix (first 8 chars) or full UUID
+    if (orderNumber.length <= 8) {
+      query = query.ilike("id", `${orderNumber.toLowerCase()}%`);
+    } else {
+      query = query.eq("id", orderNumber.trim());
+    }
+
+    const { data } = await query.limit(1).maybeSingle();
 
     if (data) {
       setResult(data as OrderResult);

@@ -130,14 +130,20 @@ export async function POST(req: NextRequest) {
 
     // Fire-and-forget: send order confirmation email
     if (process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith("re_placeholder")) {
+      // Fetch actual order items with product names and prices from DB
+      const { data: orderItems } = await supabase
+        .from("order_items")
+        .select("product_name, quantity, unit_price")
+        .eq("order_id", data.order_id);
+
       import("@/lib/email").then(({ sendOrderConfirmation }) => {
         sendOrderConfirmation({
           orderId: data.order_id,
           email,
-          items: items.map((i) => ({
-            name: i.product_id,
-            quantity: i.quantity,
-            price: 0,
+          items: (orderItems ?? []).map((oi) => ({
+            name: oi.product_name,
+            quantity: oi.quantity,
+            price: oi.unit_price,
           })),
           subtotal: data.subtotal,
           shipping: data.shipping_amount,

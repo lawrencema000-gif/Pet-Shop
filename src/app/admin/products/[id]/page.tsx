@@ -59,6 +59,12 @@ export default function EditProductPage() {
   const [saving, setSaving] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "variants" | "images">("details");
+  const [toast, setToast] = useState<string | null>(null);
+
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2000);
+  }
 
   useEffect(() => {
     async function load() {
@@ -145,8 +151,9 @@ export default function EditProductPage() {
 
   async function updateVariant(vid: string, updates: Partial<Variant>) {
     const { error } = await supabase.from("product_variants").update(updates).eq("id", vid);
-    if (error) { console.error("Update variant failed:", error.message); return; }
+    if (error) { showToast("Failed to save variant: " + error.message); return; }
     setVariants((prev) => prev.map((v) => (v.id === vid ? { ...v, ...updates } : v)));
+    showToast("Variant saved");
     // Auto-sync to Stripe if price changed
     if ("price" in updates) {
       fetch("/api/stripe/sync-product", {
@@ -158,9 +165,11 @@ export default function EditProductPage() {
   }
 
   async function deleteVariant(vid: string) {
+    if (!window.confirm("Delete this variant?")) return;
     const { error } = await supabase.from("product_variants").delete().eq("id", vid);
-    if (error) { console.error("Delete variant failed:", error.message); return; }
+    if (error) { showToast("Failed to delete variant: " + error.message); return; }
     setVariants((prev) => prev.filter((v) => v.id !== vid));
+    showToast("Variant deleted");
     // Sync to Stripe (will clean up orphaned prices)
     fetch("/api/stripe/sync-product", {
       method: "POST",
@@ -482,6 +491,13 @@ export default function EditProductPage() {
         onConfirm={handleDeleteProduct}
         onCancel={() => setShowDelete(false)}
       />
+
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-6 right-6 z-50 px-4 py-3 rounded-lg shadow-lg text-sm font-medium bg-foreground text-white animate-in fade-in duration-200">
+          {toast}
+        </div>
+      )}
     </div>
   );
 }

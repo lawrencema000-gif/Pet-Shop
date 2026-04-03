@@ -49,9 +49,19 @@ export default function NewProductPage() {
     });
   }
 
+  const [validationError, setValidationError] = useState("");
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!form.name || !form.base_price) return;
+    setValidationError("");
+    if (!form.name.trim()) {
+      setValidationError("Product name is required.");
+      return;
+    }
+    if (!form.base_price || parseFloat(form.base_price) <= 0) {
+      setValidationError("Base price must be greater than 0.");
+      return;
+    }
     setSaving(true);
 
     const { data, error } = await supabase
@@ -75,7 +85,7 @@ export default function NewProductPage() {
       .single();
 
     if (error) {
-      alert(t("admin.products.new.errorCreating", { error: error.message }));
+      setValidationError(error.message);
       setSaving(false);
       return;
     }
@@ -272,6 +282,12 @@ export default function NewProductPage() {
           <Link href="/admin/products" className="px-4 py-2.5 text-sm font-medium text-muted hover:text-foreground border border-border rounded-md hover:bg-surface transition-colors">
             {t("admin.products.new.cancelButton")}
           </Link>
+          {validationError && (
+            <div className="bg-sale/10 border border-sale/20 rounded-lg p-3 mb-4">
+              <p className="text-sm text-sale">{validationError}</p>
+            </div>
+          )}
+
           <button
             type="submit"
             disabled={saving}
