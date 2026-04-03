@@ -98,12 +98,31 @@ export default function BulkImportPage() {
         continue;
       }
 
+      const comparePrice = comparePriceIdx >= 0 ? (parseFloat(cols[comparePriceIdx]) || null) : null;
+      const categoryName = categoryIdx >= 0 ? (cols[categoryIdx]?.trim() ?? "") : "";
+      const statusVal = statusIdx >= 0 ? (cols[statusIdx]?.trim() || "draft") : "draft";
+
+      // Validate compare_price > price
+      let rowError = "";
+      if (comparePrice !== null && comparePrice <= price) {
+        rowError = `Row ${i + 1}: Compare price ($${comparePrice}) must be greater than price ($${price})`;
+      }
+      // Validate status
+      if (!["draft", "active", "archived"].includes(statusVal)) {
+        rowError = `Row ${i + 1}: Invalid status "${statusVal}" (use: draft, active, or archived)`;
+      }
+
+      if (rowError) {
+        parsed.push({ name, price, compare_price: null, category: "", status: "", description: "", stock: 0, sku: "", image_url: "", error: rowError });
+        continue;
+      }
+
       parsed.push({
         name,
         price,
-        compare_price: comparePriceIdx >= 0 ? (parseFloat(cols[comparePriceIdx]) || null) : null,
-        category: categoryIdx >= 0 ? (cols[categoryIdx]?.trim() ?? "") : "",
-        status: statusIdx >= 0 ? (cols[statusIdx]?.trim() || "draft") : "draft",
+        compare_price: comparePrice,
+        category: categoryName,
+        status: statusVal,
         description: descIdx >= 0 ? (cols[descIdx]?.trim() ?? "") : "",
         stock: stockIdx >= 0 ? (parseInt(cols[stockIdx]) || 0) : 0,
         sku: skuIdx >= 0 ? (cols[skuIdx]?.trim() ?? "") : "",
@@ -145,7 +164,19 @@ export default function BulkImportPage() {
     return result;
   }
 
+  const [fileError, setFileError] = useState("");
+
   function handleFile(file: File) {
+    setFileError("");
+    // Max 10MB
+    if (file.size > 10 * 1024 * 1024) {
+      setFileError("File too large. Maximum size is 10MB.");
+      return;
+    }
+    if (!file.name.endsWith(".csv")) {
+      setFileError("Please upload a .csv file.");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = (e) => {
       const text = e.target?.result as string;
@@ -185,6 +216,9 @@ export default function BulkImportPage() {
 
       // Resolve category
       const categoryId = row.category ? (catMap.get(row.category.toLowerCase()) ?? null) : null;
+      if (row.category && !categoryId) {
+        errors.push(`"${row.name}" — category "${row.category}" not found, imported without category`);
+      }
 
       // Insert product
       const { data: prod, error: prodErr } = await supabase
@@ -312,10 +346,25 @@ export default function BulkImportPage() {
               />
             </div>
 
+            {fileError && (
+              <div className="mt-3 bg-sale/10 border border-sale/20 rounded-lg p-3">
+                <p className="text-sm text-sale">{fileError}</p>
+              </div>
+            )}
+
             <div className="mt-4 text-center">
               <button onClick={downloadTemplate} className="inline-flex items-center gap-2 text-sm text-accent hover:underline">
                 <Download size={14} /> {t("admin.products.import.downloadTemplate")}
               </button>
+            </div>
+
+            <div className="mt-4 bg-surface rounded-lg p-4 text-xs text-muted space-y-1">
+              <p className="font-semibold text-foreground">CSV Column Reference:</p>
+              <p><strong>name</strong> (required), <strong>price</strong> (required), compare_price, category, status (draft/active/archived), description, stock, sku, image_url</p>
+              <p>Max file size: 10MB. Categories must match existing category names exactly.</p>
+              {categories.length > 0 && (
+                <p>Available categories: {categories.map(c => c.name).join(", ")}</p>
+              )}
             </div>
           </div>
         </div>
