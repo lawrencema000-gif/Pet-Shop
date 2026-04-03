@@ -30,6 +30,8 @@ export default function AdminStaffPage() {
   const [newRole, setNewRole] = useState({ name: "", description: "", permissions: [] as string[] });
   const [deleteRoleId, setDeleteRoleId] = useState<string | null>(null);
   const [revokeId, setRevokeId] = useState<string | null>(null);
+  const [editingRoleId, setEditingRoleId] = useState<string | null>(null);
+  const [editingPermissions, setEditingPermissions] = useState<string[]>([]);
 
   async function load() {
     const [{ data: adminData }, { data: roleData }] = await Promise.all([
@@ -222,14 +224,53 @@ export default function AdminStaffPage() {
                   <div className="flex items-center gap-2">
                     {role.is_system && <span className="text-[10px] font-semibold bg-accent-light text-accent px-1.5 py-0.5 rounded">{t("admin.staff.system")}</span>}
                     {!role.is_system && (
-                      <button onClick={() => setDeleteRoleId(role.id)} className="p-1.5 hover:bg-sale/10 rounded">
-                        <Trash2 size={14} className="text-muted hover:text-sale" />
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            if (editingRoleId === role.id) {
+                              // Save
+                              supabase.from("staff_roles").update({ permissions: editingPermissions }).eq("id", role.id).then(() => {
+                                setRoles((prev) => prev.map((r) => r.id === role.id ? { ...r, permissions: editingPermissions } : r));
+                                setEditingRoleId(null);
+                                logAdminAction("update_role_permissions", "staff_role", role.id);
+                              });
+                            } else {
+                              setEditingRoleId(role.id);
+                              setEditingPermissions([...role.permissions]);
+                            }
+                          }}
+                          className="px-2 py-1 text-[10px] font-medium border border-border rounded hover:bg-surface transition-colors"
+                        >
+                          {editingRoleId === role.id ? "Save" : "Edit"}
+                        </button>
+                        {editingRoleId === role.id && (
+                          <button onClick={() => setEditingRoleId(null)} className="px-2 py-1 text-[10px] font-medium text-muted hover:text-foreground">Cancel</button>
+                        )}
+                        <button onClick={() => setDeleteRoleId(role.id)} className="p-1.5 hover:bg-sale/10 rounded">
+                          <Trash2 size={14} className="text-muted hover:text-sale" />
+                        </button>
+                      </>
                     )}
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
-                  {role.permissions.includes("*") ? (
+                  {editingRoleId === role.id ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-1.5 w-full mt-2">
+                      {ALL_PERMISSIONS.map((perm) => (
+                        <label key={perm} className="flex items-center gap-1.5 text-xs cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={editingPermissions.includes(perm)}
+                            onChange={() => setEditingPermissions((prev) =>
+                              prev.includes(perm) ? prev.filter((p) => p !== perm) : [...prev, perm]
+                            )}
+                            className="rounded border-border"
+                          />
+                          {perm}
+                        </label>
+                      ))}
+                    </div>
+                  ) : role.permissions.includes("*") ? (
                     <span className="text-[10px] font-medium bg-gold-light text-gold px-1.5 py-0.5 rounded">{t("admin.staff.allPermissions")}</span>
                   ) : (
                     role.permissions.map((p) => (

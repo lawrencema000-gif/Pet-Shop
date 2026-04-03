@@ -8,10 +8,11 @@ interface StatsCardProps {
   label: string;
   value: string | number;
   trend?: { value: number; positive: boolean };
+  subtitle?: string;
   loading?: boolean;
 }
 
-export function StatsCard({ icon: Icon, label, value, trend, loading }: StatsCardProps) {
+export function StatsCard({ icon: Icon, label, value, trend, subtitle, loading }: StatsCardProps) {
   if (loading) {
     return (
       <div className="bg-white border border-border rounded-lg p-5">
@@ -47,6 +48,11 @@ export function StatsCard({ icon: Icon, label, value, trend, loading }: StatsCar
               </span>
             )}
           </div>
+          {subtitle && (
+            <p className={cn("text-[10px] font-medium mt-0.5", subtitle.startsWith("+") ? "text-success" : subtitle.startsWith("-") ? "text-sale" : "text-muted")}>
+              {subtitle}
+            </p>
+          )}
         </div>
       </div>
     </div>

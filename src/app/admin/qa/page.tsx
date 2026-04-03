@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import {
-  Shield, CheckCircle, XCircle, Clock, ChevronDown, ChevronUp,
+  Shield, CheckCircle, XCircle, Clock, ChevronDown, ChevronUp, Send, Loader2,
 } from "lucide-react";
 import { supabase } from "@/lib/supabase/client";
 import { DataTable, type Column } from "@/components/admin/DataTable";
@@ -37,6 +37,10 @@ export default function AdminQAPage() {
 
   // Expanded row state
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<{ id: string; body: string; is_admin_answer: boolean; created_at: string }[]>([]);
+  const [answersLoading, setAnswersLoading] = useState(false);
+  const [replyBody, setReplyBody] = useState("");
+  const [replying, setReplying] = useState(false);
 
   // Confirm dialog
   const [confirmAction, setConfirmAction] = useState<{
@@ -81,8 +85,38 @@ export default function AdminQAPage() {
     fetchQuestions();
   }, [fetchQuestions]);
 
-  function toggleExpand(questionId: string) {
-    setExpandedId(expandedId === questionId ? null : questionId);
+  async function toggleExpand(questionId: string) {
+    if (expandedId === questionId) {
+      setExpandedId(null);
+      setAnswers([]);
+      setReplyBody("");
+      return;
+    }
+    setExpandedId(questionId);
+    setAnswersLoading(true);
+    const { data } = await supabase
+      .from("question_answers")
+      .select("id, body, is_admin_answer, created_at")
+      .eq("question_id", questionId)
+      .order("created_at", { ascending: true });
+    setAnswers((data ?? []) as typeof answers);
+    setAnswersLoading(false);
+  }
+
+  async function handlePostAnswer(questionId: string) {
+    if (!replyBody.trim()) return;
+    setReplying(true);
+    const { data: { session } } = await supabase.auth.getSession();
+    await supabase.from("question_answers").insert({
+      question_id: questionId,
+      user_id: session?.user?.id,
+      body: replyBody.trim(),
+      is_admin_answer: true,
+    });
+    await logAdminAction("post_admin_answer", "question_answer", questionId);
+    setReplyBody("");
+    setReplying(false);
+    toggleExpand(questionId); // Reload answers
   }
 
   async function handleStatusChange() {
@@ -279,6 +313,52 @@ export default function AdminQAPage() {
         onPageChange={setPage}
         emptyTitle={t("admin.qa.noQuestionsFound", "No questions found")}
       />
+
+      {/* Expanded answers panel */}
+      {expandedId && (
+        <div className="bg-surface-light border border-border rounded-lg p-5 mt-4 mb-4">
+          <h3 className="text-sm font-semibold text-foreground mb-3">
+            Answers ({answers.length})
+          </h3>
+          {answersLoading ? (
+            <div className="flex items-center gap-2 text-sm text-muted py-4"><Loader2 size={16} className="animate-spin" /> Loading answers...</div>
+          ) : answers.length === 0 ? (
+            <p className="text-sm text-muted italic py-2">No answers yet.</p>
+          ) : (
+            <div className="space-y-3 mb-4">
+              {answers.map((a) => (
+                <div key={a.id} className={`p-3 rounded-lg border ${a.is_admin_answer ? "border-accent/30 bg-accent/5" : "border-border bg-white"}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    {a.is_admin_answer && (
+                      <span className="text-[10px] font-semibold text-accent bg-accent/10 px-1.5 py-0.5 rounded">ADMIN</span>
+                    )}
+                    <span className="text-[10px] text-muted">{new Date(a.created_at).toLocaleDateString()}</span>
+                  </div>
+                  <p className="text-sm text-foreground">{a.body}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Admin reply */}
+          <div className="flex items-start gap-3 mt-3 pt-3 border-t border-border">
+            <textarea
+              value={replyBody}
+              onChange={(e) => setReplyBody(e.target.value)}
+              rows={2}
+              className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y"
+              placeholder="Write an admin answer..."
+            />
+            <button
+              onClick={() => handlePostAnswer(expandedId)}
+              disabled={!replyBody.trim() || replying}
+              className="inline-flex items-center gap-2 bg-accent text-white px-4 py-2.5 text-sm font-medium rounded-md hover:bg-accent/90 disabled:opacity-60 shrink-0"
+            >
+              <Send size={14} />
+              {replying ? "Posting..." : "Post Answer"}
+            </button>
+          </div>
+        </div>
+      )}
 
       <ConfirmDialog
         isOpen={!!confirmAction}

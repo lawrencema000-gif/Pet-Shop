@@ -83,6 +83,12 @@ export default function AdminSettingsPage() {
   }
 
   async function handleSave() {
+    // Validate before saving
+    if (!settings.store_name.trim()) { alert("Store name cannot be empty."); return; }
+    if (settings.shipping.default_rate < 0) { alert("Shipping rate cannot be negative."); return; }
+    if (settings.shipping.tax_rate < 0 || settings.shipping.tax_rate > 100) { alert("Tax rate must be between 0% and 100%."); return; }
+    if (settings.shipping.free_shipping_threshold !== null && settings.shipping.free_shipping_threshold < 0) { alert("Free shipping threshold cannot be negative."); return; }
+
     setSaving(true);
     await Promise.all([
       saveSetting("store_name", settings.store_name),

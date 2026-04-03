@@ -25,6 +25,8 @@ import { formatPrice } from "@/lib/utils";
 
 interface DashboardStats {
   totalRevenue: number;
+  revenueThisMonth: number;
+  revenueLastMonth: number;
   ordersToday: number;
   totalProducts: number;
   totalCustomers: number;
@@ -71,6 +73,10 @@ export default function AdminDashboard() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
+      const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
+      const lastMonthStart = new Date(today.getFullYear(), today.getMonth() - 1, 1).toISOString();
+      const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0, 23, 59, 59).toISOString();
+
       const [
         { count: productCount },
         { count: customerCount },
@@ -81,7 +87,7 @@ export default function AdminDashboard() {
       ] = await Promise.all([
         supabase.from("products").select("*", { count: "exact", head: true }),
         supabase.from("profiles").select("*", { count: "exact", head: true }).eq("role", "customer"),
-        supabase.from("orders").select("total"),
+        supabase.from("orders").select("total, created_at"),
         supabase.from("orders").select("*", { count: "exact", head: true }).eq("status", "pending"),
         supabase.from("product_variants").select("id, name, stock_quantity, product_id").lte("stock_quantity", 10).order("stock_quantity", { ascending: true }).limit(10),
         supabase.from("orders").select("id, email, total, status, created_at").order("created_at", { ascending: false }).limit(10),
@@ -92,6 +98,10 @@ export default function AdminDashboard() {
       ).length ?? 0;
 
       const totalRev = orders?.reduce((sum, o) => sum + (Number(o.total) || 0), 0) ?? 0;
+
+      // Month-over-month revenue
+      const thisMonthRev = orders?.filter((o) => o.created_at >= thisMonthStart).reduce((s, o) => s + (Number(o.total) || 0), 0) ?? 0;
+      const lastMonthRev = orders?.filter((o) => o.created_at >= lastMonthStart && o.created_at <= lastMonthEnd).reduce((s, o) => s + (Number(o.total) || 0), 0) ?? 0;
 
       // Get product names for low stock variants
       let lowStockItems: LowStockItem[] = [];
@@ -112,6 +122,8 @@ export default function AdminDashboard() {
 
       setStats({
         totalRevenue: totalRev,
+        revenueThisMonth: Math.round(thisMonthRev * 100) / 100,
+        revenueLastMonth: Math.round(lastMonthRev * 100) / 100,
         ordersToday: todayOrders,
         totalProducts: productCount ?? 0,
         totalCustomers: customerCount ?? 0,
@@ -235,7 +247,20 @@ export default function AdminDashboard() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
-        <StatsCard icon={DollarSign} label={t("admin.dashboard.totalRevenue")} value={formatPrice(stats?.totalRevenue ?? 0)} loading={loading} />
+        <StatsCard
+          icon={DollarSign}
+          label={t("admin.dashboard.totalRevenue")}
+          value={formatPrice(stats?.totalRevenue ?? 0)}
+          loading={loading}
+          subtitle={stats ? (() => {
+            const change = stats.revenueLastMonth > 0
+              ? Math.round(((stats.revenueThisMonth - stats.revenueLastMonth) / stats.revenueLastMonth) * 100)
+              : stats.revenueThisMonth > 0 ? 100 : 0;
+            return change >= 0
+              ? `+${change}% vs last month`
+              : `${change}% vs last month`;
+          })() : undefined}
+        />
         <StatsCard icon={ShoppingBag} label={t("admin.dashboard.ordersToday")} value={stats?.ordersToday ?? 0} loading={loading} />
         <StatsCard icon={Package} label={t("admin.dashboard.products")} value={stats?.totalProducts ?? 0} loading={loading} />
         <StatsCard icon={Users} label={t("admin.dashboard.customers")} value={stats?.totalCustomers ?? 0} loading={loading} />
