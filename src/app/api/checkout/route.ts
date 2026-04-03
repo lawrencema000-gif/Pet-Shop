@@ -113,7 +113,7 @@ export async function POST(request: Request) {
           const newPrice = await stripe.prices.create({
             product: product.stripe_product_id,
             unit_amount: priceCents,
-            currency: "hkd",
+            currency: "usd",
             metadata: { variant_id: item.variant_id || "base", auto_created: "true" },
           });
           stripePriceId = newPrice.id;
@@ -154,13 +154,14 @@ export async function POST(request: Request) {
           if (coupon.discount_type === "percentage") {
             discountCents = Math.round(calculatedSubtotal * (coupon.discount_value / 100) * 100);
           } else {
-            discountCents = Math.round(coupon.discount_value * 100);
+            // Cap fixed discount at subtotal (can't discount more than order value)
+            discountCents = Math.round(Math.min(coupon.discount_value, calculatedSubtotal) * 100);
           }
 
           // Create a one-time Stripe coupon
           const stripeCoupon = await stripe.coupons.create({
             amount_off: discountCents,
-            currency: "hkd",
+            currency: "usd",
             duration: "once",
             name: coupon_code,
           });
@@ -225,7 +226,7 @@ export async function POST(request: Request) {
         {
           shipping_rate_data: {
             type: "fixed_amount",
-            fixed_amount: { amount: shippingCostCents, currency: "hkd" },
+            fixed_amount: { amount: shippingCostCents, currency: "usd" },
             display_name: freeShipping ? "Free Shipping" : "Standard Shipping",
           },
         },

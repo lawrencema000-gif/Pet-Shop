@@ -18,6 +18,7 @@ interface Order {
 }
 
 interface OrderItem {
+  product_id: string;
   product_name: string;
   quantity: number;
   total_price: number;
@@ -60,7 +61,7 @@ export default function AdminAnalyticsPage() {
       if (orderIds.length > 0) {
         const { data: itms } = await supabase
           .from("order_items")
-          .select("product_name, quantity, total_price")
+          .select("product_id, product_name, quantity, total_price")
           .in("order_id", orderIds.slice(0, 100));
         setItems(itms ?? []);
       } else {
@@ -100,7 +101,7 @@ export default function AdminAnalyticsPage() {
         newThisPeriod: newProfiles?.length ?? 0,
         returning: returningCount,
         vip: vipCount,
-        avgLifetimeValue: userMap.size > 0 ? totalLTV / userMap.size : 0,
+        avgLifetimeValue: userMap.size > 0 ? Math.round((totalLTV / userMap.size) * 100) / 100 : 0,
       });
 
       setLoading(false);
@@ -110,8 +111,8 @@ export default function AdminAnalyticsPage() {
 
   const stats = useMemo(() => {
     const completed = orders.filter((o) => o.status !== "cancelled");
-    const revenue = completed.reduce((s, o) => s + Number(o.total), 0);
-    const avgOrder = completed.length > 0 ? revenue / completed.length : 0;
+    const revenue = Math.round(completed.reduce((s, o) => s + Number(o.total), 0) * 100) / 100;
+    const avgOrder = completed.length > 0 ? Math.round((revenue / completed.length) * 100) / 100 : 0;
     const cancelled = orders.filter((o) => o.status === "cancelled").length;
     return {
       totalOrders: orders.length,
@@ -122,16 +123,18 @@ export default function AdminAnalyticsPage() {
   }, [orders]);
 
   const topProducts = useMemo(() => {
-    const map = new Map<string, { qty: number; revenue: number }>();
+    const map = new Map<string, { name: string; qty: number; revenue: number }>();
     items.forEach((item) => {
-      const prev = map.get(item.product_name) ?? { qty: 0, revenue: 0 };
-      map.set(item.product_name, {
+      const key = item.product_id || item.product_name;
+      const prev = map.get(key) ?? { name: item.product_name, qty: 0, revenue: 0 };
+      map.set(key, {
+        name: item.product_name,
         qty: prev.qty + item.quantity,
-        revenue: prev.revenue + Number(item.total_price),
+        revenue: Math.round((prev.revenue + Number(item.total_price)) * 100) / 100,
       });
     });
-    return Array.from(map.entries())
-      .sort((a, b) => b[1].revenue - a[1].revenue)
+    return Array.from(map.values())
+      .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 10);
   }, [items]);
 
@@ -267,16 +270,16 @@ export default function AdminAnalyticsPage() {
             ) : topProducts.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted">{t("admin.analytics.noProductData")}</div>
             ) : (
-              topProducts.map(([name, data], i) => (
-                <div key={name} className="flex items-center justify-between px-5 py-3">
+              topProducts.map((product, i) => (
+                <div key={i} className="flex items-center justify-between px-5 py-3">
                   <div className="flex items-center gap-3">
                     <span className="text-xs font-bold text-muted w-5">{i + 1}</span>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{name}</p>
-                      <p className="text-xs text-muted">{t("admin.analytics.sold", { qty: data.qty })}</p>
+                      <p className="text-sm font-medium text-foreground">{product.name}</p>
+                      <p className="text-xs text-muted">{t("admin.analytics.sold", { qty: product.qty })}</p>
                     </div>
                   </div>
-                  <span className="text-sm font-semibold text-foreground">{formatPrice(data.revenue)}</span>
+                  <span className="text-sm font-semibold text-foreground">{formatPrice(product.revenue)}</span>
                 </div>
               ))
             )}

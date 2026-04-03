@@ -73,7 +73,7 @@ export async function POST() {
             const newPrice = await stripe.prices.create({
               product: stripeProductId!,
               unit_amount: Math.round(v.price * 100),
-              currency: "hkd",
+              currency: "usd",
               metadata: { variant_id: v.id, variant_name: v.name },
             });
             await supabase.from("product_variants").update({ stripe_price_id: newPrice.id }).eq("id", v.id);
@@ -86,7 +86,7 @@ export async function POST() {
             await stripe.prices.create({
               product: stripeProductId!,
               unit_amount: Math.round(product.base_price * 100),
-              currency: "hkd",
+              currency: "usd",
               metadata: { type: "base_price" },
             });
           }

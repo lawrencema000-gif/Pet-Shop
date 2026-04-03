@@ -91,7 +91,7 @@ export async function POST(request: Request) {
           const newPrice = await stripe.prices.create({
             product: stripeProductId!,
             unit_amount: priceInCents,
-            currency: "hkd",
+            currency: "usd",
             metadata: { variant_id: variant.id, variant_name: variant.name },
           });
           await supabase
@@ -109,7 +109,7 @@ export async function POST(request: Request) {
         const newPrice = await stripe.prices.create({
           product: stripeProductId!,
           unit_amount: priceInCents,
-          currency: "hkd",
+          currency: "usd",
           metadata: { variant_id: variant.id, variant_name: variant.name },
         });
         await supabase
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
         await stripe.prices.create({
           product: stripeProductId!,
           unit_amount: basePriceCents,
-          currency: "hkd",
+          currency: "usd",
           metadata: { type: "base_price" },
         });
       }
