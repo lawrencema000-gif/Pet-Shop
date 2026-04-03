@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Save, Trash2, Plus, X } from "lucide-react";
+import { ArrowLeft, Save, Trash2, Plus, X, Copy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { logAdminAction } from "@/lib/audit-log";
@@ -60,11 +60,21 @@ export default function EditProductPage() {
   const [showDelete, setShowDelete] = useState(false);
   const [activeTab, setActiveTab] = useState<"details" | "variants" | "images">("details");
   const [toast, setToast] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
 
   function showToast(msg: string) {
     setToast(msg);
     setTimeout(() => setToast(null), 2000);
   }
+
+  // Warn on unsaved changes
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dirty) { e.preventDefault(); }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
 
   useEffect(() => {
     async function load() {
@@ -108,8 +118,10 @@ export default function EditProductPage() {
       barcode: product.barcode,
     }).eq("id", id);
 
-    if (error) alert(t("admin.products.editor.errorSaving", { error: error.message }));
+    if (error) { showToast("Error: " + error.message); }
     else {
+      setDirty(false);
+      showToast("Product saved!");
       await logAdminAction("update_product", "product", id, { name: product.name });
       // Auto-sync to Stripe
       fetch("/api/stripe/sync-product", {
@@ -208,9 +220,46 @@ export default function EditProductPage() {
             </div>
           </div>
         </div>
-        <button onClick={() => setShowDelete(true)} className="p-2 hover:bg-sale/10 rounded-md transition-colors" title={t("admin.products.editor.deleteProduct")}>
-          <Trash2 size={18} className="text-muted hover:text-sale" />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={async () => {
+              if (!window.confirm("Duplicate this product?")) return;
+              const { data: dup, error } = await supabase.from("products").insert({
+                name: product.name + " (Copy)",
+                slug: product.slug + "-copy-" + Date.now().toString(36),
+                subtitle: product.subtitle,
+                description: product.description,
+                category_id: product.category_id,
+                base_price: product.base_price,
+                compare_at_price: product.compare_at_price,
+                status: "draft",
+                is_featured: false,
+                is_best_seller: false,
+                is_new: false,
+                meta_title: product.meta_title,
+                meta_description: product.meta_description,
+                features: product.features,
+                specifications: product.specifications,
+              }).select("id").single();
+              if (error) { showToast("Failed to duplicate: " + error.message); return; }
+              // Copy variants
+              for (const v of variants) {
+                await supabase.from("product_variants").insert({
+                  product_id: dup.id, name: v.name, variant_type: v.variant_type,
+                  price: v.price, stock_quantity: v.stock_quantity, sku: v.sku ? v.sku + "-copy" : null, is_default: v.is_default,
+                });
+              }
+              await logAdminAction("duplicate_product", "product", dup.id, { source: id });
+              router.push(`/admin/products/${dup.id}`);
+            }}
+            className="p-2 hover:bg-surface rounded-md transition-colors" title="Duplicate product"
+          >
+            <Copy size={18} className="text-muted" />
+          </button>
+          <button onClick={() => setShowDelete(true)} className="p-2 hover:bg-sale/10 rounded-md transition-colors" title={t("admin.products.editor.deleteProduct")}>
+            <Trash2 size={18} className="text-muted hover:text-sale" />
+          </button>
+        </div>
       </div>
 
       {/* Tabs */}
@@ -232,7 +281,7 @@ export default function EditProductPage() {
 
       {/* Details Tab */}
       {activeTab === "details" && (
-        <form onSubmit={handleSave} className="max-w-3xl space-y-5">
+        <form onSubmit={handleSave} onChange={() => setDirty(true)} className="max-w-3xl space-y-5">
           <div className="bg-white border border-border rounded-lg p-6 space-y-5">
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelName")}</label>
@@ -420,11 +469,27 @@ export default function EditProductPage() {
       {/* Variants Tab */}
       {activeTab === "variants" && (
         <div className="max-w-4xl">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <p className="text-sm text-muted">{t("admin.products.editor.variantsCount", { count: variants.length })}</p>
-            <button onClick={addVariant} className="inline-flex items-center gap-2 bg-accent text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors">
-              <Plus size={14} /> {t("admin.products.editor.addVariant")}
-            </button>
+            <div className="flex items-center gap-2">
+              {variants.length > 1 && (
+                <button
+                  onClick={() => {
+                    const val = window.prompt("Set stock quantity for ALL variants:", "100");
+                    if (val === null) return;
+                    const qty = parseInt(val);
+                    if (isNaN(qty) || qty < 0) return;
+                    variants.forEach((v) => updateVariant(v.id, { stock_quantity: qty }));
+                  }}
+                  className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium border border-border rounded-md hover:bg-surface transition-colors"
+                >
+                  Set All Stock
+                </button>
+              )}
+              <button onClick={addVariant} className="inline-flex items-center gap-2 bg-accent text-white px-3 py-2 text-sm font-medium rounded-md hover:bg-accent-dark transition-colors">
+                <Plus size={14} /> {t("admin.products.editor.addVariant")}
+              </button>
+            </div>
           </div>
           <div className="bg-white border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
@@ -456,7 +521,19 @@ export default function EditProductPage() {
                       <input type="number" step="0.01" min="0.01" value={v.price} onChange={(e) => updateVariant(v.id, { price: Math.max(0, parseFloat(e.target.value) || 0) })} className="w-24 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />
                     </td>
                     <td className="px-4 py-2">
-                      <input type="text" value={v.sku ?? ""} onChange={(e) => updateVariant(v.id, { sku: e.target.value || null })} className="w-28 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" placeholder={t("admin.products.editor.skuPlaceholder")} />
+                      <div className="flex gap-1">
+                        <input type="text" value={v.sku ?? ""} onChange={(e) => updateVariant(v.id, { sku: e.target.value || null })} className="w-24 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" placeholder={t("admin.products.editor.skuPlaceholder")} />
+                        {!v.sku && (
+                          <button type="button" onClick={() => {
+                            const prefix = (product?.name ?? "PROD").substring(0, 3).toUpperCase().replace(/\s/g, "");
+                            const suffix = v.name.substring(0, 3).toUpperCase().replace(/\s/g, "");
+                            const sku = `${prefix}-${suffix}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+                            updateVariant(v.id, { sku });
+                          }} className="px-1.5 py-1 text-[10px] text-accent hover:bg-accent/10 rounded whitespace-nowrap" title="Generate SKU">
+                            Gen
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-2">
                       <input type="number" min="0" value={v.stock_quantity} onChange={(e) => updateVariant(v.id, { stock_quantity: Math.max(0, parseInt(e.target.value) || 0) })} className="w-20 px-2 py-1.5 text-sm border border-border rounded focus:outline-none focus:border-accent" />

@@ -6,9 +6,16 @@ import { useTranslation } from "react-i18next";
 import { supabase } from "@/lib/supabase/client";
 import { slugify } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
-import { Save, ArrowLeft } from "lucide-react";
+import { Save, ArrowLeft, Plus, X, Image as ImageIcon } from "lucide-react";
 import Link from "next/link";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
+
+interface QuickVariant {
+  name: string;
+  price: string;
+  stock: string;
+  sku: string;
+}
 
 export default function NewProductPage() {
   const { t } = useTranslation();
@@ -30,6 +37,8 @@ export default function NewProductPage() {
     meta_description: "",
   });
   const [categories, setCategories] = useState<{ id: string; name: string }[]>([]);
+  const [variants, setVariants] = useState<QuickVariant[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
 
   // Load categories on mount
   useEffect(() => {
@@ -91,6 +100,45 @@ export default function NewProductPage() {
     }
 
     await logAdminAction("create_product", "product", data.id, { name: form.name });
+
+    // Create variants if any
+    if (variants.length > 0) {
+      for (let i = 0; i < variants.length; i++) {
+        const v = variants[i];
+        await supabase.from("product_variants").insert({
+          product_id: data.id,
+          name: v.name || `Variant ${i + 1}`,
+          variant_type: "style",
+          price: parseFloat(v.price) || parseFloat(form.base_price),
+          stock_quantity: parseInt(v.stock) || 100,
+          sku: v.sku || null,
+          is_default: i === 0,
+        });
+      }
+    } else {
+      // Create default variant
+      await supabase.from("product_variants").insert({
+        product_id: data.id,
+        name: "Default",
+        variant_type: "style",
+        price: parseFloat(form.base_price),
+        stock_quantity: 100,
+        sku: null,
+        is_default: true,
+      });
+    }
+
+    // Create images if any URLs provided
+    for (let i = 0; i < imageUrls.length; i++) {
+      const url = imageUrls[i].trim();
+      if (!url) continue;
+      await supabase.from("product_images").insert({
+        product_id: data.id,
+        url,
+        display_order: i,
+        is_primary: i === 0,
+      });
+    }
 
     // Auto-sync to Stripe
     fetch("/api/stripe/sync-product", {
@@ -242,6 +290,53 @@ export default function NewProductPage() {
         </div>
 
         {/* SEO */}
+        {/* Quick Variants */}
+        <div className="bg-white border border-border rounded-lg p-6 space-y-4 mt-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Variants (Optional)</h3>
+            <button type="button" onClick={() => setVariants([...variants, { name: "", price: form.base_price, stock: "100", sku: "" }])}
+              className="text-xs text-accent hover:underline flex items-center gap-1"><Plus size={12} /> Add Variant</button>
+          </div>
+          {variants.length === 0 ? (
+            <p className="text-xs text-muted">No variants — a default variant will be created automatically. Add variants for different colors, sizes, etc.</p>
+          ) : (
+            <div className="space-y-2">
+              {variants.map((v, i) => (
+                <div key={i} className="grid grid-cols-4 gap-2 items-end">
+                  <input type="text" value={v.name} onChange={(e) => { const u = [...variants]; u[i].name = e.target.value; setVariants(u); }}
+                    placeholder="Name (e.g. Red, Large)" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                  <input type="number" value={v.price} onChange={(e) => { const u = [...variants]; u[i].price = e.target.value; setVariants(u); }}
+                    placeholder="Price" step="0.01" min="0" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                  <input type="number" value={v.stock} onChange={(e) => { const u = [...variants]; u[i].stock = e.target.value; setVariants(u); }}
+                    placeholder="Stock" min="0" className="px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                  <div className="flex gap-1">
+                    <input type="text" value={v.sku} onChange={(e) => { const u = [...variants]; u[i].sku = e.target.value; setVariants(u); }}
+                      placeholder="SKU" className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+                    <button type="button" onClick={() => setVariants(variants.filter((_, idx) => idx !== i))} className="p-2 text-muted hover:text-sale"><X size={14} /></button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Images */}
+        <div className="bg-white border border-border rounded-lg p-6 space-y-4 mt-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider flex items-center gap-2"><ImageIcon size={14} /> Images (Optional)</h3>
+            <button type="button" onClick={() => setImageUrls([...imageUrls, ""])}
+              className="text-xs text-accent hover:underline flex items-center gap-1"><Plus size={12} /> Add Image URL</button>
+          </div>
+          <p className="text-xs text-muted">Paste image URLs here. You can upload files from the edit page after creation. First image will be the primary.</p>
+          {imageUrls.map((url, i) => (
+            <div key={i} className="flex gap-2">
+              <input type="url" value={url} onChange={(e) => { const u = [...imageUrls]; u[i] = e.target.value; setImageUrls(u); }}
+                placeholder="https://example.com/image.jpg" className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent" />
+              <button type="button" onClick={() => setImageUrls(imageUrls.filter((_, idx) => idx !== i))} className="p-2 text-muted hover:text-sale"><X size={14} /></button>
+            </div>
+          ))}
+        </div>
+
         <div className="bg-white border border-border rounded-lg p-6 space-y-5 mt-5">
           <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">{t("admin.products.new.seoTitle")}</h3>
           <div>

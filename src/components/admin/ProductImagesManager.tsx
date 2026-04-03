@@ -111,7 +111,21 @@ export function ProductImagesManager({ productId }: Props) {
       return;
     }
 
+    // Validate the URL actually loads an image
     setError(null);
+    try {
+      await new Promise<void>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve();
+        img.onerror = () => reject(new Error("Image failed to load"));
+        img.src = urlInput.trim();
+        setTimeout(() => reject(new Error("Image load timed out")), 8000);
+      });
+    } catch (e) {
+      setError(`URL doesn't appear to be a valid image: ${(e as Error).message}`);
+      return;
+    }
+
     const { error: insertError } = await supabase.from("product_images").insert({
       product_id: productId,
       url: urlInput.trim(),
