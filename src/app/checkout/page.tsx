@@ -270,14 +270,45 @@ export default function CheckoutPage() {
                   }
                   error={errors.zip}
                 />
-                <Input
-                  label={t('checkout.country')}
-                  value={address.country}
-                  onChange={(e) =>
-                    setAddress({ ...address, country: e.target.value })
-                  }
-                  disabled
-                />
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1.5">{t('checkout.country')}</label>
+                  <select
+                    value={address.country}
+                    onChange={(e) => setAddress({ ...address, country: e.target.value })}
+                    className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent bg-background"
+                  >
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="AU">Australia</option>
+                    <option value="JP">Japan</option>
+                    <option value="KR">South Korea</option>
+                    <option value="SG">Singapore</option>
+                    <option value="HK">Hong Kong</option>
+                    <option value="TW">Taiwan</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="IT">Italy</option>
+                    <option value="ES">Spain</option>
+                    <option value="NL">Netherlands</option>
+                    <option value="SE">Sweden</option>
+                    <option value="NO">Norway</option>
+                    <option value="DK">Denmark</option>
+                    <option value="NZ">New Zealand</option>
+                    <option value="IE">Ireland</option>
+                    <option value="CH">Switzerland</option>
+                    <option value="AT">Austria</option>
+                    <option value="BE">Belgium</option>
+                    <option value="PT">Portugal</option>
+                    <option value="PL">Poland</option>
+                    <option value="MX">Mexico</option>
+                    <option value="BR">Brazil</option>
+                    <option value="IN">India</option>
+                    <option value="PH">Philippines</option>
+                    <option value="MY">Malaysia</option>
+                    <option value="TH">Thailand</option>
+                  </select>
+                </div>
               </div>
             </div>
           </section>
