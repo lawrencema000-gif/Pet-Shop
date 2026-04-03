@@ -72,23 +72,37 @@ export async function POST(request: Request) {
       if (item.variant_id) {
         const { data: variant } = await adminSupabase
           .from("product_variants")
-          .select("stripe_price_id, price")
+          .select("stripe_price_id, price, stock_quantity")
           .eq("id", item.variant_id)
           .single();
 
-        stripePriceId = variant?.stripe_price_id ?? null;
-        unitPrice = variant?.price ?? 0;
+        if (!variant) {
+          return NextResponse.json({ error: `Variant not found` }, { status: 400 });
+        }
+        if (variant.stock_quantity !== null && variant.stock_quantity < item.quantity) {
+          return NextResponse.json(
+            { error: `Insufficient stock. Only ${variant.stock_quantity} available.` },
+            { status: 400 }
+          );
+        }
+
+        stripePriceId = variant.stripe_price_id ?? null;
+        unitPrice = variant.price ?? 0;
       }
 
       if (!stripePriceId) {
         // Fallback: look up product's Stripe product and find/create a price
         const { data: product } = await adminSupabase
           .from("products")
-          .select("stripe_product_id, base_price")
+          .select("stripe_product_id, base_price, status")
           .eq("id", item.product_id)
           .single();
 
-        if (!product?.stripe_product_id) {
+        if (!product || product.status !== "active") {
+          return NextResponse.json({ error: "Product is no longer available." }, { status: 400 });
+        }
+
+        if (!product.stripe_product_id) {
           return NextResponse.json(
             { error: "Product not configured for payment. Please contact support." },
             { status: 400 }

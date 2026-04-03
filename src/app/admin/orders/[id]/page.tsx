@@ -109,15 +109,53 @@ export default function OrderDetailPage() {
   async function updateStatus(newStatus: string) {
     if (!order) return;
     setUpdating(true);
-    const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", id);
-    if (error) {
-      console.error("Update order status failed:", error.message);
-      setUpdating(false);
-      return;
+
+    // Use cancel_order RPC for cancellations (restores inventory)
+    if (newStatus === "cancelled") {
+      if (!window.confirm("Cancel this order? Inventory will be restored.")) {
+        setUpdating(false);
+        return;
+      }
+      const { error } = await supabase.rpc("cancel_order", { p_order_id: id });
+      if (error) {
+        console.error("Cancel order failed:", error.message);
+        alert("Failed to cancel: " + error.message);
+        setUpdating(false);
+        return;
+      }
+    } else {
+      // Require tracking before marking shipped
+      if (newStatus === "shipped" && !order.tracking_number) {
+        alert("Please add a tracking number before marking as shipped.");
+        setUpdating(false);
+        return;
+      }
+      const { error } = await supabase.from("orders").update({ status: newStatus }).eq("id", id);
+      if (error) {
+        console.error("Update order status failed:", error.message);
+        setUpdating(false);
+        return;
+      }
     }
+
     await logAdminAction("update_order_status", "order", id, { from: order.status, to: newStatus });
     setOrder({ ...order, status: newStatus });
     setUpdating(false);
+
+    // Auto-send email on shipped
+    if (newStatus === "shipped" && order.tracking_number) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        await fetch("/api/email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify({ type: "order_shipped", orderId: id }),
+        });
+      } catch { /* email is best-effort */ }
+    }
   }
 
   async function updatePaymentStatus(ps: string) {
@@ -281,7 +319,7 @@ export default function OrderDetailPage() {
                 {t("admin.orders.detail.markAs", { status: nextStatus.charAt(0).toUpperCase() + nextStatus.slice(1) })}
               </button>
             )}
-            {order.status !== "cancelled" && (
+            {(order.status === "pending" || order.status === "confirmed") && (
               <button
                 onClick={() => updateStatus("cancelled")}
                 disabled={updating}

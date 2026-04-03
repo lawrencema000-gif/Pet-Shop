@@ -151,6 +151,30 @@ export default function AdminReturnsPage() {
         await supabase.from("orders").update({
           payment_status: "partially_refunded",
         }).eq("id", ret.order_id);
+
+        // Restore inventory for returned items
+        const { data: orderItems } = await supabase
+          .from("order_items")
+          .select("variant_id, quantity")
+          .eq("order_id", ret.order_id);
+
+        if (orderItems) {
+          for (const item of orderItems) {
+            if (item.variant_id) {
+              const { data: v } = await supabase
+                .from("product_variants")
+                .select("stock_quantity")
+                .eq("id", item.variant_id)
+                .single();
+              if (v) {
+                await supabase
+                  .from("product_variants")
+                  .update({ stock_quantity: v.stock_quantity + item.quantity })
+                  .eq("id", item.variant_id);
+              }
+            }
+          }
+        }
       }
     }
 

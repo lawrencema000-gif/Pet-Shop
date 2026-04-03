@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   // Look up order by stripe_checkout_session_id
   const { data: order } = await supabase
     .from("orders")
-    .select("id, email, total, payment_status, status, created_at")
+    .select("id, email, total, subtotal, shipping_amount, tax_amount, discount_amount, payment_status, status, shipping_address, created_at, items:order_items(product_name, variant_name, quantity, unit_price, total_price)")
     .eq("stripe_checkout_session_id", sessionId)
     .maybeSingle();
 
