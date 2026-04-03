@@ -10,6 +10,7 @@ import { logAdminAction } from "@/lib/audit-log";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import { ProductImagesManager } from "@/components/admin/ProductImagesManager";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 interface ProductData {
   id: string;
@@ -28,6 +29,11 @@ interface ProductData {
   meta_description: string | null;
   features: string[] | null;
   specifications: Record<string, string> | null;
+  weight_g: number | null;
+  length_cm: number | null;
+  width_cm: number | null;
+  height_cm: number | null;
+  barcode: string | null;
 }
 
 interface Variant {
@@ -87,6 +93,13 @@ export default function EditProductPage() {
       is_new: product.is_new,
       meta_title: product.meta_title,
       meta_description: product.meta_description,
+      features: product.features,
+      specifications: product.specifications,
+      weight_g: product.weight_g,
+      length_cm: product.length_cm,
+      width_cm: product.width_cm,
+      height_cm: product.height_cm,
+      barcode: product.barcode,
     }).eq("id", id);
 
     if (error) alert(t("admin.products.editor.errorSaving", { error: error.message }));
@@ -226,8 +239,80 @@ export default function EditProductPage() {
             </div>
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelDescription")}</label>
-              <textarea value={product.description ?? ""} onChange={(e) => setProduct({ ...product, description: e.target.value || null })} rows={4} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent resize-y" />
+              <RichTextEditor
+                content={product.description ?? ""}
+                onChange={(html) => setProduct({ ...product, description: html || null })}
+              />
             </div>
+
+            {/* Features (string array) */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Features</label>
+              <div className="space-y-2">
+                {(product.features ?? []).map((feat, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={feat}
+                      onChange={(e) => {
+                        const updated = [...(product.features ?? [])];
+                        updated[i] = e.target.value;
+                        setProduct({ ...product, features: updated });
+                      }}
+                      className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
+                      placeholder="e.g. HD Camera with Night Vision"
+                    />
+                    <button type="button" onClick={() => {
+                      const updated = (product.features ?? []).filter((_, idx) => idx !== i);
+                      setProduct({ ...product, features: updated.length ? updated : null });
+                    }} className="p-2 text-muted hover:text-sale"><X size={14} /></button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => setProduct({ ...product, features: [...(product.features ?? []), ""] })}
+                  className="text-xs text-accent hover:underline flex items-center gap-1"><Plus size={12} /> Add Feature</button>
+              </div>
+            </div>
+
+            {/* Specifications (key-value object) */}
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Specifications</label>
+              <div className="space-y-2">
+                {Object.entries(product.specifications ?? {}).map(([key, val], i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      type="text"
+                      value={key}
+                      onChange={(e) => {
+                        const entries = Object.entries(product.specifications ?? {});
+                        entries[i] = [e.target.value, val];
+                        setProduct({ ...product, specifications: Object.fromEntries(entries) });
+                      }}
+                      className="w-1/3 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
+                      placeholder="Key (e.g. Capacity)"
+                    />
+                    <input
+                      type="text"
+                      value={val}
+                      onChange={(e) => {
+                        const specs = { ...(product.specifications ?? {}) };
+                        specs[key] = e.target.value;
+                        setProduct({ ...product, specifications: specs });
+                      }}
+                      className="flex-1 px-3 py-2 text-sm border border-border rounded-md focus:outline-none focus:border-accent"
+                      placeholder="Value (e.g. 5L)"
+                    />
+                    <button type="button" onClick={() => {
+                      const specs = { ...(product.specifications ?? {}) };
+                      delete specs[key];
+                      setProduct({ ...product, specifications: Object.keys(specs).length ? specs : null });
+                    }} className="p-2 text-muted hover:text-sale"><X size={14} /></button>
+                  </div>
+                ))}
+                <button type="button" onClick={() => setProduct({ ...product, specifications: { ...(product.specifications ?? {}), "": "" } })}
+                  className="text-xs text-accent hover:underline flex items-center gap-1"><Plus size={12} /> Add Specification</button>
+              </div>
+            </div>
+
             <div>
               <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.editor.labelCategory")}</label>
               <select value={product.category_id ?? ""} onChange={(e) => setProduct({ ...product, category_id: e.target.value || null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent">
@@ -264,6 +349,33 @@ export default function EditProductPage() {
                   {label}
                 </label>
               ))}
+            </div>
+          </div>
+
+          {/* Shipping & Physical */}
+          <div className="bg-white border border-border rounded-lg p-6 space-y-5">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">Shipping & Physical</h3>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Weight (g)</label>
+                <input type="number" min={0} value={product.weight_g ?? ""} onChange={(e) => setProduct({ ...product, weight_g: e.target.value ? Number(e.target.value) : null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder="e.g. 500" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Length (cm)</label>
+                <input type="number" min={0} step={0.1} value={product.length_cm ?? ""} onChange={(e) => setProduct({ ...product, length_cm: e.target.value ? Number(e.target.value) : null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder="e.g. 30" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Width (cm)</label>
+                <input type="number" min={0} step={0.1} value={product.width_cm ?? ""} onChange={(e) => setProduct({ ...product, width_cm: e.target.value ? Number(e.target.value) : null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder="e.g. 20" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1.5">Height (cm)</label>
+                <input type="number" min={0} step={0.1} value={product.height_cm ?? ""} onChange={(e) => setProduct({ ...product, height_cm: e.target.value ? Number(e.target.value) : null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder="e.g. 15" />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Barcode / UPC</label>
+              <input type="text" value={product.barcode ?? ""} onChange={(e) => setProduct({ ...product, barcode: e.target.value || null })} className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent" placeholder="e.g. 012345678901" />
             </div>
           </div>
 

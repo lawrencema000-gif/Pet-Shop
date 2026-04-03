@@ -354,6 +354,21 @@ export function ProductImagesManager({ productId }: Props) {
                   </button>
                 </div>
               </div>
+              {/* Alt text input */}
+              <input
+                type="text"
+                defaultValue={img.alt_text ?? ""}
+                onBlur={(e) => {
+                  const val = e.target.value.trim();
+                  if (val !== (img.alt_text ?? "")) {
+                    supabase.from("product_images").update({ alt_text: val || null }).eq("id", img.id).then(() => {
+                      setImages((prev) => prev.map((i) => i.id === img.id ? { ...i, alt_text: val || null } : i));
+                    });
+                  }
+                }}
+                placeholder="Alt text for SEO..."
+                className="w-full mt-1 px-2 py-1 text-[11px] border border-border rounded focus:outline-none focus:border-accent bg-background"
+              />
             </div>
           ))}
         </div>

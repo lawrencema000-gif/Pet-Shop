@@ -8,6 +8,7 @@ import { slugify } from "@/lib/utils";
 import { logAdminAction } from "@/lib/audit-log";
 import { Save, ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 
 export default function NewProductPage() {
   const { t } = useTranslation();
@@ -145,11 +146,9 @@ export default function NewProductPage() {
           {/* Description */}
           <div>
             <label className="block text-sm font-medium text-foreground mb-1.5">{t("admin.products.new.labelDescription")}</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => updateField("description", e.target.value)}
-              rows={4}
-              className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent transition-colors resize-y"
+            <RichTextEditor
+              content={form.description}
+              onChange={(html) => updateField("description", html)}
               placeholder={t("admin.products.new.descriptionPlaceholder")}
             />
           </div>
