@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { formatPrice, getDiscountPercentage } from "@/lib/utils";
 import { useCartStore } from "@/lib/store/cart";
 import { useTranslation } from "react-i18next";
@@ -27,6 +27,7 @@ export default function ProductCard({ product: rawProduct }: ProductCardProps) {
   const price = defaultVariant?.price ?? product.base_price;
   const compareAt = defaultVariant?.compare_at_price ?? product.compare_at_price;
   const discount = compareAt ? getDiscountPercentage(price, compareAt) : 0;
+  const totalStock = product.variants?.reduce((sum, v) => sum + (v.stock_quantity ?? 0), 0) ?? 0;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -99,6 +100,15 @@ export default function ProductCard({ product: rawProduct }: ProductCardProps) {
             {product.name}
           </h3>
 
+          {/* Rating */}
+          {product.rating_count > 0 && (
+            <div className="flex items-center gap-1">
+              <Star size={12} className="fill-amber-400 text-amber-400" />
+              <span className="text-xs font-medium text-foreground">{product.rating_avg?.toFixed(1)}</span>
+              <span className="text-xs text-muted">({product.rating_count})</span>
+            </div>
+          )}
+
           <div className="flex items-center gap-2">
             <span className="font-semibold text-foreground text-sm">
               {formatPrice(price)}
@@ -109,6 +119,13 @@ export default function ProductCard({ product: rawProduct }: ProductCardProps) {
               </span>
             )}
           </div>
+
+          {/* Stock badge */}
+          {totalStock === 0 ? (
+            <span className="text-[10px] font-semibold text-sale">{t("addToCart.outOfStock")}</span>
+          ) : totalStock <= 5 ? (
+            <span className="text-[10px] font-semibold text-amber-600">Only {totalStock} left</span>
+          ) : null}
         </div>
       </Link>
     </div>

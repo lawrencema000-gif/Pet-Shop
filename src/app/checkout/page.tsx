@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
-import { ShieldCheck, ArrowLeft } from "lucide-react";
+import { ShieldCheck, ArrowLeft, MapPin, Check, Truck } from "lucide-react";
+import { useAuth } from "@/lib/supabase/auth-provider";
+import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
@@ -34,6 +36,26 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { user } = useAuth();
+
+  // Saved addresses
+  interface SavedAddress { id: string; label: string; line1: string; line2?: string; city: string; state: string; zip: string; country: string; is_default: boolean }
+  const [savedAddresses, setSavedAddresses] = useState<SavedAddress[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("addresses").select("*").eq("user_id", user.id).order("is_default", { ascending: false }).then(({ data }) => {
+      if (data && data.length > 0) {
+        setSavedAddresses(data as SavedAddress[]);
+        // Auto-fill default address
+        const def = data.find((a: SavedAddress) => a.is_default) || data[0];
+        if (def && !address.line1) {
+          setAddress({ line1: def.line1, line2: def.line2 || "", city: def.city, state: def.state, zip: def.zip, country: def.country });
+        }
+      }
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
   const shipping = freeShipping ? 0 : SHIPPING_COST;
@@ -113,9 +135,28 @@ export default function CheckoutPage() {
         {t('checkout.backToCart')}
       </Link>
 
-      <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-8">
+      <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-6">
         {t('checkout.heading')}
       </h1>
+
+      {/* Progress Steps */}
+      <div className="flex items-center gap-2 mb-8 text-xs font-medium">
+        {[
+          { label: t('checkout.contact'), done: !!email.trim() },
+          { label: t('checkout.shippingAddress'), done: !!address.line1.trim() && !!address.city.trim() },
+          { label: t('checkout.payment'), done: false },
+        ].map((step, i) => (
+          <div key={i} className="flex items-center gap-2">
+            {i > 0 && <div className={`w-8 h-px ${step.done || (i === 1 && !!email.trim()) ? "bg-accent" : "bg-border"}`} />}
+            <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border ${
+              step.done ? "border-accent bg-accent/10 text-accent" : "border-border text-muted"
+            }`}>
+              {step.done ? <Check size={12} /> : <span className="w-4 text-center">{i + 1}</span>}
+              <span className="hidden sm:inline">{step.label}</span>
+            </div>
+          </div>
+        ))}
+      </div>
 
       {errors.form && (
         <div className="bg-sale/10 border border-sale/20 rounded-lg p-4 mb-6">
@@ -149,6 +190,38 @@ export default function CheckoutPage() {
             <h2 className="text-lg font-semibold text-foreground mb-4">
               {t('checkout.shippingAddress')}
             </h2>
+
+            {/* Saved addresses */}
+            {savedAddresses.length > 0 && (
+              <div className="mb-4 space-y-2">
+                <p className="text-xs font-medium text-muted uppercase tracking-wider mb-2">Saved Addresses</p>
+                <div className="grid gap-2">
+                  {savedAddresses.map((sa) => (
+                    <button
+                      key={sa.id}
+                      type="button"
+                      onClick={() => setAddress({ line1: sa.line1, line2: sa.line2 || "", city: sa.city, state: sa.state, zip: sa.zip, country: sa.country })}
+                      className={`flex items-start gap-3 p-3 rounded-lg border text-left transition-colors ${
+                        address.line1 === sa.line1 && address.zip === sa.zip
+                          ? "border-accent bg-accent/5"
+                          : "border-border hover:border-accent/50"
+                      }`}
+                    >
+                      <MapPin size={16} className="text-muted mt-0.5 shrink-0" />
+                      <div className="text-sm">
+                        <p className="font-medium text-foreground">{sa.label || "Address"}</p>
+                        <p className="text-muted text-xs">{sa.line1}, {sa.city}, {sa.state} {sa.zip}</p>
+                      </div>
+                      {address.line1 === sa.line1 && address.zip === sa.zip && (
+                        <Check size={16} className="text-accent ml-auto shrink-0 mt-0.5" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted">Or enter a new address below:</p>
+              </div>
+            )}
+
             <div className="space-y-4">
               <Input
                 label={t('checkout.addressLine1')}
@@ -315,6 +388,18 @@ export default function CheckoutPage() {
                 <span className="font-bold text-foreground">{t('checkout.total')}</span>
                 <span className="text-xl font-bold text-foreground">
                   {formatPrice(total)}
+                </span>
+              </div>
+
+              {/* Estimated delivery */}
+              <div className="flex items-center gap-2 text-xs text-muted mb-4 p-2 bg-success/5 rounded-lg border border-success/20">
+                <Truck size={14} className="text-success shrink-0" />
+                <span>
+                  Estimated delivery: <strong className="text-foreground">
+                  {new Date(Date.now() + 5 * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  {" - "}
+                  {new Date(Date.now() + 8 * 86400000).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </strong>
                 </span>
               </div>
 
