@@ -11,6 +11,12 @@ import {
   Settings,
   LogOut,
   Shield,
+  Sparkles,
+  Repeat,
+  Bell,
+  Users,
+  Megaphone,
+  Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/client";
@@ -33,6 +39,12 @@ export default function AccountLayout({
     { href: "/account/profile", label: t('account.profile'), icon: User },
     { href: "/account/addresses", label: t('account.addresses'), icon: MapPin },
     { href: "/account/orders", label: t('account.orders'), icon: Package },
+    { href: "/account/subscriptions", label: "Subscriptions", icon: Repeat },
+    { href: "/account/membership", label: "Pet+ Membership", icon: Crown },
+    { href: "/account/rewards", label: "Rewards", icon: Sparkles },
+    { href: "/account/referrals", label: "Refer Friends", icon: Users },
+    { href: "/account/affiliate", label: "Affiliate", icon: Megaphone },
+    { href: "/account/notifications", label: "Notifications", icon: Bell },
     { href: "/account/pets", label: t('petsPage.heading'), icon: PawPrint },
     { href: "/account/settings", label: t('account.settings'), icon: Settings },
   ];

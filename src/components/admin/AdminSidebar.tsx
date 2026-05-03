@@ -29,6 +29,9 @@ import {
   Send,
   UsersRound,
   Zap,
+  Truck,
+  Megaphone,
+  Crown,
   type LucideIcon,
 } from "lucide-react";
 import { useStaffPermissions } from "@/hooks/useStaffPermissions";
@@ -65,7 +68,15 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/chargebacks", icon: AlertOctagon, labelKey: "chargebacks", perm: "orders:read" },
   { href: "/admin/automation", icon: Zap, labelKey: "automation", perm: "settings:read" },
   { href: "/admin/analytics", icon: BarChart3, labelKey: "analytics", perm: "analytics:read" },
-  { href: "/admin/content", icon: FileText, labelKey: "content", perm: "content:read" },
+  { href: "/admin/blog", icon: FileText, labelKey: "blog", perm: "content:read" },
+  { href: "/admin/seo-bridge", icon: Zap, labelKey: "seoBridge", perm: "settings:read" },
+  { href: "/admin/suppliers", icon: Truck, labelKey: "suppliers", perm: "settings:read" },
+  { href: "/admin/fulfillment", icon: Package, labelKey: "fulfillment", perm: "orders:read" },
+  { href: "/admin/subscriptions", icon: Send, labelKey: "subscriptions", perm: "orders:read" },
+  { href: "/admin/shipping-rates", icon: Truck, labelKey: "shipping-rates", perm: "settings:read" },
+  { href: "/admin/email-templates", icon: Mail, labelKey: "email-templates", perm: "settings:read" },
+  { href: "/admin/affiliates", icon: Megaphone, labelKey: "affiliates", perm: "settings:read" },
+  { href: "/admin/membership", icon: Crown, labelKey: "membership", perm: "settings:read" },
   { href: "/admin/staff", icon: UserCog, labelKey: "staff", superOnly: true },
   { href: "/admin/settings", icon: Settings, labelKey: "settings", perm: "settings:read" },
 ];
