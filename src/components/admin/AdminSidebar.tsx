@@ -77,6 +77,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/email-templates", icon: Mail, labelKey: "email-templates", perm: "settings:read" },
   { href: "/admin/affiliates", icon: Megaphone, labelKey: "affiliates", perm: "settings:read" },
   { href: "/admin/membership", icon: Crown, labelKey: "membership", perm: "settings:read" },
+  { href: "/admin/seo-pages", icon: FileText, labelKey: "seoPages", perm: "settings:read" },
   { href: "/admin/staff", icon: UserCog, labelKey: "staff", superOnly: true },
   { href: "/admin/settings", icon: Settings, labelKey: "settings", perm: "settings:read" },
 ];

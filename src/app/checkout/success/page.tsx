@@ -8,8 +8,10 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store/cart";
 import { formatPrice } from "@/lib/utils";
+import { trackEvent } from "@/lib/meta-events";
 
 interface OrderItem {
+  product_id: string;
   product_name: string;
   variant_name: string | null;
   quantity: number;
@@ -46,6 +48,29 @@ export default function CheckoutSuccessPage() {
   useEffect(() => {
     clearCart();
   }, [clearCart]);
+
+  // Meta Purchase — fire once when order resolves. Keyed by order.id so
+  // re-renders / re-polls don't double-fire.
+  useEffect(() => {
+    if (!order?.id) return;
+    trackEvent(
+      "Purchase",
+      {
+        order_id: order.id,
+        value: order.total,
+        currency: "USD",
+        num_items: order.items.reduce((s, i) => s + i.quantity, 0),
+        content_ids: order.items.map((i) => i.product_id),
+        content_type: "product",
+        contents: order.items.map((i) => ({
+          id: i.product_id,
+          quantity: i.quantity,
+          item_price: i.unit_price,
+        })),
+      },
+      { email: order.email },
+    );
+  }, [order?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const pollStatus = useCallback(async () => {
     if (!sessionId) {

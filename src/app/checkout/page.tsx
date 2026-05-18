@@ -11,9 +11,14 @@ import { supabase } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useCartStore } from "@/lib/store/cart";
-import { formatPrice } from "@/lib/utils";
-import { SITE_CONFIG, SHIPPING_COST, TAX_RATE } from "@/lib/constants";
+import { TAX_RATE } from "@/lib/constants";
+import { getShippingMethodsForCountry, calculateShipping, SHIPPING_COUNTRIES, type ShippingMethod } from "@/lib/shipping";
+import { getAddressFormat, validatePostalCode } from "@/lib/addressFormats";
+import { usePostalCodeLookup } from "@/hooks/usePostalCodeLookup";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { formatPrice as formatCurrencyPrice } from "@/lib/currency";
 import { CouponField } from "@/components/cart/CouponField";
+import { trackEvent } from "@/lib/meta-events";
 import type { ShippingAddress } from "@/types/order";
 
 export default function CheckoutPage() {
@@ -36,7 +41,34 @@ export default function CheckoutPage() {
   const [discount, setDiscount] = useState(0);
   const [couponCode, setCouponCode] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState<string>("");
   const { user } = useAuth();
+  const { currency } = useCurrency();
+
+  const availableShippingMethods: ShippingMethod[] = getShippingMethodsForCountry(address.country);
+
+  // Auto-select first method when country changes or list updates
+  useEffect(() => {
+    if (availableShippingMethods.length > 0 && !availableShippingMethods.find((m) => m.id === selectedShippingMethod)) {
+      setSelectedShippingMethod(availableShippingMethods[0].id);
+    }
+  }, [address.country, availableShippingMethods, selectedShippingMethod]);
+
+  const fmt = (usd: number) => formatCurrencyPrice(usd, currency);
+
+  // Country-aware address labels & validation
+  const addressFmt = getAddressFormat(address.country);
+
+  // Japan postal code → auto-fill prefecture/city/street
+  const handleJpPostalLookup = usePostalCodeLookup((prefecture, city, area) => {
+    setAddress((a) => ({
+      ...a,
+      state: prefecture || a.state,
+      city: city || a.city,
+      // Append the area to line1 if line1 is still empty, so the user only types the building/number after
+      line1: a.line1 || area,
+    }));
+  });
 
   // Saved addresses
   interface SavedAddress { id: string; label: string; line1: string; line2?: string; city: string; state: string; zip: string; country: string; is_default: boolean }
@@ -57,8 +89,7 @@ export default function CheckoutPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const freeShipping = subtotal >= SITE_CONFIG.freeShippingThreshold;
-  const shipping = freeShipping ? 0 : SHIPPING_COST;
+  const shipping = selectedShippingMethod ? calculateShipping(selectedShippingMethod, subtotal) : 0;
   const tax = Math.round((subtotal + shipping) * TAX_RATE * 100) / 100;
   const total = Math.round((subtotal + shipping + tax - discount) * 100) / 100;
 
@@ -68,6 +99,49 @@ export default function CheckoutPage() {
     }
   }, [items.length, router]);
 
+  // Meta InitiateCheckout — fires once when the checkout page mounts with items.
+  // Stable deps (subtotal) so it doesn't re-fire on every quantity tweak.
+  useEffect(() => {
+    if (items.length === 0) return;
+    trackEvent("InitiateCheckout", {
+      content_ids: items.map((i) => i.product_id),
+      contents: items.map((i) => ({ id: i.product_id, quantity: i.quantity, item_price: i.price })),
+      content_type: "product",
+      num_items: items.reduce((s, i) => s + i.quantity, 0),
+      value: subtotal,
+      currency: "USD",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Track abandoned cart — registers when email is valid + has items
+  useEffect(() => {
+    const validEmail = email.trim() && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!validEmail || items.length === 0) return;
+    const timer = setTimeout(() => {
+      fetch("/api/abandoned-cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          user_id: user?.id ?? null,
+          items: items.map((i) => ({
+            product_id: i.product_id,
+            variant_id: i.variant_id,
+            name: i.name,
+            variant_name: i.variant_name,
+            quantity: i.quantity,
+            price: i.price,
+            image_url: i.image_url,
+            slug: i.slug,
+          })),
+          subtotal,
+        }),
+      }).catch(() => {});
+    }, 3000); // debounce 3s
+    return () => clearTimeout(timer);
+  }, [email, items, subtotal, user]);
+
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -75,8 +149,12 @@ export default function CheckoutPage() {
     }
     if (!address.line1.trim()) newErrors.line1 = t('checkout.errorAddress');
     if (!address.city.trim()) newErrors.city = t('checkout.errorCity');
-    if (!address.state.trim()) newErrors.state = t('checkout.errorState');
-    if (!address.zip.trim()) newErrors.zip = t('checkout.errorZip');
+    if (addressFmt.showState && !address.state.trim()) newErrors.state = t('checkout.errorState');
+    if (!address.zip.trim()) {
+      newErrors.zip = t('checkout.errorZip');
+    } else if (!validatePostalCode(address.country, address.zip)) {
+      newErrors.zip = `Please enter a valid ${addressFmt.postalCodeLabel.toLowerCase()}`;
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -98,6 +176,7 @@ export default function CheckoutPage() {
           })),
           email,
           shipping_address: address,
+          shipping_method_id: selectedShippingMethod,
           coupon_code: couponCode ?? undefined,
           idempotency_key: idempotencyKey,
         }),
@@ -224,8 +303,8 @@ export default function CheckoutPage() {
 
             <div className="space-y-4">
               <Input
-                label={t('checkout.addressLine1')}
-                placeholder={t('checkout.addressLine1Placeholder')}
+                label={addressFmt.addressLine1Label}
+                placeholder={addressFmt.addressLine1Placeholder}
                 value={address.line1}
                 onChange={(e) =>
                   setAddress({ ...address, line1: e.target.value })
@@ -233,41 +312,46 @@ export default function CheckoutPage() {
                 error={errors.line1}
               />
               <Input
-                label={t('checkout.addressLine2')}
-                placeholder={t('checkout.addressLine2Placeholder')}
+                label={addressFmt.addressLine2Label}
+                placeholder={addressFmt.addressLine2Placeholder}
                 value={address.line2}
                 onChange={(e) =>
                   setAddress({ ...address, line2: e.target.value })
                 }
               />
-              <div className="grid grid-cols-2 gap-4">
+              <div className={`grid gap-4 ${addressFmt.showState ? 'grid-cols-2' : 'grid-cols-1'}`}>
                 <Input
-                  label={t('checkout.city')}
-                  placeholder={t('checkout.cityPlaceholder')}
+                  label={addressFmt.cityLabel}
+                  placeholder={addressFmt.cityPlaceholder}
                   value={address.city}
                   onChange={(e) =>
                     setAddress({ ...address, city: e.target.value })
                   }
                   error={errors.city}
                 />
-                <Input
-                  label={t('checkout.state')}
-                  placeholder={t('checkout.statePlaceholder')}
-                  value={address.state}
-                  onChange={(e) =>
-                    setAddress({ ...address, state: e.target.value })
-                  }
-                  error={errors.state}
-                />
+                {addressFmt.showState && (
+                  <Input
+                    label={addressFmt.stateLabel}
+                    placeholder={addressFmt.statePlaceholder}
+                    value={address.state}
+                    onChange={(e) =>
+                      setAddress({ ...address, state: e.target.value })
+                    }
+                    error={errors.state}
+                  />
+                )}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <Input
-                  label={t('checkout.zip')}
-                  placeholder={t('checkout.zipPlaceholder')}
+                  label={addressFmt.postalCodeLabel}
+                  placeholder={addressFmt.postalCodePlaceholder}
                   value={address.zip}
-                  onChange={(e) =>
-                    setAddress({ ...address, zip: e.target.value })
-                  }
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setAddress({ ...address, zip: v });
+                    // Auto-lookup for Japan
+                    if (address.country === "JP") handleJpPostalLookup(v);
+                  }}
                   error={errors.zip}
                 />
                 <div>
@@ -277,41 +361,59 @@ export default function CheckoutPage() {
                     onChange={(e) => setAddress({ ...address, country: e.target.value })}
                     className="w-full px-3 py-2.5 text-sm border border-border rounded-md focus:outline-none focus:border-accent bg-background"
                   >
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="GB">United Kingdom</option>
-                    <option value="AU">Australia</option>
-                    <option value="JP">Japan</option>
-                    <option value="KR">South Korea</option>
-                    <option value="SG">Singapore</option>
-                    <option value="HK">Hong Kong</option>
-                    <option value="TW">Taiwan</option>
-                    <option value="DE">Germany</option>
-                    <option value="FR">France</option>
-                    <option value="IT">Italy</option>
-                    <option value="ES">Spain</option>
-                    <option value="NL">Netherlands</option>
-                    <option value="SE">Sweden</option>
-                    <option value="NO">Norway</option>
-                    <option value="DK">Denmark</option>
-                    <option value="NZ">New Zealand</option>
-                    <option value="IE">Ireland</option>
-                    <option value="CH">Switzerland</option>
-                    <option value="AT">Austria</option>
-                    <option value="BE">Belgium</option>
-                    <option value="PT">Portugal</option>
-                    <option value="PL">Poland</option>
-                    <option value="MX">Mexico</option>
-                    <option value="BR">Brazil</option>
-                    <option value="IN">India</option>
-                    <option value="PH">Philippines</option>
-                    <option value="MY">Malaysia</option>
-                    <option value="TH">Thailand</option>
+                    {SHIPPING_COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>{c.name}</option>
+                    ))}
                   </select>
                 </div>
               </div>
             </div>
           </section>
+
+          {/* Shipping Method */}
+          {availableShippingMethods.length > 0 && (
+            <section>
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <Truck size={18} /> Shipping Method
+              </h2>
+              <div className="space-y-2">
+                {availableShippingMethods.map((m) => {
+                  const cost = calculateShipping(m.id, subtotal);
+                  return (
+                    <label
+                      key={m.id}
+                      className={`flex items-start gap-3 p-4 border rounded-lg cursor-pointer transition-colors ${
+                        selectedShippingMethod === m.id ? "border-accent bg-accent/5" : "border-border hover:border-accent/50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="shippingMethod"
+                        value={m.id}
+                        checked={selectedShippingMethod === m.id}
+                        onChange={() => setSelectedShippingMethod(m.id)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="font-medium text-foreground">{m.name}</p>
+                          <p className="font-semibold text-foreground">
+                            {cost === 0 ? "Free" : fmt(cost)}
+                          </p>
+                        </div>
+                        <p className="text-xs text-muted mt-0.5">{m.estimatedDays} · {m.description}</p>
+                        {m.ddp && (
+                          <p className="text-xs text-success mt-1 flex items-center gap-1">
+                            <Check size={12} /> Duties & taxes included — no surprise fees
+                          </p>
+                        )}
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            </section>
+          )}
 
           {/* Payment */}
           <section>
@@ -336,7 +438,7 @@ export default function CheckoutPage() {
             loading={loading}
             className="lg:hidden"
           >
-            {t('checkout.continueToPayment')} &mdash; {formatPrice(total)}
+            {t('checkout.continueToPayment')} &mdash; {fmt(total)}
           </Button>
         </div>
 
@@ -371,7 +473,7 @@ export default function CheckoutPage() {
                     )}
                   </div>
                   <span className="text-sm font-medium text-foreground">
-                    {formatPrice(item.price * item.quantity)}
+                    {fmt(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -380,22 +482,22 @@ export default function CheckoutPage() {
             <div className="border-t border-border pt-4 space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted">{t('checkout.subtotal')}</span>
-                <span className="font-medium">{formatPrice(subtotal)}</span>
+                <span className="font-medium">{fmt(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted">{t('checkout.shipping')}</span>
-                <span className={freeShipping ? "text-success font-medium" : "font-medium"}>
-                  {freeShipping ? t('common.free') : formatPrice(SHIPPING_COST)}
+                <span className={shipping === 0 ? "text-success font-medium" : "font-medium"}>
+                  {shipping === 0 ? t('common.free') : fmt(shipping)}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted">{t('checkout.tax')}</span>
-                <span className="font-medium">{formatPrice(tax)}</span>
+                <span className="font-medium">{fmt(tax)}</span>
               </div>
               {discount > 0 && couponCode && (
                 <div className="flex justify-between text-success">
                   <span>Discount ({couponCode})</span>
-                  <span>-{formatPrice(discount)}</span>
+                  <span>-{fmt(discount)}</span>
                 </div>
               )}
             </div>
@@ -418,7 +520,7 @@ export default function CheckoutPage() {
               <div className="flex justify-between items-center mb-6">
                 <span className="font-bold text-foreground">{t('checkout.total')}</span>
                 <span className="text-xl font-bold text-foreground">
-                  {formatPrice(total)}
+                  {fmt(total)}
                 </span>
               </div>
 

@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
+import { trackEvent } from "@/lib/meta-events";
 
 interface TrackViewProps {
   slug: string;
+  productId?: string;
+  name?: string;
+  price?: number;
+  currency?: string;
 }
 
 const STORAGE_KEY = "recently-viewed";
 const MAX_ITEMS = 8;
 
-export default function TrackView({ slug }: TrackViewProps) {
+export default function TrackView({ slug, productId, name, price, currency = "USD" }: TrackViewProps) {
   useEffect(() => {
+    // Recently-viewed history
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const slugs: string[] = stored ? JSON.parse(stored) : [];
@@ -21,7 +27,18 @@ export default function TrackView({ slug }: TrackViewProps) {
     } catch {
       // localStorage unavailable
     }
-  }, [slug]);
+
+    // Meta ViewContent
+    if (productId) {
+      trackEvent("ViewContent", {
+        content_ids: [productId],
+        content_name: name,
+        content_type: "product",
+        value: price,
+        currency,
+      });
+    }
+  }, [slug, productId, name, price, currency]);
 
   return null;
 }

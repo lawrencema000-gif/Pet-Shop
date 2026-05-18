@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import OrganizationSchema from "@/components/seo/OrganizationSchema";
 import WebsiteSchema from "@/components/seo/WebsiteSchema";
@@ -8,6 +8,10 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { StoreShell } from "@/components/layout/StoreShell";
 import { I18nProvider } from "@/components/I18nProvider";
 import { GoogleAnalytics } from "@/components/GoogleAnalytics";
+import { MetaPixel } from "@/components/MetaPixel";
+import { CurrencyProvider } from "@/contexts/CurrencyContext";
+import { AffiliateTracker } from "@/components/AffiliateTracker";
+import { Suspense } from "react";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -16,7 +20,8 @@ const inter = Inter({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
+// Fraunces — softer + more boutique than Playfair. Variable font for full weight range.
+const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-display",
@@ -38,7 +43,7 @@ export const metadata: Metadata = {
     template: "%s | Pet and Angels",
   },
   description:
-    "Discover smart pet feeders, water fountains, self-cleaning litter boxes, and premium accessories. Free shipping on orders over $75. 30-day returns. 1-year warranty.",
+    "Shop smart pet feeders, water fountains, self-cleaning litter boxes & accessories. Free shipping $75+. 30-day returns.",
   keywords: [
     "smart pet feeder",
     "automatic pet feeder",
@@ -91,16 +96,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja" suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Pet and Angels Blog RSS Feed"
+          href="/blog/feed.xml"
+        />
+      </head>
+      <body className={`${inter.variable} ${fraunces.variable} font-sans antialiased`}>
         <GoogleAnalytics />
+        <MetaPixel />
+        <Suspense fallback={null}><AffiliateTracker /></Suspense>
         <AuthProvider>
           <I18nProvider>
-            <ToastProvider>
-              <OrganizationSchema />
-              <WebsiteSchema />
-              <StoreShell>{children}</StoreShell>
-            </ToastProvider>
+            <CurrencyProvider>
+              <ToastProvider>
+                <OrganizationSchema />
+                <WebsiteSchema />
+                <StoreShell>{children}</StoreShell>
+              </ToastProvider>
+            </CurrencyProvider>
           </I18nProvider>
         </AuthProvider>
       </body>

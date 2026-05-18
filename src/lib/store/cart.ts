@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { MAX_ITEM_QUANTITY } from "@/lib/constants";
+import { trackEvent } from "@/lib/meta-events";
 import type { CartItem, CartState } from "@/types/cart";
 
 export const useCartStore = create<CartState>()(
@@ -33,6 +34,16 @@ export const useCartStore = create<CartState>()(
             isOpen: true,
           });
         }
+
+        // Meta AddToCart event (Pixel + CAPI dedup)
+        trackEvent("AddToCart", {
+          content_ids: [item.product_id],
+          content_name: item.name,
+          content_type: "product",
+          value: item.price * quantity,
+          currency: "USD",
+          contents: [{ id: item.product_id, quantity, item_price: item.price }],
+        });
       },
 
       removeItem: (id: string) => {

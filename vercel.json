@@ -1,0 +1,51 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/abandoned-cart",
+      "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/fx-rates",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/email-engine",
+      "schedule": "0 16 * * *"
+    },
+    {
+      "path": "/api/cron/birthday",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/refresh-recommendations",
+      "schedule": "0 3 * * *"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    }
+  ]
+}

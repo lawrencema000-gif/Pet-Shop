@@ -33,17 +33,43 @@ export default function FrequentlyBoughtTogether({
 
   useEffect(() => {
     async function fetchSuggestions() {
+      // 1. Try real co-purchase data first
+      const { data: copurchases } = await supabase.rpc("get_copurchase_recommendations", {
+        p_product_id: productId,
+        p_limit: 3,
+      });
+      let ids: string[] = ((copurchases ?? []) as { product_id: string }[]).map((r) => r.product_id);
+
+      // 2. Pad with same-category, top-rated products if we don't have 3
+      if (ids.length < 3) {
+        const { data: fallback } = await supabase
+          .from("products")
+          .select("id")
+          .eq("status", "active")
+          .eq("category_id", categoryId)
+          .neq("id", productId)
+          .order("rating_count", { ascending: false })
+          .limit(3 - ids.length + 3); // grab a few extra in case some overlap
+        const fallbackIds = ((fallback ?? []) as { id: string }[])
+          .map((p) => p.id)
+          .filter((id) => !ids.includes(id));
+        ids = [...ids, ...fallbackIds].slice(0, 3);
+      }
+
+      if (ids.length === 0) return;
+
       const { data } = await supabase
         .from("products")
         .select("id, name, slug, base_price, images:product_images(url, alt_text, display_order)")
-        .eq("status", "active")
-        .eq("category_id", categoryId)
-        .neq("id", productId)
-        .order("rating_count", { ascending: false })
-        .limit(3);
+        .in("id", ids)
+        .eq("status", "active");
 
       if (data && data.length > 0) {
-        setRawSuggestions(data as unknown as Product[]);
+        // Preserve our recommendation order (co-purchase first, by score)
+        const ordered = ids
+          .map((id) => data.find((p) => p.id === id))
+          .filter(Boolean) as unknown as Product[];
+        setRawSuggestions(ordered);
       }
     }
     fetchSuggestions();
